@@ -1,9 +1,8 @@
 /* =========================================================
-   1. 核心变量劫持 (Root Hijack)
-   强制覆盖 SDK 的默认黑底变量
+   1. 变量劫持 (Root Hijack)
    ========================================================= */
 :root, html {
-  /* 强制把 SDK 定义的深色背景变量设为透明 */
+  /* 强制覆盖 SDK 默认背景 */
   --w3o-background-color: transparent !important;
   --w3o-surface-color: rgba(20, 18, 35, 0.4) !important;
   
@@ -14,26 +13,20 @@
   --oui-color-primary: 139 92 246;
   --oui-color-primary-light: 167 139 250;
   
-  /* iOS 风格大圆角 */
+  /* 圆角 */
   --oui-rounded: 16px;
   --oui-rounded-lg: 24px;
 }
 
 /* =========================================================
-   2. 背景提亮：极光增强版 (Brighter Aurora)
+   2. 背景提亮 (Brighter Aurora)
    ========================================================= */
 body {
-  /* 背景底色稍微调亮一点点，不要纯死黑 */
   background-color: #080610 !important;
-  
-  /* 
-     调整了透明度：从 0.3 提升到 0.5/0.25 
-     调整了位置：让紫色光晕更靠近顶部内容区
-  */
+  /* 调整了光晕位置，确保顶部导航栏后面有紫色光透出来 */
   background-image: 
-    radial-gradient(circle at 50% -10%, rgba(139, 92, 246, 0.5), transparent 70%),
-    radial-gradient(circle at 85% 60%, rgba(56, 220, 200, 0.25), transparent 50%) !important;
-    
+    radial-gradient(circle at 50% -10%, rgba(139, 92, 246, 0.6), transparent 70%),
+    radial-gradient(circle at 85% 60%, rgba(56, 220, 200, 0.3), transparent 50%) !important;
   background-attachment: fixed !important;
   background-size: cover !important;
   color: #fff;
@@ -42,9 +35,8 @@ body {
 }
 
 /* =========================================================
-   3. 布局层：去黑底 (Transparency Force)
+   3. 布局去黑 (De-Blacking)
    ========================================================= */
-/* 强制让所有布局容器透明，露出 body 的极光 */
 #root, 
 .orderly-app, 
 .oui-scaffold-root,
@@ -57,114 +49,95 @@ main {
 }
 
 /* =========================================================
-   4. 全模块 iOS 液态玻璃化 (Liquid Glass Everywhere)
-   这里是解决 K线图和各模块深黑色的关键
+   4. 核心：荧光液态玻璃 (Fluorescent Liquid Glass)
+   覆盖所有卡片、背景块、以及你提到的滚动条
    ========================================================= */
 
-/* 
-   使用属性选择器匹配所有可能的“盒子”：
-   - 匹配 .oui-card
-   - 匹配 .oui-bg-base-9 (你之前截图里的那个黑块)
-   - 匹配 .orderly-dashboard-item
-*/
+/* 通配选择器：匹配卡片、黑底块、以及滚动条容器 */
 .oui-card,
 div[class*="card"],
 div[class*="Card"],
-div[class*="bg-base"], /* 暴力匹配所有带背景色的 SDK 类 */
+div[class*="bg-base"],
 div[class*="dashboard-item"],
+/* 新增：专门匹配顶部滚动条容器 */
+div[class*="ticker"],
+div[class*="marquee"],
 section,
 aside {
-  /* 1. 背景：半透明黑紫 (比之前更透，让背景光能穿过来) */
-  background-color: rgba(18, 16, 28, 0.45) !important;
+  /* 1. 背景：保持半透明黑紫 */
+  background-color: rgba(18, 16, 28, 0.4) !important;
   
-  /* 2. 液态质感：高模糊 + 高饱和度 */
-  backdrop-filter: blur(30px) saturate(160%) !important;
-  -webkit-backdrop-filter: blur(30px) saturate(160%) !important;
+  /* 2. 质感：高模糊 */
+  backdrop-filter: blur(30px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
   
-  /* 3. 亮边框：使用 box-shadow 模拟，比 border 更亮更贴合 */
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+
+  border: 1px solid rgba(167, 139, 250, 0.3) !important;
   
-  /* 4. 3D 厚度感：内发光 */
   box-shadow: 
-    inset 0 0 20px rgba(255, 255, 255, 0.03),
-    0 10px 30px rgba(0, 0, 0, 0.4) !important;
+    0 0 15px rgba(139, 92, 246, 0.15), /* 外部柔和紫光 */
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1), /* 内部锐利高光 */
+    inset 0 0 20px rgba(139, 92, 246, 0.05) !important; /* 内部紫色雾气 */
     
   border-radius: 24px !important;
 }
 
 /* =========================================================
-   5. 按钮修复：完美描边 (Perfect Stroke)
-   解决白色描边错位问题
+   5. 顶部导航栏修复 (Header Fix)
+   让它也变成紫色玻璃，而不是黑色
+   ========================================================= */
+header, 
+.oui-scaffold-topNavbar,
+div[class*="navbar"] {
+  /* 背景设为极淡的紫色，让 Body 的极光能透上来 */
+  background: rgba(10, 8, 20, 0.3) !important; 
+  backdrop-filter: blur(20px) !important;
+  border-bottom: 1px solid rgba(139, 92, 246, 0.3) !important;
+  box-shadow: 0 4px 20px rgba(139, 92, 246, 0.15) !important;
+}
+
+/* =========================================================
+   6. 按钮：完美描边 & 强光
    ========================================================= */
 button[class*="primary"], 
 .oui-button-primary {
-  /* 背景：渐变紫 */
   background: linear-gradient(135deg, rgba(139, 92, 246, 0.7), rgba(124, 58, 237, 0.9)) !important;
   backdrop-filter: blur(10px) !important;
-  
-  /* 
-     关键修复：取消 border，改用 box-shadow 模拟边框 
-     这能完美解决圆角处的锯齿和错位问题
-  */
   border: none !important;
   
-  /* 
-     阴影层级：
-     1. 模拟 1px 白色边框 (rgba(255,255,255,0.3))
-     2. 内部高光 (inset)
-     3. 外部辉光 (drop-shadow)
-  */
+  /* 强力荧光描边 */
   box-shadow: 
-    0 0 0 1px rgba(255, 255, 255, 0.25), 
-    inset 0 1px 0 rgba(255, 255, 255, 0.3),
-    0 0 20px rgba(139, 92, 246, 0.5) !important;
+    0 0 0 1px rgba(255, 255, 255, 0.4), /* 亮白色描边 */
+    0 0 25px rgba(139, 92, 246, 0.6),   /* 外部强光 */
+    inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
     
   color: white !important;
   font-weight: 600;
-  border-radius: 99px !important; /* 胶囊形 */
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-radius: 99px !important;
 }
 
 button[class*="primary"]:hover {
   transform: scale(1.02);
-  /* Hover 时增强辉光 */
   box-shadow: 
-    0 0 0 1px rgba(255, 255, 255, 0.5), 
-    inset 0 1px 0 rgba(255, 255, 255, 0.4),
-    0 0 35px rgba(139, 92, 246, 0.7) !important;
+    0 0 0 1px rgba(255, 255, 255, 0.7), 
+    0 0 40px rgba(139, 92, 246, 0.8) !important;
 }
 
 /* =========================================================
-   6. 特殊处理：TradingView K线图容器
+   7. 修复 TradingView 容器边框
    ========================================================= */
-/* 
-   针对 K 线图的容器。
-   注意：iframe 内部的黑色是 TradingView 自己的，CSS 无法去黑。
-   但我们可以把边框做成液态玻璃，让它看起来像浮在上面。
-*/
-div[id*="tradingview"], 
-iframe {
-  /* 容器背景：稍微深一点，保证 K 线清晰度 */
-  background-color: rgba(10, 8, 15, 0.6) !important;
+div[id*="tradingview"], iframe {
+  background-color: rgba(10, 8, 15, 0.5) !important;
+  /* 给 K 线图也加上荧光边框 */
+  border: 1px solid rgba(167, 139, 250, 0.2) !important;
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.1) !important;
   border-radius: 20px !important;
-  /* 强制应用玻璃边框 */
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
-/* =========================================================
-   7. 顶部导航栏 (Header) - 更通透
-   ========================================================= */
-header, 
-.oui-scaffold-topNavbar {
-  background: rgba(10, 8, 20, 0.4) !important; /* 透明度调低，更透亮 */
-  backdrop-filter: blur(20px) !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
-}
-
-/* 输入框液态化 */
+/* 输入框 */
 input, .oui-input {
   background-color: rgba(0, 0, 0, 0.3) !important;
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border: 1px solid rgba(167, 139, 250, 0.3) !important; /* 紫色边框 */
   border-radius: 12px !important;
   color: white !important;
 }
