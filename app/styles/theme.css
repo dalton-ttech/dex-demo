@@ -2,93 +2,47 @@
   --oui-font-family: 'Manrope', 'Inter', system-ui, sans-serif;
 
   /* =========================================
-     1. 霓虹主色 (Neon Brand)
+     1. 颜色变量 (保留之前的设定，但微调)
      ========================================= */
-  /* 主色：更电光感的紫色 */
-  --oui-color-primary: 139 92 246;        /* Vivid Purple */
-  --oui-color-primary-light: 167 139 250; 
+  /* 主色：更柔和的紫，不再那么刺眼 */
+  --oui-color-primary: 139 92 246;
+  --oui-color-primary-light: 167 139 250;
   --oui-color-primary-darken: 124 58 237;
   --oui-color-primary-contrast: 255 255 255;
 
-  /* 链接颜色 */
-  --oui-color-link: 167 139 250;
-
-  /* =========================================
-     2. 赛博朋克交易色 (Cyberpunk Trading)
-     拒绝普通的红绿，使用 荧光青 vs 激光粉
-     ========================================= */
-  /* 买入/涨：荧光青 (Electric Cyan) */
-  --oui-color-success: 34 211 238; 
-  --oui-color-success-light: 103 232 249;
-  --oui-color-success-darken: 8 145 178;
+  /* 交易色：保持赛博风格 */
+  --oui-color-success: 56 220 200; /* 更偏绿松石色，看起来更高级 */
   --oui-color-success-contrast: 0 0 0;
-
-  /* 卖出/跌：激光粉 (Laser Pink) */
-  --oui-color-danger: 244 63 94; 
-  --oui-color-danger-light: 251 113 133;
-  --oui-color-danger-darken: 225 29 72;
+  --oui-color-danger: 255 90 120;  /* 稍微提亮一点的红 */
   --oui-color-danger-contrast: 255 255 255;
 
-  /* 警告色 */
-  --oui-color-warning: 250 204 21;
-  --oui-color-warning-contrast: 0 0 0;
-
-  /* =========================================
-     3. 玻璃基底色 (Glass Base)
-     关键：这里不要用纯黑！使用带紫色调的深灰
-     这样即使在不支持透明度的地方，也不会显得死板
-     ========================================= */
-  
-  --oui-color-fill: 30 27 46; /* 输入框深紫底 */
-  
   /* 
-     Orderly SDK 的 base-1 到 base-10 是图层叠加顺序
-     我们将它们设为半透明的紫黑色调
-     注意：这里是 RGB 值，为了配合 SDK 内部计算
+     关键点：我们将 base-color 全部设为极深，
+     但在下面的样式中，我们会忽略这些变量，直接用 rgba 覆盖
   */
-  --oui-color-base-1: 65 60 90;  
-  --oui-color-base-2: 55 50 80;
-  --oui-color-base-3: 45 40 70;
-  --oui-color-base-4: 38 34 60;  /* 常用卡片背景 */
-  --oui-color-base-5: 32 28 50;
-  --oui-color-base-6: 28 24 45;
-  --oui-color-base-7: 24 20 40;
-  --oui-color-base-8: 20 17 35;
-  --oui-color-base-9: 15 12 25;  /* 模块深底 */
-  --oui-color-base-10: 10 8 20;  /* 网页最深底 */
+  --oui-color-base-1: 30 30 40;
+  --oui-color-base-2: 25 25 35;
+  --oui-color-base-3: 20 20 30;
+  --oui-color-base-4: 18 18 28;
+  --oui-color-base-5: 15 15 25;
+  --oui-color-base-6: 12 12 22;
+  --oui-color-base-7: 10 10 20;
+  --oui-color-base-8: 8 8 16;
+  --oui-color-base-9: 5 5 10;
+  --oui-color-base-10: 0 0 0; /* 纯黑底，防止透视穿帮 */
 
-  --oui-color-base-foreground: 240 240 255; /* 文字带一点点冷光 */
+  --oui-color-fill: 20 18 30;
   --oui-color-line: 255 255 255;
+  --oui-color-base-foreground: 235 235 245;
 
-  /* 盈亏颜色映射 */
-  --oui-color-trading-loss: 244 63 94;
-  --oui-color-trading-loss-contrast: 255 255 255;
-  --oui-color-trading-profit: 34 211 238;
-  --oui-color-trading-profit-contrast: 0 0 0;
-
-  /* =========================================
-     4. 渐变系统 (Unifai Vibes)
-     ========================================= */
-  --oui-gradient-primary-start: 124 58 237;
-  --oui-gradient-primary-end: 139 92 246;
-  
-  --oui-gradient-success-start: 8 145 178;
-  --oui-gradient-success-end: 34 211 238;
-
-  --oui-gradient-danger-start: 225 29 72;
-  --oui-gradient-danger-end: 244 63 94;
-
-  /* =========================================
-     5. 现代圆角 (Modern Shape)
-     ========================================= */
+  /* 圆角 */
   --oui-rounded-sm: 6px;
   --oui-rounded: 10px;
   --oui-rounded-md: 12px;
   --oui-rounded-lg: 16px;
   --oui-rounded-xl: 20px;
-  --oui-rounded-full: 9999px;
   
-  /* 间距保持不变 */
+  /* 间距 */
   --oui-spacing-xs: 20rem;
   --oui-spacing-sm: 22.5rem;
   --oui-spacing-md: 26.25rem;
@@ -97,64 +51,92 @@
 }
 
 /* =========================================================
-   全局样式注入 - 打造 Unifai 风格的深空与玻璃质感
+   2. 暴力穿透样式 (解决背景被遮挡的问题)
    ========================================================= */
 
-/* 1. 打造极光背景：不再是纯黑 */
-body {
-  /* 使用深黑背景，但在顶部加一个紫色的光晕 */
-  background-color: #0b0a14; 
+/* 
+   A. 网页大背景：极光效果 
+   我们直接给 body 加背景，并确保 html 也是深色
+*/
+body, html {
+  background-color: #05040a !important; /* 极深紫黑，不是纯黑 */
   background-image: 
-    radial-gradient(circle at 50% -20%, rgba(124, 58, 237, 0.25), transparent 60%),
-    radial-gradient(circle at 100% 0%, rgba(56, 189, 248, 0.1), transparent 40%);
-  background-attachment: fixed; /* 让背景固定，滚动时更有层次感 */
-  color: #f0f0ff;
+    radial-gradient(circle at 15% 10%, rgba(100, 50, 200, 0.18), transparent 40%),
+    radial-gradient(circle at 85% 30%, rgba(56, 189, 248, 0.12), transparent 40%) !important;
+  background-attachment: fixed !important;
+  color: white;
 }
 
-/* 2. 磨砂玻璃卡片 (Glassmorphism) */
-/* 强制覆盖 SDK 的默认背景，让背景透出来 */
-.oui-card, 
-div[class*="oui-card"],
-.orderly-trading-page-layout { 
-  /* 半透明的深紫灰背景 */
-  background-color: rgba(25, 22, 35, 0.65) !important;
-  /* 加上背景模糊 */
-  backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
-  /* 极细的发光边框 */
-  border: 1px solid rgba(139, 92, 246, 0.15) !important;
-  /* 稍微增加圆角 */
-  border-radius: 16px !important;
+/* 
+   B. 剥离 SDK 自带的黑色背景层
+   Orderly 通常会有一个全屏的 div 挡住 body，我们把它变成透明
+*/
+#root, #__next, .orderly-app, div[class*="orderly-layout"] {
+  background: transparent !important;
+  background-color: transparent !important;
 }
 
-/* 3. 按钮发光效果 */
+/* 
+   C. 毛玻璃效果 (Glassmorphism) 
+   针对所有卡片、模块、侧边栏
+   关键是：使用 rgba 背景 + backdrop-filter
+*/
+div[class*="oui-card"], 
+div[class*="orderly-dashboard"],
+.orderly-page-content > div { 
+  /* 背景：深紫黑色，只有 60% 不透明度 */
+  background-color: rgba(20, 18, 28, 0.6) !important;
+  
+  /* 毛玻璃模糊滤镜 */
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  
+  /* 极细的边框，提升质感 */
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* 
+   D. 按钮样式优化 (去掉生硬渐变)
+   改成纯色+发光，或者极柔和的渐变
+*/
 button[class*="oui-button-primary"] {
-  background: linear-gradient(135deg, rgb(124, 58, 237), rgb(139, 92, 246)) !important;
-  box-shadow: 0 0 15px rgba(139, 92, 246, 0.4) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
+  /* 移除之前的线性渐变，改用纯色背景 */
+  background: rgb(139, 92, 246) !important;
+  
+  /* 添加柔和的内发光和外阴影 */
+  box-shadow: 
+    0 0 0 1px rgba(167, 139, 250, 0.4) inset, /* 内描边 */
+    0 4px 14px 0 rgba(124, 58, 237, 0.4) !important; /* 外投影 */
+    
+  border: none !important;
+  transition: all 0.2s ease;
 }
 
 button[class*="oui-button-primary"]:hover {
-  box-shadow: 0 0 25px rgba(139, 92, 246, 0.6) !important;
+  background: rgb(124, 58, 237) !important;
   transform: translateY(-1px);
-  filter: brightness(1.1);
+  box-shadow: 
+    0 0 0 1px rgba(167, 139, 250, 0.6) inset,
+    0 6px 20px rgba(124, 58, 237, 0.6) !important;
 }
 
-/* 4. 输入框美化 */
+/* 
+   E. 修正图表区域 (TradingView)
+   K线图本身通常很难做透明，我们给它一个稍微不透明一点的背景，避免字看不清
+*/
+div[id*="tv_chart_container"], iframe {
+  border-radius: 12px;
+  overflow: hidden;
+  /* K线图区域稍微深一点，保证可视性 */
+  background-color: rgba(10, 8, 15, 0.8) !important; 
+}
+
+/* 
+   F. 输入框也做成玻璃感
+*/
 input, select, div[class*="oui-input"] {
-  background-color: rgba(10, 8, 20, 0.6) !important;
-  border: 1px solid rgba(255, 255, 255, 0.05) !important;
-  color: white !important;
-}
-input:focus, div[class*="oui-input"]:focus-within {
-  border-color: rgba(139, 92, 246, 0.5) !important;
-  box-shadow: 0 0 10px rgba(139, 92, 246, 0.2);
-}
-
-/* 5. 侧边栏/顶部栏半透明 */
-div[class*="oui-header"], header, nav {
-  background-color: rgba(11, 10, 20, 0.8) !important;
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background-color: rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(5px);
 }
