@@ -1,181 +1,139 @@
-/* 
-   ==========================================================================
-   1. 核心变量定义
-   注意：这里只定义数字，绝对不要带 rgb() 括号，否则会导致整个文件失效！
-   ========================================================================== 
-*/
+/* =========================================================
+   1. 变量定义 (Unifai 赛博配色)
+   ========================================================= */
 :root {
-  /* 字体 */
-  --oui-font-family: 'Manrope', system-ui, -apple-system, sans-serif;
+  --oui-font-family: 'Manrope', system-ui, sans-serif;
 
-  /* --- 品牌色 (Unifai 亮紫) --- */
+  /* 品牌色 */
   --oui-color-primary: 139 92 246;
   --oui-color-primary-light: 167 139 250;
   --oui-color-primary-darken: 124 58 237;
-  --oui-color-primary-contrast: 255 255 255;
-
-  /* --- 盈亏色 (青色/玫红) --- */
+  
+  /* 交易色 */
   --oui-color-success: 56 220 200;
   --oui-color-success-contrast: 0 0 0;
   --oui-color-danger: 255 70 110;
   --oui-color-danger-contrast: 255 255 255;
 
-  /* --- 基础背景色变量 --- */
-  /* 即使我们后面会用透明覆盖，这里也要设为深色，防止文字看不清 */
+  /* 
+     关键：为了配合 SDK，这里定义深色数值 
+     注意：只写数字！
+  */
   --oui-color-base-1: 30 30 50;
   --oui-color-base-2: 25 25 45;
-  --oui-color-base-3: 20 20 40;
-  --oui-color-base-4: 18 18 35;
-  --oui-color-base-5: 16 16 30;
-  --oui-color-base-6: 14 14 28;
-  --oui-color-base-7: 12 12 25;
-  --oui-color-base-8: 10 10 22;
-  --oui-color-base-9: 8 8 20;
-  --oui-color-base-foreground: 235 235 255;
+  --oui-color-base-8: 15 15 30;
+  --oui-color-base-9: 10 10 25; /* 这就是截图里的 base-9，我们先定义个深色 */
   --oui-color-line: 255 255 255;
-
-  /* --- 圆角 (这里定义了默认值，下面还会强制覆盖) --- */
-  --oui-rounded: 12px;
-  --oui-rounded-lg: 16px;
-  --oui-rounded-xl: 20px;
+  --oui-color-base-foreground: 240 240 255;
+  
+  --oui-rounded: 16px;
+  --oui-rounded-lg: 24px;
 }
 
-/* 
-   ==========================================================================
-   2. 全局背景层 (极光效果)
-   ========================================================================== 
-*/
+/* =========================================================
+   2. 网页极光背景 (最底层)
+   ========================================================= */
 body {
-  /* 强制背景色 + 极光图片 */
-  background: #05040a radial-gradient(circle at 50% 0%, rgba(139, 92, 246, 0.25), transparent 50%) no-repeat fixed !important;
+  /* 深邃黑底 + 顶部紫色光晕 + 底部青色光晕 */
+  background: #030305 radial-gradient(circle at 50% -10%, rgba(139, 92, 246, 0.3), transparent 60%) no-repeat fixed !important;
+  background-size: cover;
   color: #fff;
   min-height: 100vh;
 }
 
-/* 
-   ==========================================================================
-   3. 剥离 SDK 默认背景 (解决"死黑"问题的关键)
-   我们利用通配符，强制把所有可能的布局容器背景设为透明
-   ========================================================================== 
-*/
+/* =========================================================
+   3. 核心修复：Scaffold 透明化 (根据你的截图)
+   如果不把这些容器设为透明，Body 的背景永远看不见
+   ========================================================= */
 #root, 
-#app, 
-.orderly-app, 
-div[class*="layout"],     /* 匹配 Storybook 里的 Layout */
-div[class*="Layout"],     /* 匹配可能的大写 Layout */
-div[class*="container"] {
-  background: transparent !important;
+.orderly-app,
+/* 截图里出现的 scaffold 类 */
+.oui-scaffold-root,
+.oui-scaffold-container,
+.oui-scaffold-content,
+/* 截图里出现的 flex 布局容器 */
+.oui-flex-col {
   background-color: transparent !important;
 }
 
-/* 
-   ==========================================================================
-   4. 卡片与模块 (实现毛玻璃)
-   我们使用 [class*="card"] 来匹配所有带 card 字样的类名
-   ========================================================================== 
-*/
-div[class*="card"], 
-div[class*="Card"], 
-.oui-card,
-section {
-  /* 半透明黑紫色背景 */
-  background-color: rgba(20, 18, 30, 0.5) !important;
-  
-  /* 模糊效果 (毛玻璃核心) */
-  backdrop-filter: blur(16px) !important;
-  -webkit-backdrop-filter: blur(16px) !important;
-  
-  /* 边框高亮 */
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  
-  /* 强制圆角 */
-  border-radius: 16px !important;
-  
-  /* 阴影 */
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2) !important;
-}
-
-/* 
-   ==========================================================================
-   5. 按钮样式 (实现 Storybook 里的 Button 变种)
-   ========================================================================== 
-*/
-/* 所有的按钮 */
-button, .oui-button {
-  border-radius: 10px !important;
-  text-transform: none !important; /* 防止强制大写 */
-  font-weight: 600 !important;
-  transition: all 0.3s ease !important;
-}
-
-/* 主按钮 (Primary) - 也就是截图里的 "contained" 变种 */
-button[class*="primary"], 
-button[class*="contained"],
-.oui-button-primary {
-  /* 玻璃感背景 */
-  background: rgba(139, 92, 246, 0.6) !important;
-  backdrop-filter: blur(4px) !important;
-  
-  /* 边框 */
-  border: 1px solid rgba(167, 139, 250, 0.3) !important;
-  
-  /* 霓虹发光 */
-  box-shadow: 0 0 15px rgba(139, 92, 246, 0.4) !important;
-  color: white !important;
-}
-
-/* 按钮悬停态 */
-button[class*="primary"]:hover, 
-button[class*="contained"]:hover,
-.oui-button-primary:hover {
-  background: rgba(139, 92, 246, 0.8) !important;
-  box-shadow: 0 0 25px rgba(139, 92, 246, 0.6) !important;
-  transform: translateY(-2px);
-}
-
-/* 
-   ==========================================================================
-   6. 输入框与弹窗 (Dialog)
-   ========================================================================== 
-*/
-input, 
-textarea, 
-select, 
-div[class*="input"] {
-  background-color: rgba(0, 0, 0, 0.4) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  color: white !important;
-  border-radius: 8px !important;
-}
-
-/* 弹窗背景 (Dialog Overlay) */
-div[role="dialog"], 
-div[class*="dialog"], 
-div[class*="modal"] {
-  background-color: rgba(25, 20, 40, 0.9) !important;
-  backdrop-filter: blur(20px) !important;
-  border: 1px solid rgba(139, 92, 246, 0.2) !important;
-}
-
-/* 
-   ==========================================================================
-   7. 顶部导航栏 (Header)
-   ========================================================================== 
-*/
-header, 
-div[class*="header"], 
-nav {
+/* 专门针对顶部导航栏，防止它也变成全黑 */
+.oui-scaffold-topNavbar, 
+header {
   background: rgba(10, 8, 20, 0.6) !important;
   backdrop-filter: blur(12px) !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
 }
 
+/* =========================================================
+   4. 液态玻璃化 (Liquid Glass) - 针对 oui-bg-base-9
+   这是截图里那个大黑块的类名，我们把它变身！
+   ========================================================= */
+
 /* 
-   ==========================================================================
-   8. TradingView 图表修正
-   ========================================================================== 
+   匹配截图里的 .oui-bg-base-9 以及 .oui-card 
+   我们把这些原本是实心黑色的地方，变成半透明玻璃
 */
+.oui-bg-base-9,
+.oui-bg-base-8,
+.oui-card,
+div[class*="card"],
+div[class*="Card"] {
+  /* 1. 背景：极低透明度的黑紫色 (让后面的极光透出来) */
+  background-color: rgba(15, 14, 25, 0.3) !important;
+  
+  /* 2. 核心：高模糊 + 高饱和 (Liquid Effect) */
+  backdrop-filter: blur(30px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(30px) saturate(160%) !important;
+  
+  /* 3. 边框：极细的亮边 */
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  
+  /* 4. 阴影：内发光 + 悬浮阴影 */
+  box-shadow: 
+    inset 0 0 20px rgba(255, 255, 255, 0.03),
+    0 10px 40px rgba(0, 0, 0, 0.2) !important;
+    
+  /* 强制圆角 */
+  border-radius: 20px !important;
+}
+
+/* =========================================================
+   5. 按钮美化 (霓虹质感)
+   ========================================================= */
+/* 主按钮 */
+.oui-button-primary,
+button[class*="primary"] {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.6), rgba(124, 58, 237, 0.8)) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 99px !important; /* 胶囊圆角 */
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.4) !important;
+  color: white !important;
+  font-weight: 600;
+}
+
+.oui-button-primary:hover {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.8), rgba(124, 58, 237, 1)) !important;
+  transform: scale(1.02);
+  box-shadow: 0 0 25px rgba(139, 92, 246, 0.6) !important;
+}
+
+/* =========================================================
+   6. 细节补丁
+   ========================================================= */
+
+/* 修复 TradingView 图表看不清的问题 */
 div[id*="tv_chart"], iframe {
-  background: rgba(15, 12, 25, 0.8) !important;
-  border-radius: 12px;
+  /* 图表不能太透，否则线看不清，稍微深一点 */
+  background-color: rgba(8, 6, 15, 0.7) !important;
+  border-radius: 16px;
+}
+
+/* 输入框 */
+input, .oui-input {
+  background-color: rgba(0, 0, 0, 0.4) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(10px);
+  border-radius: 12px !important;
+  color: white !important;
 }
