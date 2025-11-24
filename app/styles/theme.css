@@ -1,117 +1,181 @@
-/* =========================================================
-   1. 基础变量设置 (定义你的赛博朋克色盘)
-   ========================================================= */
+/* 
+   ==========================================================================
+   1. 核心变量定义
+   注意：这里只定义数字，绝对不要带 rgb() 括号，否则会导致整个文件失效！
+   ========================================================================== 
+*/
 :root {
-  --oui-font-family: 'Manrope', 'Inter', sans-serif;
+  /* 字体 */
+  --oui-font-family: 'Manrope', system-ui, -apple-system, sans-serif;
 
-  /* 品牌色：Unifai 风格亮紫 */
-  --oui-color-primary: 139 92 246;        /* R G B 格式 */
+  /* --- 品牌色 (Unifai 亮紫) --- */
+  --oui-color-primary: 139 92 246;
   --oui-color-primary-light: 167 139 250;
   --oui-color-primary-darken: 124 58 237;
   --oui-color-primary-contrast: 255 255 255;
 
-  /* 交易信号色 */
-  --oui-color-success: 56 220 200;  /* 青色 */
+  /* --- 盈亏色 (青色/玫红) --- */
+  --oui-color-success: 56 220 200;
   --oui-color-success-contrast: 0 0 0;
-  --oui-color-danger: 255 70 110;   /* 玫红 */
+  --oui-color-danger: 255 70 110;
   --oui-color-danger-contrast: 255 255 255;
 
-  /* 圆角 */
+  /* --- 基础背景色变量 --- */
+  /* 即使我们后面会用透明覆盖，这里也要设为深色，防止文字看不清 */
+  --oui-color-base-1: 30 30 50;
+  --oui-color-base-2: 25 25 45;
+  --oui-color-base-3: 20 20 40;
+  --oui-color-base-4: 18 18 35;
+  --oui-color-base-5: 16 16 30;
+  --oui-color-base-6: 14 14 28;
+  --oui-color-base-7: 12 12 25;
+  --oui-color-base-8: 10 10 22;
+  --oui-color-base-9: 8 8 20;
+  --oui-color-base-foreground: 235 235 255;
+  --oui-color-line: 255 255 255;
+
+  /* --- 圆角 (这里定义了默认值，下面还会强制覆盖) --- */
   --oui-rounded: 12px;
   --oui-rounded-lg: 16px;
-  
-  /* 
-     关键：为了配合 SDK 内部计算，这里必须保留深色数值
-     但我们会在下面通过 class 强制覆盖背景
-  */
-  --oui-color-base-1: 30 30 45;
-  --oui-color-base-foreground: 235 235 255;
-}
-
-/* =========================================================
-   2. 布局层 (Layout) - 解决“背景死黑”的罪魁祸首
-   对应 Storybook 左侧的 Layout 目录
-   ========================================================= */
-
-/* 极光背景层：挂载在 body 上 */
-body {
-  background-color: #05040a !important; 
-  background-image: 
-    radial-gradient(circle at 50% 0%, rgba(139, 92, 246, 0.3), transparent 50%),
-    radial-gradient(circle at 90% 90%, rgba(56, 220, 200, 0.15), transparent 50%) !important;
-  background-attachment: fixed;
-  background-size: cover;
-  color: #fff;
+  --oui-rounded-xl: 20px;
 }
 
 /* 
-   核心修复：SDK 的 Layout 容器
-   必须把 Orderly 默认盖在上面的“黑布”变成透明
+   ==========================================================================
+   2. 全局背景层 (极光效果)
+   ========================================================================== 
+*/
+body {
+  /* 强制背景色 + 极光图片 */
+  background: #05040a radial-gradient(circle at 50% 0%, rgba(139, 92, 246, 0.25), transparent 50%) no-repeat fixed !important;
+  color: #fff;
+  min-height: 100vh;
+}
+
+/* 
+   ==========================================================================
+   3. 剥离 SDK 默认背景 (解决"死黑"问题的关键)
+   我们利用通配符，强制把所有可能的布局容器背景设为透明
+   ========================================================================== 
 */
 #root, 
-.orderly-app,
-.orderly-layout,     /* 针对 Storybook 里的 Layout 组件 */
-div[class*="oui-layout"] {
+#app, 
+.orderly-app, 
+div[class*="layout"],     /* 匹配 Storybook 里的 Layout */
+div[class*="Layout"],     /* 匹配可能的大写 Layout */
+div[class*="container"] {
   background: transparent !important;
   background-color: transparent !important;
 }
 
-/* =========================================================
-   3. 组件层 (Components) - 实现毛玻璃质感
-   对应 Storybook 左侧的 Card, Button, Input 目录
-   ========================================================= */
-
-/* --- Card (卡片) --- */
-/* 对应 Storybook 的 <CardBase> / .oui-card */
-.oui-card, 
-.oui-card-base,
-div[class*="oui-card"] {
-  /* 玻璃背景：低透明度深色 + 模糊 */
+/* 
+   ==========================================================================
+   4. 卡片与模块 (实现毛玻璃)
+   我们使用 [class*="card"] 来匹配所有带 card 字样的类名
+   ========================================================================== 
+*/
+div[class*="card"], 
+div[class*="Card"], 
+.oui-card,
+section {
+  /* 半透明黑紫色背景 */
   background-color: rgba(20, 18, 30, 0.5) !important;
+  
+  /* 模糊效果 (毛玻璃核心) */
   backdrop-filter: blur(16px) !important;
   -webkit-backdrop-filter: blur(16px) !important;
   
-  /* 玻璃边缘光泽 */
+  /* 边框高亮 */
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+  
+  /* 强制圆角 */
+  border-radius: 16px !important;
+  
+  /* 阴影 */
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2) !important;
 }
 
-/* --- Button (按钮) --- */
-/* 对应 Storybook 的 <Button> / .oui-button */
+/* 
+   ==========================================================================
+   5. 按钮样式 (实现 Storybook 里的 Button 变种)
+   ========================================================================== 
+*/
+/* 所有的按钮 */
+button, .oui-button {
+  border-radius: 10px !important;
+  text-transform: none !important; /* 防止强制大写 */
+  font-weight: 600 !important;
+  transition: all 0.3s ease !important;
+}
+
+/* 主按钮 (Primary) - 也就是截图里的 "contained" 变种 */
+button[class*="primary"], 
+button[class*="contained"],
 .oui-button-primary {
-  /* 也就是 Unifai 的主按钮：半透明紫色 */
-  background-color: rgba(139, 92, 246, 0.3) !important;
-  backdrop-filter: blur(10px) !important;
-  border: 1px solid rgba(167, 139, 250, 0.4) !important;
-  box-shadow: 0 0 15px rgba(139, 92, 246, 0.25) !important;
+  /* 玻璃感背景 */
+  background: rgba(139, 92, 246, 0.6) !important;
+  backdrop-filter: blur(4px) !important;
+  
+  /* 边框 */
+  border: 1px solid rgba(167, 139, 250, 0.3) !important;
+  
+  /* 霓虹发光 */
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.4) !important;
   color: white !important;
 }
 
+/* 按钮悬停态 */
+button[class*="primary"]:hover, 
+button[class*="contained"]:hover,
 .oui-button-primary:hover {
-  background-color: rgba(139, 92, 246, 0.6) !important;
-  box-shadow: 0 0 25px rgba(139, 92, 246, 0.5) !important;
-  transform: translateY(-1px);
+  background: rgba(139, 92, 246, 0.8) !important;
+  box-shadow: 0 0 25px rgba(139, 92, 246, 0.6) !important;
+  transform: translateY(-2px);
 }
 
-/* --- Input (输入框) --- */
-/* 对应 Storybook 的 <Input> */
-.oui-input {
-  background-color: rgba(0, 0, 0, 0.25) !important;
+/* 
+   ==========================================================================
+   6. 输入框与弹窗 (Dialog)
+   ========================================================================== 
+*/
+input, 
+textarea, 
+select, 
+div[class*="input"] {
+  background-color: rgba(0, 0, 0, 0.4) !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
   color: white !important;
+  border-radius: 8px !important;
 }
 
-/* --- Dialog / Modal (弹窗) --- */
-/* 对应 Storybook 的 <Dialog> */
-.oui-dialog-content, 
-div[role="dialog"] {
-  background-color: rgba(25, 20, 40, 0.85) !important;
+/* 弹窗背景 (Dialog Overlay) */
+div[role="dialog"], 
+div[class*="dialog"], 
+div[class*="modal"] {
+  background-color: rgba(25, 20, 40, 0.9) !important;
   backdrop-filter: blur(20px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(139, 92, 246, 0.2) !important;
 }
 
-/* --- Table / Header (表格头) --- */
-/* 让列表的表头也稍微透明一点 */
-thead, .oui-table-header {
-  background-color: rgba(20, 20, 30, 0.6) !important;
+/* 
+   ==========================================================================
+   7. 顶部导航栏 (Header)
+   ========================================================================== 
+*/
+header, 
+div[class*="header"], 
+nav {
+  background: rgba(10, 8, 20, 0.6) !important;
+  backdrop-filter: blur(12px) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+/* 
+   ==========================================================================
+   8. TradingView 图表修正
+   ========================================================================== 
+*/
+div[id*="tv_chart"], iframe {
+  background: rgba(15, 12, 25, 0.8) !important;
+  border-radius: 12px;
 }
