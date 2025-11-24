@@ -1,94 +1,160 @@
 :root {
-  --oui-font-family: 'Manrope', sans-serif;
+  --oui-font-family: 'Manrope', 'Inter', system-ui, sans-serif;
 
-  /* colors */
-  --oui-color-primary: 176 132 233;
-  --oui-color-primary-light: 213 190 244;
-  --oui-color-primary-darken: 137 76 209;
+  /* =========================================
+     1. 霓虹主色 (Neon Brand)
+     ========================================= */
+  /* 主色：更电光感的紫色 */
+  --oui-color-primary: 139 92 246;        /* Vivid Purple */
+  --oui-color-primary-light: 167 139 250; 
+  --oui-color-primary-darken: 124 58 237;
   --oui-color-primary-contrast: 255 255 255;
 
-  --oui-color-link: 189 107 237;
-  --oui-color-link-light: 217 152 250;
+  /* 链接颜色 */
+  --oui-color-link: 167 139 250;
 
-  --oui-color-secondary: 255 255 255;
-  --oui-color-tertiary: 218 218 218;
-  --oui-color-quaternary: 218 218 218;
+  /* =========================================
+     2. 赛博朋克交易色 (Cyberpunk Trading)
+     拒绝普通的红绿，使用 荧光青 vs 激光粉
+     ========================================= */
+  /* 买入/涨：荧光青 (Electric Cyan) */
+  --oui-color-success: 34 211 238; 
+  --oui-color-success-light: 103 232 249;
+  --oui-color-success-darken: 8 145 178;
+  --oui-color-success-contrast: 0 0 0;
 
-  --oui-color-danger: 245 97 139;
-  --oui-color-danger-light: 250 167 188;
-  --oui-color-danger-darken: 237 72 122;
+  /* 卖出/跌：激光粉 (Laser Pink) */
+  --oui-color-danger: 244 63 94; 
+  --oui-color-danger-light: 251 113 133;
+  --oui-color-danger-darken: 225 29 72;
   --oui-color-danger-contrast: 255 255 255;
 
-  --oui-color-success: 41 233 169;
-  --oui-color-success-light: 101 240 194;
-  --oui-color-success-darken: 0 161 120;
-  --oui-color-success-contrast: 255 255 255;
+  /* 警告色 */
+  --oui-color-warning: 250 204 21;
+  --oui-color-warning-contrast: 0 0 0;
 
-  --oui-color-warning: 255 209 70;
-  --oui-color-warning-light: 255 229 133;
-  --oui-color-warning-darken: 255 152 0;
-  --oui-color-warning-contrast: 255 255 255;
+  /* =========================================
+     3. 玻璃基底色 (Glass Base)
+     关键：这里不要用纯黑！使用带紫色调的深灰
+     这样即使在不支持透明度的地方，也不会显得死板
+     ========================================= */
+  
+  --oui-color-fill: 30 27 46; /* 输入框深紫底 */
+  
+  /* 
+     Orderly SDK 的 base-1 到 base-10 是图层叠加顺序
+     我们将它们设为半透明的紫黑色调
+     注意：这里是 RGB 值，为了配合 SDK 内部计算
+  */
+  --oui-color-base-1: 65 60 90;  
+  --oui-color-base-2: 55 50 80;
+  --oui-color-base-3: 45 40 70;
+  --oui-color-base-4: 38 34 60;  /* 常用卡片背景 */
+  --oui-color-base-5: 32 28 50;
+  --oui-color-base-6: 28 24 45;
+  --oui-color-base-7: 24 20 40;
+  --oui-color-base-8: 20 17 35;
+  --oui-color-base-9: 15 12 25;  /* 模块深底 */
+  --oui-color-base-10: 10 8 20;  /* 网页最深底 */
 
-  --oui-color-fill: 36 32 47;
-  --oui-color-fill-active: 40 46 58;
-
-  --oui-color-base-1: 93 83 123;
-  --oui-color-base-2: 81 72 107;
-  --oui-color-base-3: 68 61 69;
-  --oui-color-base-4: 57 52 74;
-  --oui-color-base-5: 51 46 66;
-  --oui-color-base-6: 43 38 56;
-  --oui-color-base-7: 36 32 47;
-  --oui-color-base-8: 29 26 38;
-  --oui-color-base-9: 22 20 28;
-  --oui-color-base-10: 14 13 18;
-
-  --oui-color-base-foreground: 255 255 255;
+  --oui-color-base-foreground: 240 240 255; /* 文字带一点点冷光 */
   --oui-color-line: 255 255 255;
 
-  --oui-color-trading-loss: 245 97 139;
+  /* 盈亏颜色映射 */
+  --oui-color-trading-loss: 244 63 94;
   --oui-color-trading-loss-contrast: 255 255 255;
-  --oui-color-trading-profit: 41 233 169;
-  --oui-color-trading-profit-contrast: 255 255 255;
+  --oui-color-trading-profit: 34 211 238;
+  --oui-color-trading-profit-contrast: 0 0 0;
 
-  /* gradients */
-  --oui-gradient-primary-start: 40 0 97;
-  --oui-gradient-primary-end: 189 107 237;
+  /* =========================================
+     4. 渐变系统 (Unifai Vibes)
+     ========================================= */
+  --oui-gradient-primary-start: 124 58 237;
+  --oui-gradient-primary-end: 139 92 246;
+  
+  --oui-gradient-success-start: 8 145 178;
+  --oui-gradient-success-end: 34 211 238;
 
-  --oui-gradient-secondary-start: 81 42 121;
-  --oui-gradient-secondary-end: 176 132 233;
+  --oui-gradient-danger-start: 225 29 72;
+  --oui-gradient-danger-end: 244 63 94;
 
-  --oui-gradient-success-start: 1 83 68;
-  --oui-gradient-success-end: 41 223 169;
-
-  --oui-gradient-danger-start: 153 24 76;
-  --oui-gradient-danger-end: 245 97 139;
-
-  --oui-gradient-brand-start: 231 219 249;
-  --oui-gradient-brand-end: 159 107 225;
-  --oui-gradient-brand-stop-start: 6.62%;
-  --oui-gradient-brand-stop-end: 86.5%;
-  --oui-gradient-brand-angle: 17.44deg;
-
-  --oui-gradient-warning-start: 152 58 8;
-  --oui-gradient-warning-end: 255 209 70;
-
-  --oui-gradient-neutral-start: 27 29 24;
-  --oui-gradient-neutral-end: 38 41 46;
-
-  /* rounded */
-  --oui-rounded-sm: 2px;
-  --oui-rounded: 4px;
-  --oui-rounded-md: 6px;
-  --oui-rounded-lg: 8px;
-  --oui-rounded-xl: 12px;
-  --oui-rounded-2xl: 16px;
+  /* =========================================
+     5. 现代圆角 (Modern Shape)
+     ========================================= */
+  --oui-rounded-sm: 6px;
+  --oui-rounded: 10px;
+  --oui-rounded-md: 12px;
+  --oui-rounded-lg: 16px;
+  --oui-rounded-xl: 20px;
   --oui-rounded-full: 9999px;
-
-  /* spacing */
+  
+  /* 间距保持不变 */
   --oui-spacing-xs: 20rem;
   --oui-spacing-sm: 22.5rem;
   --oui-spacing-md: 26.25rem;
   --oui-spacing-lg: 30rem;
   --oui-spacing-xl: 33.75rem;
+}
+
+/* =========================================================
+   全局样式注入 - 打造 Unifai 风格的深空与玻璃质感
+   ========================================================= */
+
+/* 1. 打造极光背景：不再是纯黑 */
+body {
+  /* 使用深黑背景，但在顶部加一个紫色的光晕 */
+  background-color: #0b0a14; 
+  background-image: 
+    radial-gradient(circle at 50% -20%, rgba(124, 58, 237, 0.25), transparent 60%),
+    radial-gradient(circle at 100% 0%, rgba(56, 189, 248, 0.1), transparent 40%);
+  background-attachment: fixed; /* 让背景固定，滚动时更有层次感 */
+  color: #f0f0ff;
+}
+
+/* 2. 磨砂玻璃卡片 (Glassmorphism) */
+/* 强制覆盖 SDK 的默认背景，让背景透出来 */
+.oui-card, 
+div[class*="oui-card"],
+.orderly-trading-page-layout { 
+  /* 半透明的深紫灰背景 */
+  background-color: rgba(25, 22, 35, 0.65) !important;
+  /* 加上背景模糊 */
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  /* 极细的发光边框 */
+  border: 1px solid rgba(139, 92, 246, 0.15) !important;
+  /* 稍微增加圆角 */
+  border-radius: 16px !important;
+}
+
+/* 3. 按钮发光效果 */
+button[class*="oui-button-primary"] {
+  background: linear-gradient(135deg, rgb(124, 58, 237), rgb(139, 92, 246)) !important;
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.4) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+button[class*="oui-button-primary"]:hover {
+  box-shadow: 0 0 25px rgba(139, 92, 246, 0.6) !important;
+  transform: translateY(-1px);
+  filter: brightness(1.1);
+}
+
+/* 4. 输入框美化 */
+input, select, div[class*="oui-input"] {
+  background-color: rgba(10, 8, 20, 0.6) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  color: white !important;
+}
+input:focus, div[class*="oui-input"]:focus-within {
+  border-color: rgba(139, 92, 246, 0.5) !important;
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.2);
+}
+
+/* 5. 侧边栏/顶部栏半透明 */
+div[class*="oui-header"], header, nav {
+  background-color: rgba(11, 10, 20, 0.8) !important;
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
