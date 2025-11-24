@@ -1,43 +1,38 @@
 /* =========================================================
-   1. 劫持根变量 (ROOT HIJACK)
-   针对截图1中发现的 --w3o 变量进行覆盖
+   1. 核心变量劫持 (Root Hijack)
+   强制覆盖 SDK 的默认黑底变量
    ========================================================= */
 :root, html {
-  /* 
-     强制覆盖 HTML 标签上的内联样式 
-     把 SDK 默认的深色背景 (#1A1D26) 变成透明
-  */
+  /* 强制把 SDK 定义的深色背景变量设为透明 */
   --w3o-background-color: transparent !important;
-  --w3o-surface-color: rgba(20, 18, 30, 0.4) !important;
-  
-  /* Unifai 品牌色定义 */
-  --oui-color-primary: 139 92 246;
-  --oui-color-primary-light: 167 139 250;
-  --oui-color-primary-darken: 124 58 237;
-  
-  /* 交易色 */
-  --oui-color-success: 56 220 200;
-  --oui-color-danger: 255 70 110;
+  --w3o-surface-color: rgba(20, 18, 35, 0.4) !important;
   
   /* 字体 */
-  --oui-font-family: 'Manrope', system-ui, sans-serif;
+  --oui-font-family: 'Manrope', system-ui, -apple-system, sans-serif;
+
+  /* 品牌色：Unifai 亮紫 */
+  --oui-color-primary: 139 92 246;
+  --oui-color-primary-light: 167 139 250;
   
-  /* 圆角 */
+  /* iOS 风格大圆角 */
   --oui-rounded: 16px;
   --oui-rounded-lg: 24px;
 }
 
 /* =========================================================
-   2. 网页底层：极光背景 (Aurora Base)
+   2. 背景提亮：极光增强版 (Brighter Aurora)
    ========================================================= */
-html, body {
-  /* 确保背景色足够深，不仅是黑色，而是带一点紫 */
-  background-color: #030305 !important;
+body {
+  /* 背景底色稍微调亮一点点，不要纯死黑 */
+  background-color: #080610 !important;
   
-  /* 极光背景图 */
+  /* 
+     调整了透明度：从 0.3 提升到 0.5/0.25 
+     调整了位置：让紫色光晕更靠近顶部内容区
+  */
   background-image: 
-    radial-gradient(circle at 50% -20%, rgba(139, 92, 246, 0.35), transparent 60%),
-    radial-gradient(circle at 90% 80%, rgba(56, 220, 200, 0.15), transparent 50%) !important;
+    radial-gradient(circle at 50% -10%, rgba(139, 92, 246, 0.5), transparent 70%),
+    radial-gradient(circle at 85% 60%, rgba(56, 220, 200, 0.25), transparent 50%) !important;
     
   background-attachment: fixed !important;
   background-size: cover !important;
@@ -47,107 +42,129 @@ html, body {
 }
 
 /* =========================================================
-   3. 中间层：去黑底 (De-Blacking)
-   强制让所有 SDK 容器变透明
+   3. 布局层：去黑底 (Transparency Force)
    ========================================================= */
+/* 强制让所有布局容器透明，露出 body 的极光 */
 #root, 
 .orderly-app, 
 .oui-scaffold-root,
 .oui-scaffold-container,
-main,
-div[class*="layout"] {
+.oui-scaffold-content,
+div[class*="layout"],
+main {
   background: transparent !important;
   background-color: transparent !important;
 }
 
 /* =========================================================
-   4. 组件层：液态玻璃 (Liquid Glass)
-   针对截图中的 Orderbook 和其他面板
+   4. 全模块 iOS 液态玻璃化 (Liquid Glass Everywhere)
+   这里是解决 K线图和各模块深黑色的关键
    ========================================================= */
+
 /* 
-   通配所有卡片类容器 
-   包括截图1里的 --w3o-background-color 对应的元素
+   使用属性选择器匹配所有可能的“盒子”：
+   - 匹配 .oui-card
+   - 匹配 .oui-bg-base-9 (你之前截图里的那个黑块)
+   - 匹配 .orderly-dashboard-item
 */
 .oui-card,
 div[class*="card"],
 div[class*="Card"],
-div[class*="bg-base-9"], /* 针对之前发现的类名 */
-section {
-  /* 玻璃背景：极淡的黑紫 + 模糊 */
-  background-color: rgba(15, 14, 25, 0.3) !important;
+div[class*="bg-base"], /* 暴力匹配所有带背景色的 SDK 类 */
+div[class*="dashboard-item"],
+section,
+aside {
+  /* 1. 背景：半透明黑紫 (比之前更透，让背景光能穿过来) */
+  background-color: rgba(18, 16, 28, 0.45) !important;
   
-  /* 核心：模糊 + 饱和度提升 (液态感) */
-  backdrop-filter: blur(24px) saturate(140%) !important;
-  -webkit-backdrop-filter: blur(24px) saturate(140%) !important;
+  /* 2. 液态质感：高模糊 + 高饱和度 */
+  backdrop-filter: blur(30px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(30px) saturate(160%) !important;
   
-  /* 边框：极细白线 */
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  /* 3. 亮边框：使用 box-shadow 模拟，比 border 更亮更贴合 */
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
   
-  /* 阴影：内发光 */
-  box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.02) !important;
-  
-  border-radius: 20px !important;
+  /* 4. 3D 厚度感：内发光 */
+  box-shadow: 
+    inset 0 0 20px rgba(255, 255, 255, 0.03),
+    0 10px 30px rgba(0, 0, 0, 0.4) !important;
+    
+  border-radius: 24px !important;
 }
 
 /* =========================================================
-   5. 图表层：TradingView 修正 (针对截图3)
-   ========================================================= */
-/* 
-   iframe 本身我们改不了里面的 K 线颜色 (跨域限制)
-   但我们可以改 iframe 的【容器】，让它不要显得那么突兀
-*/
-div[id*="tradingview"], 
-iframe[id*="tradingview"] {
-  /* 给容器加一个半透明深底，避免 K 线文字看不清 */
-  background-color: rgba(5, 5, 10, 0.6) !important;
-  border-radius: 16px;
-  /* 尝试混合模式，让黑色背景稍微融入一点 (实验性) */
-  mix-blend-mode: normal; 
-}
-
-/* =========================================================
-   6. 交互层：霓虹按钮 (Neon Buttons)
+   5. 按钮修复：完美描边 (Perfect Stroke)
+   解决白色描边错位问题
    ========================================================= */
 button[class*="primary"], 
 .oui-button-primary {
-  /* 渐变背景 */
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.6), rgba(124, 58, 237, 0.8)) !important;
+  /* 背景：渐变紫 */
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.7), rgba(124, 58, 237, 0.9)) !important;
   backdrop-filter: blur(10px) !important;
   
-  /* 胶囊形状 */
-  border-radius: 99px !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  /* 
+     关键修复：取消 border，改用 box-shadow 模拟边框 
+     这能完美解决圆角处的锯齿和错位问题
+  */
+  border: none !important;
   
-  /* 强力辉光 */
+  /* 
+     阴影层级：
+     1. 模拟 1px 白色边框 (rgba(255,255,255,0.3))
+     2. 内部高光 (inset)
+     3. 外部辉光 (drop-shadow)
+  */
   box-shadow: 
-    0 0 15px rgba(139, 92, 246, 0.5),
-    inset 0 2px 0 rgba(255, 255, 255, 0.2) !important;
+    0 0 0 1px rgba(255, 255, 255, 0.25), 
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 0 20px rgba(139, 92, 246, 0.5) !important;
     
   color: white !important;
   font-weight: 600;
-  transition: all 0.3s ease;
+  border-radius: 99px !important; /* 胶囊形 */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 button[class*="primary"]:hover {
-  transform: scale(1.03);
-  box-shadow: 0 0 30px rgba(139, 92, 246, 0.7) !important;
+  transform: scale(1.02);
+  /* Hover 时增强辉光 */
+  box-shadow: 
+    0 0 0 1px rgba(255, 255, 255, 0.5), 
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    0 0 35px rgba(139, 92, 246, 0.7) !important;
 }
 
+/* =========================================================
+   6. 特殊处理：TradingView K线图容器
+   ========================================================= */
 /* 
-   让滚动条显眼一点 (根据你的需求)
-   WebKit 浏览器 (Chrome/Edge/Safari) 专用
+   针对 K 线图的容器。
+   注意：iframe 内部的黑色是 TradingView 自己的，CSS 无法去黑。
+   但我们可以把边框做成液态玻璃，让它看起来像浮在上面。
 */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+div[id*="tradingview"], 
+iframe {
+  /* 容器背景：稍微深一点，保证 K 线清晰度 */
+  background-color: rgba(10, 8, 15, 0.6) !important;
+  border-radius: 20px !important;
+  /* 强制应用玻璃边框 */
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
-::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.2); 
+
+/* =========================================================
+   7. 顶部导航栏 (Header) - 更通透
+   ========================================================= */
+header, 
+.oui-scaffold-topNavbar {
+  background: rgba(10, 8, 20, 0.4) !important; /* 透明度调低，更透亮 */
+  backdrop-filter: blur(20px) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
 }
-::-webkit-scrollbar-thumb {
-  background: #8b5cf6; /* 紫色滚动条 */
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #a78bfa; /* 浅紫色 */
+
+/* 输入框液态化 */
+input, .oui-input {
+  background-color: rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 12px !important;
+  color: white !important;
 }
