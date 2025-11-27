@@ -1,29 +1,23 @@
 /* =========================================================
-   1. 变量定义 (Aitail System)
+   1. 变量定义
    ========================================================= */
 :root, html {
-  /* 劫持 SDK 默认背景 */
   --w3o-background-color: transparent !important;
   --w3o-surface-color: #000000 !important;
-
-  /* 字体 */
   --oui-font-family: 'Manrope', system-ui, -apple-system, sans-serif;
-
-  /* 品牌色 */
-  --oui-color-primary: 191 212 250; /* #BFD4FA */
-  --oui-color-primary-light: 220 230 255;
   
-  /* 涨跌色 (莫兰迪色系) */
+  /* Aitail 品牌色 */
+  --oui-color-primary: 191 212 250; 
+  --oui-color-primary-light: 220 230 255;
   --oui-color-success: 137 201 160; 
   --oui-color-danger: 216 122 122; 
   
-  /* 圆角 */
   --oui-rounded: 8px;
   --oui-rounded-lg: 12px;
 }
 
 /* =========================================================
-   2. 全局背景 (纯黑)
+   2. 全局背景
    ========================================================= */
 body {
   background-color: #000000 !important;
@@ -47,94 +41,111 @@ main {
 }
 
 /* =========================================================
-   4. 核心：双层卡片结构 (The Double-Layer Card)
-   实现：外框 -> 黑色间隙 -> 渐变内胆 -> 呼吸光条
+   4. 核心：双层卡片结构 (修复版)
+   只针对真正的"板块"生效，不再误伤内部元素
    ========================================================= */
 
-/* A. 外层容器 (The Cage) - 负责外边框 */
+/* 精准选择器：只选大板块 */
 .oui-card,
-div[class*="card"],
-div[class*="Card"],
-div[class*="bg-base"],
-div[class*="dashboard-item"],
+.orderly-dashboard-layout-item, /* 这是 SDK 布局格子的类名 */
+div[class*="Card"]:not([class*="button"]):not([class*="input"]), /* 排除按钮和输入框 */
 section,
 aside {
-  /* 1. 外框颜色 */
+  /* A. 外框 (Cage) */
   border: 1px solid #38455C !important;
-  
-  /* 2. 容器背景：纯黑 (作为间隙的颜色) */
-  background-color: #000000 !important;
+  background-color: #000000 !important; /* 黑色间隙 */
   background-image: none !important;
   
-  /* 3. 布局控制 */
   position: relative !important;
   border-radius: 12px !important;
-  /* 修复订单簿圆角消失的问题：强制切割 */
-  overflow: hidden !important; 
+  overflow: hidden !important; /* 必须裁剪，否则圆角会破 */
   
-  /* 4. 增加内边距，给"内胆"腾出空间，也避免文字贴边 */
-  padding: 1px !important; 
+  /* 关键修复：不要加 padding，会破坏 Grid 布局 */
+  /* padding: 1px;  <-- 删掉这行 */
+  
+  box-shadow: none !important;
+  isolation: isolate; /* 创建新的层叠上下文，保护内部 z-index */
 }
 
-/* B. 内层内胆 (The Inner Gut) - 使用 ::before 伪造 */
-/* 这是一个绝对定位的层，放在文字后面，模拟那个渐变的内卡片 */
-div[class*="card"]::before,
-div[class*="Card"]::before,
-div[class*="bg-base"]::before,
-div[class*="dashboard-item"]::before,
-section::before {
+/* B. 内层内胆 (Inner Gut) - 放在内容下面 */
+.oui-card::before,
+.orderly-dashboard-layout-item::before,
+div[class*="Card"]:not([class*="button"]):not([class*="input"])::before,
+section::before,
+aside::before {
   content: "";
   position: absolute;
   
-  /* 5. 间隙控制：上下左右各缩进 4px，形成你要求的"黑色间隔" */
+  /* 间隙控制：4px 黑色间隔 */
   top: 4px;
   left: 4px;
   right: 4px;
   bottom: 4px;
   
-  /* 6. 内胆背景：从纯黑渐变到深蓝灰 */
-  background: linear-gradient(180deg, #080808 0%, #1A1E26 100%) !important;
+  /* 渐变背景 */
+  background: linear-gradient(180deg, #080808 0%, #151820 100%) !important;
   
-  border-radius: 8px; /* 内圆角比外圆角小 */
-  z-index: 0; /* 放在最底层 */
-  pointer-events: none; /* 不干扰点击 */
+  border-radius: 8px;
+  z-index: -1; /* 放在内容后面 */
+  pointer-events: none;
 }
 
-/* C. 底部呼吸灯 (Breathing Light) - 使用 ::after 伪造 */
-div[class*="card"]::after,
-div[class*="Card"]::after,
-div[class*="bg-base"]::after,
-div[class*="dashboard-item"]::after,
-section::after {
+/* C. 底部呼吸灯 (Breathing Light) */
+.oui-card::after,
+.orderly-dashboard-layout-item::after,
+div[class*="Card"]:not([class*="button"]):not([class*="input"])::after,
+section::after,
+aside::after {
   content: "";
   position: absolute;
   
-  /* 7. 定位：放在内胆的底部边缘 */
+  /* 定位在内胆底部 */
   bottom: 4px; 
   left: 20%;
   right: 20%;
   height: 1px;
   
-  /* 8. 光效：中间亮蓝，两头透明 */
+  /* 光效 */
   background: radial-gradient(circle, rgba(109, 151, 192, 1) 0%, rgba(109, 151, 192, 0) 80%);
   
-  z-index: 1;
-  box-shadow: 0 -1px 5px rgba(109, 151, 192, 0.6); /* 向上发光 */
+  z-index: 1; /* 在内胆之上 */
+  box-shadow: 0 -1px 6px rgba(109, 151, 192, 0.8);
   pointer-events: none;
 }
 
-/* D. 内容层级修正 */
-/* 确保卡片里的文字、按钮浮在内胆上面，不然会被 ::before 盖住 */
-.oui-card > *,
-div[class*="card"] > *,
-section > * {
+/* =========================================================
+   5. 输入框 & 下拉菜单 (强制重置)
+   防止它们继承上面卡片的样式
+   ========================================================= */
+input, 
+.oui-input,
+div[class*="input-group"],
+div[class*="select"] {
+  /* 必须重置为单层结构 */
+  background: #050505 !important;
+  border: 1px solid #37393D !important;
+  border-radius: 8px !important;
+  
+  /* 禁止生成伪元素 */
+  box-shadow: none !important;
+}
+/* 杀掉可能被继承的伪元素 */
+input::after, input::before,
+.oui-input::after, .oui-input::before {
+  display: none !important;
+  content: none !important;
+}
+
+/* =========================================================
+   6. 按钮样式 (修复版)
+   ========================================================= */
+button, .oui-button {
+  /* 基础重置 */
   position: relative;
   z-index: 2;
 }
 
-/* =========================================================
-   5. 按钮样式 (Button) - 保持你满意的效果
-   ========================================================= */
+/* 主按钮 */
 button[class*="primary"], 
 .oui-button-primary {
   background-color: #000000 !important;
@@ -144,9 +155,9 @@ button[class*="primary"],
   border-radius: 99px !important;
   font-weight: 600;
   box-shadow: none !important;
-  transition: all 0.2s ease;
 }
 
+/* 主按钮 Hover */
 button[class*="primary"]:hover,
 .oui-button-primary:hover {
   background-color: #000000 !important;
@@ -155,79 +166,33 @@ button[class*="primary"]:hover,
   box-shadow: 0 0 12px rgba(109, 151, 192, 0.3) !important;
 }
 
-/* =========================================================
-   6. Tabs 修复 (Order Book / Last Trades / Buy / Sell)
-   ========================================================= */
-/* 针对所有类似 Tab 的切换按钮 */
-div[role="tab"],
-button[role="tab"],
-.oui-tabs-tab {
+/* Tabs 按钮 (买/卖/限价) */
+div[role="tab"], button[role="tab"] {
   background-color: #000000 !important;
   border: 1px solid #37393D !important;
   color: #999 !important;
   border-radius: 6px !important;
-  margin-right: 4px; /* 稍微拉开一点距离 */
 }
-
-/* 选中状态 */
 div[role="tab"][aria-selected="true"],
-button[role="tab"][aria-selected="true"],
-.oui-tabs-tab-active {
+button[role="tab"][aria-selected="true"] {
   border-color: #6D97C0 !important;
   color: #fff !important;
   background-color: rgba(109, 151, 192, 0.1) !important;
 }
 
 /* =========================================================
-   7. 下拉菜单优化 (Limit Dropdown)
+   7. 导航栏 & TradingView
    ========================================================= */
-/* 下拉菜单容器 */
-div[class*="dropdown-content"],
-div[class*="menu-content"] {
-  background-color: #050505 !important;
-  border: 1px solid #38455C !important;
-  border-radius: 8px !important;
-  padding: 4px !important;
-}
-
-/* 下拉选项 - 增加间距 */
-div[role="option"],
-.oui-dropdown-item {
-  padding: 10px 12px !important; /* 增加高度，解决拥挤 */
-  margin-bottom: 2px;
-  border-radius: 4px;
-  cursor: pointer;
-  color: #fff !important;
-}
-
-div[role="option"]:hover,
-.oui-dropdown-item:hover {
-  background-color: rgba(56, 69, 92, 0.3) !important;
-}
-
-/* =========================================================
-   8. 其他细节修正
-   ========================================================= */
-/* 顶部导航栏 */
 header, .oui-scaffold-topNavbar {
   background-color: rgba(0, 0, 0, 0.9) !important;
   border-bottom: 1px solid #38455C !important;
   backdrop-filter: blur(10px);
+  z-index: 50; /* 保证在最上层 */
 }
 
-/* TradingView 容器 - 加上外框 */
 div[id*="tradingview"], iframe {
   background-color: #000000 !important;
-  border: 1px solid #38455C !important;
+  /* 这里不需要伪元素双层，只需要外框即可 */
+  border: 1px solid #38455C !important; 
   border-radius: 12px !important;
-  /* 给 K 线图也加上双层效果的阴影模拟 */
-  box-shadow: 0 0 0 4px #000, 0 0 0 5px #38455C; 
-}
-
-/* 输入框 */
-input, .oui-input {
-  background-color: #050505 !important;
-  border: 1px solid #37393D !important;
-  color: #fff !important;
-  border-radius: 8px !important;
 }
