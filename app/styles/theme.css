@@ -17,7 +17,7 @@
 }
 
 /* =========================================================
-   2. 全局背景
+   2. 全局背景与布局清洗
    ========================================================= */
 body {
   background-color: #000000 !important;
@@ -27,120 +27,118 @@ body {
   margin: 0;
 }
 
-/* =========================================================
-   3. 布局层透明化
-   ========================================================= */
+/* 强制清洗 SDK 所有外层布局容器的背景 */
 #root, 
 .orderly-app, 
-.oui-scaffold-root,
-.oui-scaffold-container,
-div[class*="layout"],
-main {
-  background: transparent !important;
+.oui-scaffold-root, 
+.oui-scaffold-container, 
+div[class*="layout"], 
+main,
+.oui-flex {
   background-color: transparent !important;
 }
 
 /* =========================================================
-   4. 核心：双层卡片结构 (高亮增强版)
+   3. 核心：基于截图类名的双层卡片 (The "Targeted" Double Layer)
    ========================================================= */
 
-/* A. 外框 (Cage) */
+/* 
+   [精准目标]：
+   .oui-bg-base-9: 截图1中抓到的 Orderbook 容器
+   .oui-card: 标准卡片
+   div[id*="tradingview"]: K线图容器
+*/
+.oui-bg-base-9,
+.oui-bg-base-8,
 .oui-card,
-.orderly-dashboard-layout-item,
-div[class*="Card"]:not([class*="button"]):not([class*="input"]),
-section,
-aside {
-  /* 外框颜色稍微提亮一点点，让它更清晰 */
-  border: 1px solid #4A5568 !important; 
-  background-color: #000000 !important;
-  background-image: none !important;
+div[id*="tradingview"],
+aside,
+section {
+  /* 1. 外框线 (Outer Cage) */
+  border: 1px solid #38455C !important;
   
-  position: relative !important;
-  border-radius: 12px !important;
-  overflow: hidden !important;
-  
-  box-shadow: none !important;
-  isolation: isolate;
-}
-
-/* B. 内层内胆 (Inner Gut) */
-.oui-card::before,
-.orderly-dashboard-layout-item::before,
-div[class*="Card"]:not([class*="button"]):not([class*="input"])::before,
-section::before,
-aside::before {
-  content: "";
-  position: absolute;
-  
-  top: 4px; left: 4px; right: 4px; bottom: 4px;
-  
-  /* 
-     [调整点]：底部颜色调亮！
-     从 #151820 (深灰) -> #1E2330 (更蓝一点的灰)
-     这样能明显看出和黑色背景的对比
+  /* 2. [核心魔法] 黑色间隙 (The Gap) 
+     利用内阴影在边框内侧画一圈 4px 的纯黑实线
+     这不会被遮挡，也不会受 z-index 影响
   */
-  background: linear-gradient(180deg, #080808 0%, #1E2330 100%) !important;
+  box-shadow: inset 0 0 0 4px #000000 !important;
   
-  border-radius: 8px;
-  z-index: -1;
-  pointer-events: none;
+  /* 3. 内胆背景 (The Gut) 
+     从上到下的渐变，会被上面的黑色内阴影挤在中间
+  */
+  background: linear-gradient(180deg, #0A0A0A 0%, #1A1E26 100%) !important;
+  
+  /* 4. 圆角与定位 */
+  border-radius: 12px !important;
+  position: relative !important;
+  z-index: 0;
+  
+  /* 解决截图1中的 overflow: hidden 问题
+     我们把光条画在内部，所以这里保持 hidden 也没关系，
+     反而能帮我们切出完美的圆角
+  */
+  overflow: hidden !important; 
 }
 
-/* C. 底部呼吸灯 (Breathing Light) */
+/* =========================================================
+   4. 底部呼吸光条 (Breathing Light)
+   ========================================================= */
+/* 给上述所有容器加光条 */
+.oui-bg-base-9::after,
+.oui-bg-base-8::after,
 .oui-card::after,
-.orderly-dashboard-layout-item::after,
-div[class*="Card"]:not([class*="button"]):not([class*="input"])::after,
-section::after,
-aside::after {
+div[id*="tradingview"]::after,
+aside::after,
+section::after {
   content: "";
   position: absolute;
   
-  /* 
-     [调整点]：位置微调，确保不被切掉 
-     稍微加高一点高度，让光更明显
+  /* [精确定位]：
+     bottom: 4px -> 正好坐在"黑色间隙"的下边缘上
+     这样它看起来就像是内胆底部发出的光
   */
   bottom: 4px; 
-  left: 15%;
-  right: 15%;
+  left: 20%;
+  right: 20%;
   height: 1px;
   
-  /* [调整点]：颜色加亮，不透明度从 80% 提到 100% */
-  background: radial-gradient(circle, rgba(130, 180, 255, 1) 0%, rgba(109, 151, 192, 0) 70%);
+  /* 光效：Aitail 蓝 */
+  background: radial-gradient(circle, rgba(109, 151, 192, 1) 0%, rgba(109, 151, 192, 0) 80%);
   
-  z-index: 1;
-  /* [调整点]：增加向上发光的范围 */
-  box-shadow: 0 -2px 8px rgba(109, 151, 192, 0.8);
+  z-index: 10; /* 浮在最上面 */
   pointer-events: none;
+  
+  /* 向上发散的辉光 */
+  box-shadow: 0 -1px 8px rgba(109, 151, 192, 0.8);
 }
 
 /* =========================================================
-   5. 输入框 & 下拉菜单 (防污染)
+   5. 保护区：输入框与按钮 (Protection Zone)
+   防止 .oui-bg-base-9 的样式误伤输入框
    ========================================================= */
+
+/* 输入框 & 下拉菜单 */
 input, 
 .oui-input,
-div[class*="input-group"],
-div[class*="select"] {
-  background: #050505 !important;
+div[class*="input"],
+div[class*="dropdown"],
+div[class*="menu"] {
+  /* 重置为单层结构，覆盖掉上面的样式 */
+  box-shadow: none !important; 
   border: 1px solid #37393D !important;
+  background: #050505 !important;
   border-radius: 8px !important;
-  box-shadow: none !important;
-  z-index: 2 !important;
+  min-height: auto !important;
 }
-input::after, input::before,
-.oui-input::after, .oui-input::before {
-  display: none !important;
-  content: none !important;
-}
+/* 杀掉伪元素 */
+input::after, .oui-input::after { display: none !important; }
 
-/* =========================================================
-   6. 按钮样式 (高亮优化)
-   ========================================================= */
+/* 按钮 */
 button, .oui-button {
-  position: relative;
-  z-index: 5;
+  box-shadow: none !important;
 }
 
-/* 主按钮 - 增加一点点存在感 */
+/* 主按钮 */
 button[class*="primary"], 
 .oui-button-primary {
   background-color: #000000 !important;
@@ -149,18 +147,14 @@ button[class*="primary"],
   color: #FFFFFF !important;
   border-radius: 99px !important;
   font-weight: 600;
-  
-  /* [调整点]：给默认状态加一点极微弱的蓝光，避免看起来像黑洞 */
-  box-shadow: inset 0 0 10px rgba(109, 151, 192, 0.1) !important;
 }
 
 button[class*="primary"]:hover,
 .oui-button-primary:hover {
   background-color: #000000 !important;
-  border-color: #BFD4FA !important; /* 悬浮时边框更亮 */
+  border-color: #6D97C0 !important;
   color: #BFD4FA !important;
-  /* 悬浮光效增强 */
-  box-shadow: 0 0 15px rgba(109, 151, 192, 0.4), inset 0 0 10px rgba(109, 151, 192, 0.2) !important;
+  box-shadow: 0 0 12px rgba(109, 151, 192, 0.3) !important;
 }
 
 /* Tabs */
@@ -169,30 +163,26 @@ div[role="tab"], button[role="tab"] {
   border: 1px solid #37393D !important;
   color: #999 !important;
   border-radius: 6px !important;
-  position: relative; 
-  z-index: 5;
 }
 div[role="tab"][aria-selected="true"],
 button[role="tab"][aria-selected="true"] {
   border-color: #6D97C0 !important;
   color: #fff !important;
-  background-color: rgba(109, 151, 192, 0.15) !important; /* 选中底色稍微加深 */
+  background-color: rgba(109, 151, 192, 0.15) !important;
 }
 
 /* =========================================================
-   7. 导航栏 & TradingView
+   6. 顶部导航栏 & TradingView 细节
    ========================================================= */
 header, .oui-scaffold-topNavbar {
   background-color: rgba(0, 0, 0, 0.9) !important;
   border-bottom: 1px solid #38455C !important;
   backdrop-filter: blur(10px);
-  z-index: 100;
+  box-shadow: none !important; 
 }
 
-div[id*="tradingview"], iframe {
-  background-color: #000000 !important;
-  border: 1px solid #38455C !important; 
-  border-radius: 12px !important;
-  /* 统一加个黑间隙效果 */
-  box-shadow: 0 0 0 4px #000; 
+/* 修复 K线图 iframe 内部可能的边框重叠 */
+iframe {
+  border: none !important;
+  box-shadow: none !important;
 }
