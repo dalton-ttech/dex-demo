@@ -41,33 +41,36 @@ main {
 }
 
 /* =========================================================
-   4. 核心：双层卡片结构 (修复版)
-   只针对真正的"板块"生效，不再误伤内部元素
+   4. 核心：真正的双层卡片结构 (Refactored Layering)
+   使用 ::before 做黑色底，::after 做渐变内胆
    ========================================================= */
 
-/* 精准选择器：只选大板块 */
+/* A. 父容器 (只负责外边框) */
 .oui-card,
-.orderly-dashboard-layout-item, /* 这是 SDK 布局格子的类名 */
-div[class*="Card"]:not([class*="button"]):not([class*="input"]), /* 排除按钮和输入框 */
+.orderly-dashboard-layout-item,
+div[class*="Card"]:not([class*="button"]):not([class*="input"]),
 section,
 aside {
-  /* A. 外框 (Cage) */
+  /* 1. 外边框 (Cage Border) */
   border: 1px solid #38455C !important;
-  background-color: #000000 !important; /* 黑色间隙 */
+  
+  /* 2. 背景透明！(为了让伪元素显示出来) */
+  background-color: transparent !important;
   background-image: none !important;
   
+  /* 3. 必须创建层叠上下文 */
   position: relative !important;
+  z-index: 0;
   border-radius: 12px !important;
-  overflow: hidden !important; /* 必须裁剪，否则圆角会破 */
   
-  /* 关键修复：不要加 padding，会破坏 Grid 布局 */
-  /* padding: 1px;  <-- 删掉这行 */
-  
+  /* 修复圆角丢失：强制裁剪 */
+  overflow: hidden !important; 
   box-shadow: none !important;
-  isolation: isolate; /* 创建新的层叠上下文，保护内部 z-index */
 }
 
-/* B. 内层内胆 (Inner Gut) - 放在内容下面 */
+/* B. 第一层：纯黑背景 (The Spacer) 
+   铺满整个容器，挡住网页背景，作为"间隙"的颜色
+*/
 .oui-card::before,
 .orderly-dashboard-layout-item::before,
 div[class*="Card"]:not([class*="button"]):not([class*="input"])::before,
@@ -75,22 +78,14 @@ section::before,
 aside::before {
   content: "";
   position: absolute;
-  
-  /* 间隙控制：4px 黑色间隔 */
-  top: 4px;
-  left: 4px;
-  right: 4px;
-  bottom: 4px;
-  
-  /* 渐变背景 */
-  background: linear-gradient(180deg, #080808 0%, #151820 100%) !important;
-  
-  border-radius: 8px;
-  z-index: -1; /* 放在内容后面 */
-  pointer-events: none;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #000000 !important; /* 纯黑 */
+  z-index: -2; /* 最底层 */
 }
 
-/* C. 底部呼吸灯 (Breathing Light) */
+/* C. 第二层：渐变内胆 (The Inner Gradient) 
+   四周缩进 4px，形成双层视觉
+*/
 .oui-card::after,
 .orderly-dashboard-layout-item::after,
 div[class*="Card"]:not([class*="button"]):not([class*="input"])::after,
@@ -99,50 +94,57 @@ aside::after {
   content: "";
   position: absolute;
   
-  /* 定位在内胆底部 */
-  bottom: 4px; 
-  left: 20%;
-  right: 20%;
-  height: 1px;
+  /* 间隙控制：缩进 4px */
+  top: 4px; left: 4px; right: 4px; bottom: 4px;
   
-  /* 光效 */
-  background: radial-gradient(circle, rgba(109, 151, 192, 1) 0%, rgba(109, 151, 192, 0) 80%);
+  /* 渐变背景：上黑下蓝灰 */
+  background: linear-gradient(180deg, #080808 0%, #1A1E26 100%) !important;
   
-  z-index: 1; /* 在内胆之上 */
-  box-shadow: 0 -1px 6px rgba(109, 151, 192, 0.8);
+  /* 底部光条逻辑整合在这里 (利用 box-shadow 模拟呼吸灯) */
+  /* 下方阴影模拟光条，内部阴影模拟高光 */
+  box-shadow: 
+    0 1px 0px rgba(109, 151, 192, 0.5), /* 底部亮线 */
+    inset 0 -20px 20px -10px rgba(109, 151, 192, 0.15) !important; /* 底部内部泛光 */
+  
+  border-radius: 8px; /* 内圆角 */
+  z-index: -1; /* 在内容之下，在黑色背景之上 */
   pointer-events: none;
 }
 
+/* D. 内容层级保护 */
+/* 确保文字在所有背景上面 */
+.oui-card > *,
+.orderly-dashboard-layout-item > *,
+div[class*="Card"] > * {
+  position: relative;
+  z-index: 1;
+}
+
 /* =========================================================
-   5. 输入框 & 下拉菜单 (强制重置)
-   防止它们继承上面卡片的样式
+   5. 输入框 & 下拉菜单 (隔离保护)
    ========================================================= */
 input, 
 .oui-input,
 div[class*="input-group"],
 div[class*="select"] {
-  /* 必须重置为单层结构 */
   background: #050505 !important;
   border: 1px solid #37393D !important;
   border-radius: 8px !important;
-  
-  /* 禁止生成伪元素 */
   box-shadow: none !important;
+  z-index: 2 !important; /* 确保浮在卡片之上 */
 }
-/* 杀掉可能被继承的伪元素 */
+/* 杀掉伪元素 */
 input::after, input::before,
 .oui-input::after, .oui-input::before {
   display: none !important;
-  content: none !important;
 }
 
 /* =========================================================
-   6. 按钮样式 (修复版)
+   6. 按钮样式
    ========================================================= */
 button, .oui-button {
-  /* 基础重置 */
   position: relative;
-  z-index: 2;
+  z-index: 5; /* 按钮层级最高 */
 }
 
 /* 主按钮 */
@@ -157,7 +159,6 @@ button[class*="primary"],
   box-shadow: none !important;
 }
 
-/* 主按钮 Hover */
 button[class*="primary"]:hover,
 .oui-button-primary:hover {
   background-color: #000000 !important;
@@ -166,12 +167,14 @@ button[class*="primary"]:hover,
   box-shadow: 0 0 12px rgba(109, 151, 192, 0.3) !important;
 }
 
-/* Tabs 按钮 (买/卖/限价) */
+/* Tabs */
 div[role="tab"], button[role="tab"] {
   background-color: #000000 !important;
   border: 1px solid #37393D !important;
   color: #999 !important;
   border-radius: 6px !important;
+  position: relative; 
+  z-index: 5;
 }
 div[role="tab"][aria-selected="true"],
 button[role="tab"][aria-selected="true"] {
@@ -187,12 +190,13 @@ header, .oui-scaffold-topNavbar {
   background-color: rgba(0, 0, 0, 0.9) !important;
   border-bottom: 1px solid #38455C !important;
   backdrop-filter: blur(10px);
-  z-index: 50; /* 保证在最上层 */
+  z-index: 100;
 }
 
 div[id*="tradingview"], iframe {
   background-color: #000000 !important;
-  /* 这里不需要伪元素双层，只需要外框即可 */
+  /* K线图也应用双层边框逻辑 */
   border: 1px solid #38455C !important; 
   border-radius: 12px !important;
+  box-shadow: 0 0 0 4px #000; /* 用阴影模拟间隙 */
 }
