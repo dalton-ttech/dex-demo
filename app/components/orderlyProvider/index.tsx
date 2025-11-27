@@ -50,9 +50,10 @@ const OrderlyProvider: FC<{ children: ReactNode }> = (props) => {
         networkId={networkId}
         onChainChanged={onChainChanged}
         appIcons={config.orderlyAppProvider.appIcons}
-      >
-        {props.children}
-      </OrderlyAppProvider>
+       footer={<div className="text-xs text-gray-500 py-2 text-center">Powered by TuringTouch</div>}
+>
+  {props.children}
+</OrderlyAppProvider>
     </WalletConnectorProvider>
   );
 };
