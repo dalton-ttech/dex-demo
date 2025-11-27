@@ -34,24 +34,24 @@ export default function PerpPage() {
     [navigate, searchParams]
   );
 
-  // --- 自定义 TradingView 配置 ---
+  // --- 关键修改 ---
   const customTradingViewConfig = useMemo(() => {
     const originalConfig = config.tradingPage.tradingViewConfig || {};
     
     return {
       ...originalConfig,
       overrides: {
-        // 1. 背景：纯黑
-        "paneProperties.background": "#000000", 
+        // [修正]：尝试设为透明 (transparent)。
+        // 注意：TradingView 对 transparent 的支持取决于版本。
+        // 如果透明不生效，请将下方代码改为与 CSS 渐变底部一致的深色： "#1A1E26"
+        "paneProperties.background": "transparent", 
         "paneProperties.backgroundType": "solid",
         
-        // 2. 网格线：极细的深灰 (#37393D)，透明度调低
+        // 网格线极淡
         "paneProperties.vertGridProperties.color": "rgba(55, 57, 61, 0.2)",
         "paneProperties.horzGridProperties.color": "rgba(55, 57, 61, 0.2)",
         
-        // 3. 蜡烛图颜色：严格按照色值表
-        // 涨 (次色1): #89C9A0
-        // 跌 (次色1): #D87A7A
+        // 蜡烛图颜色 (保持不变)
         "mainSeriesProperties.candleStyle.upColor": "#89C9A0",
         "mainSeriesProperties.candleStyle.downColor": "#D87A7A",
         "mainSeriesProperties.candleStyle.borderUpColor": "#89C9A0",
@@ -59,9 +59,9 @@ export default function PerpPage() {
         "mainSeriesProperties.candleStyle.wickUpColor": "#89C9A0",
         "mainSeriesProperties.candleStyle.wickDownColor": "#D87A7A",
       },
-      // 工具栏背景
-      loading_screen: { backgroundColor: "#000000" },
-      toolbar_bg: "#000000",
+      // [修正]：工具栏背景设为透明或半透明
+      loading_screen: { backgroundColor: "transparent" },
+      toolbar_bg: "transparent",
     };
   }, []);
 
