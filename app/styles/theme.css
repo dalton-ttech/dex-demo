@@ -41,129 +41,142 @@ main {
 }
 
 /* =========================================================
-   4. 关键修复：内部去色 (Internal Transparency)
-   根据你的截图，SDK 内部使用了 bg-base-9/10，必须把它们杀掉
-   ========================================================= */
-/* 匹配所有带 oui-bg-base 的类名，强行变透明 */
-[class*="oui-bg-base"],
-.oui-bg-base-9,
-.oui-bg-base-10,
-/* 针对 Orderbook 内部容器 */
-.oui-box {
-  background-color: transparent !important;
-  background-image: none !important;
-}
-
-/* 
-   注意：因为上面太暴力，可能会误伤按钮和输入框
-   所以下面我们要把按钮和输入框的背景色"救"回来
-*/
-
-/* =========================================================
-   5. 核心：双层卡片结构
+   4. 核心：双层卡片结构 (高亮增强版)
    ========================================================= */
 
-/* A. 父容器 (外框) */
-.orderly-dashboard-layout-item, /* 重点：SDK 的布局格子 */
+/* A. 外框 (Cage) */
 .oui-card,
+.orderly-dashboard-layout-item,
+div[class*="Card"]:not([class*="button"]):not([class*="input"]),
 section,
 aside {
-  /* 1. 外框 */
-  border: 1px solid #38455C !important;
-  
-  /* 2. 确保背景透明，让伪元素显示 */
-  background-color: transparent !important;
+  /* 外框颜色稍微提亮一点点，让它更清晰 */
+  border: 1px solid #4A5568 !important; 
+  background-color: #000000 !important;
+  background-image: none !important;
   
   position: relative !important;
   border-radius: 12px !important;
   overflow: hidden !important;
   
-  z-index: 0;
+  box-shadow: none !important;
+  isolation: isolate;
 }
 
-/* B. 第一层：纯黑背景 (间隙层) */
-.orderly-dashboard-layout-item::before,
+/* B. 内层内胆 (Inner Gut) */
 .oui-card::before,
+.orderly-dashboard-layout-item::before,
+div[class*="Card"]:not([class*="button"]):not([class*="input"])::before,
 section::before,
 aside::before {
   content: "";
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-color: #000000 !important;
-  z-index: -2;
-}
-
-/* C. 第二层：渐变内胆 (视觉层) */
-.orderly-dashboard-layout-item::after,
-.oui-card::after,
-section::after,
-aside::after {
-  content: "";
-  position: absolute;
   
-  /* 缩进 4px，形成双层感 */
   top: 4px; left: 4px; right: 4px; bottom: 4px;
   
-  /* 渐变背景 */
-  background: linear-gradient(180deg, #080808 0%, #1A1E26 100%) !important;
-  
-  /* 底部发光 */
-  box-shadow: 
-    0 1px 0px rgba(109, 151, 192, 0.6), 
-    inset 0 -20px 20px -10px rgba(109, 151, 192, 0.15) !important;
+  /* 
+     [调整点]：底部颜色调亮！
+     从 #151820 (深灰) -> #1E2330 (更蓝一点的灰)
+     这样能明显看出和黑色背景的对比
+  */
+  background: linear-gradient(180deg, #080808 0%, #1E2330 100%) !important;
   
   border-radius: 8px;
   z-index: -1;
   pointer-events: none;
 }
 
-/* =========================================================
-   6. 元素保护 (Input/Button Protection)
-   因为第4步太暴力了，这里必须把交互元素重置回来
-   ========================================================= */
+/* C. 底部呼吸灯 (Breathing Light) */
+.oui-card::after,
+.orderly-dashboard-layout-item::after,
+div[class*="Card"]:not([class*="button"]):not([class*="input"])::after,
+section::after,
+aside::after {
+  content: "";
+  position: absolute;
+  
+  /* 
+     [调整点]：位置微调，确保不被切掉 
+     稍微加高一点高度，让光更明显
+  */
+  bottom: 4px; 
+  left: 15%;
+  right: 15%;
+  height: 1px;
+  
+  /* [调整点]：颜色加亮，不透明度从 80% 提到 100% */
+  background: radial-gradient(circle, rgba(130, 180, 255, 1) 0%, rgba(109, 151, 192, 0) 70%);
+  
+  z-index: 1;
+  /* [调整点]：增加向上发光的范围 */
+  box-shadow: 0 -2px 8px rgba(109, 151, 192, 0.8);
+  pointer-events: none;
+}
 
-/* 输入框 */
+/* =========================================================
+   5. 输入框 & 下拉菜单 (防污染)
+   ========================================================= */
 input, 
 .oui-input,
-div[class*="input-group"] {
-  background-color: #050505 !important; /* 恢复黑色背景 */
+div[class*="input-group"],
+div[class*="select"] {
+  background: #050505 !important;
   border: 1px solid #37393D !important;
   border-radius: 8px !important;
-  z-index: 5;
+  box-shadow: none !important;
+  z-index: 2 !important;
+}
+input::after, input::before,
+.oui-input::after, .oui-input::before {
+  display: none !important;
+  content: none !important;
 }
 
-/* 下拉菜单 */
-div[class*="dropdown"],
-div[class*="menu-content"] {
-  background-color: #050505 !important;
-  border: 1px solid #38455C !important;
-}
-
-/* 按钮 */
+/* =========================================================
+   6. 按钮样式 (高亮优化)
+   ========================================================= */
 button, .oui-button {
-  /* 恢复按钮背景，否则也是透明的 */
-  background-color: #000000 !important; 
-  border: 1px solid #596571 !important;
+  position: relative;
   z-index: 5;
 }
 
-/* 主按钮 Hover */
+/* 主按钮 - 增加一点点存在感 */
+button[class*="primary"], 
+.oui-button-primary {
+  background-color: #000000 !important;
+  background-image: none !important;
+  border: 1px solid #596571 !important;
+  color: #FFFFFF !important;
+  border-radius: 99px !important;
+  font-weight: 600;
+  
+  /* [调整点]：给默认状态加一点极微弱的蓝光，避免看起来像黑洞 */
+  box-shadow: inset 0 0 10px rgba(109, 151, 192, 0.1) !important;
+}
+
 button[class*="primary"]:hover,
 .oui-button-primary:hover {
   background-color: #000000 !important;
-  border-color: #6D97C0 !important;
+  border-color: #BFD4FA !important; /* 悬浮时边框更亮 */
   color: #BFD4FA !important;
-  box-shadow: 0 0 12px rgba(109, 151, 192, 0.3) !important;
+  /* 悬浮光效增强 */
+  box-shadow: 0 0 15px rgba(109, 151, 192, 0.4), inset 0 0 10px rgba(109, 151, 192, 0.2) !important;
 }
 
 /* Tabs */
 div[role="tab"], button[role="tab"] {
   background-color: #000000 !important;
   border: 1px solid #37393D !important;
+  color: #999 !important;
+  border-radius: 6px !important;
+  position: relative; 
+  z-index: 5;
 }
-div[role="tab"][aria-selected="true"] {
-  background-color: rgba(109, 151, 192, 0.1) !important;
+div[role="tab"][aria-selected="true"],
+button[role="tab"][aria-selected="true"] {
   border-color: #6D97C0 !important;
+  color: #fff !important;
+  background-color: rgba(109, 151, 192, 0.15) !important; /* 选中底色稍微加深 */
 }
 
 /* =========================================================
@@ -178,7 +191,8 @@ header, .oui-scaffold-topNavbar {
 
 div[id*="tradingview"], iframe {
   background-color: #000000 !important;
-  border: 1px solid #38455C !important;
+  border: 1px solid #38455C !important; 
   border-radius: 12px !important;
-  box-shadow: 0 0 0 4px #000;
+  /* 统一加个黑间隙效果 */
+  box-shadow: 0 0 0 4px #000; 
 }
