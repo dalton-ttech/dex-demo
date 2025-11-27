@@ -1,12 +1,12 @@
 /* =========================================================
-   1. 变量定义 (Aitail Design System)
+   1. 变量定义
    ========================================================= */
 :root, html {
   --w3o-background-color: transparent !important;
   --w3o-surface-color: #000000 !important;
   --oui-font-family: 'Manrope', system-ui, -apple-system, sans-serif;
   
-  /* 品牌色 */
+  /* Aitail 品牌色 */
   --oui-color-primary: 191 212 250; 
   --oui-color-primary-light: 220 230 255;
   --oui-color-success: 137 201 160; 
@@ -17,7 +17,7 @@
 }
 
 /* =========================================================
-   2. 全局背景
+   2. 全局重置
    ========================================================= */
 body {
   background-color: #000000 !important;
@@ -27,95 +27,39 @@ body {
   margin: 0;
 }
 
-/* =========================================================
-   3. 布局层透明化
-   ========================================================= */
-#root, 
-.orderly-app, 
-.oui-scaffold-root,
-.oui-scaffold-container,
-div[class*="layout"],
-main {
+/* 布局容器透明化 */
+#root, .orderly-app, .oui-scaffold-root, .oui-scaffold-container, 
+div[class*="layout"], main {
   background: transparent !important;
   background-color: transparent !important;
 }
 
 /* =========================================================
-   4. 核心：物理双层结构 (The Physical Double Layer)
-   策略：利用 Padding 挤出黑色间隙，绝不会被遮挡
+   3. 核心：双层卡片 (The Double Layer)
    ========================================================= */
 
-/* 
-   [锁定目标]
-   1. .orderly-dashboard-layout-item: SDK 所有板块的父容器
-   2. .oui-card: 独立卡片
-   3. aside / section: 侧边栏
-   4. #tradingview: K线图容器
-*/
+/* A. 锁定所有板块的外框容器 */
 .orderly-dashboard-layout-item,
 .oui-card,
 div[id*="tradingview"],
 aside,
 section {
-  /* 1. 外框 (The Cage) */
+  /* 1. 外边框 (Cage) */
   border: 1px solid #38455C !important;
   
-  /* 2. 物理间隙 (The Physical Gap) 
-     背景设为纯黑，并增加 4px 内边距。
-     内部内容只能在 4px 之后开始渲染，绝对无法挡住边缘。
-  */
-  background-color: #000000 !important;
-  padding: 4px !important;
+  /* 2. 黑色间隙 (The Gap) - 4px 纯黑实心内阴影 */
+  box-shadow: inset 0 0 0 4px #000000 !important;
   
-  /* 3. 布局属性 */
-  position: relative !important;
+  /* 3. 内胆 (The Gut) - 稍微提亮，确保肉眼可见 */
+  background: linear-gradient(180deg, #0F0F0F 0%, #1E2330 100%) !important;
+  
   border-radius: 12px !important;
-  overflow: hidden !important;
-  box-shadow: none !important;
-  
-  /* 确保伪元素定位参照于此 */
+  position: relative !important;
   z-index: 0;
+  overflow: hidden !important;
 }
 
-/* 
-   [内部穿透]
-   强制让板块里面的内容背景变透明，否则会盖住内胆渐变
-*/
-.orderly-dashboard-layout-item > *,
-.oui-card > *,
-aside > *,
-section > *,
-.oui-bg-base-9,
-.oui-bg-base-8 {
-  background-color: transparent !important;
-  background-image: none !important;
-}
-
-/* =========================================================
-   5. 内胆与光条 (Inner & Glow)
-   ========================================================= */
-
-/* A. 渐变内胆 (Inner Gradient) - 使用 ::before */
-.orderly-dashboard-layout-item::before,
-.oui-card::before,
-div[id*="tradingview"]::before,
-aside::before,
-section::before {
-  content: "";
-  position: absolute;
-  
-  /* 填满 padding 内部的区域 */
-  top: 4px; left: 4px; right: 4px; bottom: 4px;
-  
-  /* Aitail 风格渐变：上黑 -> 下蓝灰 */
-  background: linear-gradient(180deg, #0A0A0A 0%, #1E2330 100%) !important;
-  
-  border-radius: 8px; /* 内圆角略小 */
-  z-index: -1; /* 放在内容后面 */
-  pointer-events: none;
-}
-
-/* B. 底部呼吸光条 (Bottom Light) - 使用 ::after */
+/* B. 底部呼吸光条 */
 .orderly-dashboard-layout-item::after,
 .oui-card::after,
 div[id*="tradingview"]::after,
@@ -123,116 +67,103 @@ aside::after,
 section::after {
   content: "";
   position: absolute;
-  
-  /* 定位在内胆底部 */
-  bottom: 4px; 
+  bottom: 4px; /* 紧贴黑色间隙 */
   left: 15%; right: 15%;
   height: 1px;
-  
-  /* 高亮蓝光 */
   background: radial-gradient(circle, rgba(130, 180, 255, 1) 0%, rgba(109, 151, 192, 0) 70%);
-  
   z-index: 10;
   pointer-events: none;
   box-shadow: 0 -2px 10px rgba(109, 151, 192, 0.8);
 }
 
 /* =========================================================
-   6. 元素保护与重置 (Interactive Elements Protection)
-   因为上面的"内部穿透"太强，这里必须把交互元素救回来
+   4. 核弹级去色 (The Nuclear Cleaner)
+   这是解决"双层效果出不来"的终极手段
    ========================================================= */
 
-/* 输入框 & 下拉菜单 */
+/* 
+   强制把卡片内部的 div 背景全部设为透明！
+   这样底层的渐变内胆才能露出来。
+*/
+.orderly-dashboard-layout-item div,
+.oui-card div,
+aside div,
+section div {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* =========================================================
+   5. 战后重建 (Restoration)
+   因为上面的第4步太暴力，把按钮和输入框也搞透明了，必须救回来
+   ========================================================= */
+
+/* A. 恢复输入框 & 下拉菜单 */
+.orderly-dashboard-layout-item input,
+.oui-card input,
 input, 
 .oui-input,
-div[class*="input"],
 div[class*="dropdown"],
-div[class*="menu"] {
-  /* 恢复背景色 */
-  background-color: #050505 !important; 
+div[class*="menu"],
+div[class*="popover"] {
+  background-color: #050505 !important; /* 恢复黑色 */
   border: 1px solid #37393D !important;
   border-radius: 8px !important;
   box-shadow: none !important;
-  min-height: auto !important;
-  
-  /* 防止被 padding 影响布局 */
-  margin: 0 !important; 
-}
-/* 杀掉伪元素 */
-input::after, .oui-input::after { display: none !important; }
-
-/* 按钮 */
-button, .oui-button { 
-  box-shadow: none !important; 
-  position: relative;
-  z-index: 5;
+  opacity: 1 !important;
 }
 
-/* 主按钮 */
-button[class*="primary"], 
-.oui-button-primary {
-  background-color: #000000 !important;
+/* B. 恢复按钮 */
+button, .oui-button, [role="button"] {
+  background-color: #000000 !important; /* 恢复黑色 */
   background-image: none !important;
   border: 1px solid #596571 !important;
   color: #FFFFFF !important;
   border-radius: 99px !important;
-  font-weight: 600;
+  opacity: 1 !important;
 }
 
-button[class*="primary"]:hover,
-.oui-button-primary:hover {
-  background-color: #000000 !important;
-  border-color: #BFD4FA !important;
+/* 按钮 Hover */
+button:hover, .oui-button:hover {
+  border-color: #6D97C0 !important;
   color: #BFD4FA !important;
-  box-shadow: 0 0 15px rgba(109, 151, 192, 0.4), inset 0 0 10px rgba(109, 151, 192, 0.1) !important;
+  box-shadow: 0 0 12px rgba(109, 151, 192, 0.3) !important;
 }
 
-/* Tabs (Orderbook/Last Trades) */
-div[role="tab"], button[role="tab"] {
+/* C. 恢复 Tabs */
+div[role="tab"] {
   background-color: #000000 !important;
   border: 1px solid #37393D !important;
-  color: #999 !important;
   border-radius: 6px !important;
 }
 div[role="tab"][aria-selected="true"] {
-  border-color: #6D97C0 !important;
-  color: #fff !important;
   background-color: rgba(109, 151, 192, 0.15) !important;
+  border-color: #6D97C0 !important;
 }
 
 /* =========================================================
-   7. 导航栏 (Header)
+   6. 导航栏 (Header) - 独立保护
    ========================================================= */
 header, 
-.oui-scaffold-topNavbar {
-  background-color: rgba(0, 0, 0, 0.9) !important;
+.oui-scaffold-topNavbar, 
+nav {
+  background-color: rgba(0, 0, 0, 0.95) !important; /* 必须不透明 */
   border-bottom: 1px solid #38455C !important;
   backdrop-filter: blur(10px);
-  
   position: fixed !important;
   top: 0; left: 0; right: 0;
-  z-index: 9999;
-  
-  /* 导航栏不需要双层结构，重置掉 */
-  padding: 0 !important;
-  border-radius: 0 !important;
-}
-/* 移除导航栏的伪元素 */
-header::before, header::after,
-.oui-scaffold-topNavbar::before, .oui-scaffold-topNavbar::after {
-  display: none !important;
+  z-index: 9999 !important;
+  box-shadow: none !important;
 }
 
+/* 修正内容顶距 */
 .oui-scaffold-content {
   margin-top: 60px !important;
 }
 
-/* K线图 iframe 修复 */
+/* K线图 */
 iframe {
   border: none !important;
   box-shadow: none !important;
   background: transparent !important;
-  /* 确保 iframe 填满内胆区域 */
-  width: 100% !important;
-  height: 100% !important;
 }
