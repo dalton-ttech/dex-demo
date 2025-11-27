@@ -8,13 +8,10 @@ import injected from "@web3-onboard/injected-wallets";
 import walletConnect from '@web3-onboard/walletconnect'
 import binance from "@binance/w3w-blocknative-connector";
 
-// ❌ 删除：之前定义的 unifaiTheme 对象，因为 SDK 不支持通过 JS 传主题
-// 样式的控制权完全交给 theme.css 里的 CSS 变量
-
 const OrderlyProvider: FC<{ children: ReactNode }> = (props) => {
-  const networkId = import.meta.env.VITE_NETWORK_ID as NetworkId;
+	const networkId = import.meta.env.VITE_NETWORK_ID as NetworkId;
   const onChainChanged = useCallback(
-    (_chainId: number, { isTestnet }: { isTestnet: boolean }) => {
+		(_chainId: number, {isTestnet}: {isTestnet: boolean}) => {
       if (isTestnet && networkId === 'mainnet' || !isTestnet && networkId === 'testnet') {
         setTimeout(() => {
           const href = isTestnet ? import.meta.env.VITE_TESTNET_URL : import.meta.env.VITE_MAINNET_URL;
@@ -23,14 +20,14 @@ const OrderlyProvider: FC<{ children: ReactNode }> = (props) => {
           }
         }, 100);
       }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
+		},
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[],
   );
-
+  
   return (
     <WalletConnectorProvider
-      solanaInitial={{ network: networkId === 'mainnet' ? WalletAdapterNetwork.Mainnet : WalletAdapterNetwork.Devnet }}
+      solanaInitial={{network: networkId === 'mainnet' ? WalletAdapterNetwork.Mainnet : WalletAdapterNetwork.Devnet}}
       evmInitial={import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID && typeof window !== 'undefined' ? {
         options: {
           wallets: [
@@ -53,7 +50,6 @@ const OrderlyProvider: FC<{ children: ReactNode }> = (props) => {
         networkId={networkId}
         onChainChanged={onChainChanged}
         appIcons={config.orderlyAppProvider.appIcons}
-      // ❌ 删除：theme={unifaiTheme} 这一行，消除报错
       >
         {props.children}
       </OrderlyAppProvider>

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useMemo } from "react";
 import { useNavigate, useParams, useSearchParams } from "@remix-run/react";
 import { MetaFunction } from "@remix-run/node";
 import { API } from "@orderly.network/types";
@@ -34,11 +34,42 @@ export default function PerpPage() {
     [navigate, searchParams]
   );
 
+  // --- 自定义 TradingView 配置 ---
+  const customTradingViewConfig = useMemo(() => {
+    const originalConfig = config.tradingPage.tradingViewConfig || {};
+    
+    return {
+      ...originalConfig,
+      overrides: {
+        // 1. 背景：纯黑
+        "paneProperties.background": "#000000", 
+        "paneProperties.backgroundType": "solid",
+        
+        // 2. 网格线：极细的深灰 (#37393D)，透明度调低
+        "paneProperties.vertGridProperties.color": "rgba(55, 57, 61, 0.2)",
+        "paneProperties.horzGridProperties.color": "rgba(55, 57, 61, 0.2)",
+        
+        // 3. 蜡烛图颜色：严格按照色值表
+        // 涨 (次色1): #89C9A0
+        // 跌 (次色1): #D87A7A
+        "mainSeriesProperties.candleStyle.upColor": "#89C9A0",
+        "mainSeriesProperties.candleStyle.downColor": "#D87A7A",
+        "mainSeriesProperties.candleStyle.borderUpColor": "#89C9A0",
+        "mainSeriesProperties.candleStyle.borderDownColor": "#D87A7A",
+        "mainSeriesProperties.candleStyle.wickUpColor": "#89C9A0",
+        "mainSeriesProperties.candleStyle.wickDownColor": "#D87A7A",
+      },
+      // 工具栏背景
+      loading_screen: { backgroundColor: "#000000" },
+      toolbar_bg: "#000000",
+    };
+  }, []);
+
   return (
     <TradingPage
       symbol={symbol}
       onSymbolChange={onSymbolChange}
-      tradingViewConfig={config.tradingPage.tradingViewConfig}
+      tradingViewConfig={customTradingViewConfig}
       sharePnLConfig={config.tradingPage.sharePnLConfig}
     />
   );

@@ -1,47 +1,50 @@
 /* =========================================================
-   1. 变量劫持 (Root Hijack)
+   1. 变量映射 (Aitail Design System)
+   严格基于你提供的色值表
    ========================================================= */
 :root, html {
-  /* 强制覆盖 SDK 默认背景 */
+  /* 劫持 SDK 默认背景 */
   --w3o-background-color: transparent !important;
-  --w3o-surface-color: rgba(20, 18, 35, 0.4) !important;
-  
+  --w3o-surface-color: #000000 !important;
+
   /* 字体 */
   --oui-font-family: 'Manrope', system-ui, -apple-system, sans-serif;
 
-  /* 品牌色：Unifai 亮紫 */
-  --oui-color-primary: 139 92 246;
-  --oui-color-primary-light: 167 139 250;
+  /* 品牌色 */
+  --oui-color-primary: 191 212 250; /* #BFD4FA (主色1) */
+  --oui-color-primary-light: 220 230 255;
+  --oui-color-primary-darken: 109 151 192; /* #6D97C0 */
+
+  /* 交易涨跌色 (莫兰迪色系) */
+  --oui-color-success: 137 201 160; /* #89C9A0 */
+  --oui-color-danger: 216 122 122;  /* #D87A7A */
   
-  /* 圆角 */
-  --oui-rounded: 16px;
-  --oui-rounded-lg: 24px;
+  /* 线条色 */
+  --oui-color-line: 55 57 61; /* #37393D (线框色) */
+  
+  /* 圆角 (参考图片适中圆角) */
+  --oui-rounded: 12px;
+  --oui-rounded-lg: 16px;
 }
 
 /* =========================================================
-   2. 背景提亮 (Brighter Aurora)
+   2. 全局背景 (纯黑底板)
    ========================================================= */
 body {
-  background-color: #080610 !important;
-  /* 调整了光晕位置，确保顶部导航栏后面有紫色光透出来 */
-  background-image: 
-    radial-gradient(circle at 50% -10%, rgba(139, 92, 246, 0.6), transparent 70%),
-    radial-gradient(circle at 85% 60%, rgba(56, 220, 200, 0.3), transparent 50%) !important;
-  background-attachment: fixed !important;
-  background-size: cover !important;
-  color: #fff;
+  background-color: #000000 !important;
+  background-image: none !important;
+  color: #ffffff;
   min-height: 100vh;
   margin: 0;
 }
 
 /* =========================================================
-   3. 布局去黑 (De-Blacking)
+   3. 布局层透明化
    ========================================================= */
 #root, 
 .orderly-app, 
 .oui-scaffold-root,
 .oui-scaffold-container,
-.oui-scaffold-content,
 div[class*="layout"],
 main {
   background: transparent !important;
@@ -49,95 +52,111 @@ main {
 }
 
 /* =========================================================
-   4. 核心：荧光液态玻璃 (Fluorescent Liquid Glass)
-   覆盖所有卡片、背景块、以及你提到的滚动条
+   4. 卡片光影系统 (Atmospheric Card)
+   核心：渐变背景 + 底部发光条 + 左侧高光
    ========================================================= */
-
-/* 通配选择器：匹配卡片、黑底块、以及滚动条容器 */
 .oui-card,
 div[class*="card"],
 div[class*="Card"],
 div[class*="bg-base"],
 div[class*="dashboard-item"],
-/* 新增：专门匹配顶部滚动条容器 */
-div[class*="ticker"],
-div[class*="marquee"],
 section,
 aside {
-  /* 1. 背景：保持半透明黑紫 */
-  background-color: rgba(18, 16, 28, 0.4) !important;
+  /* 
+     A. 背景渐变 
+     从上到下：纯黑 -> 混合了线框色1(#38455C)的深色
+     模拟光源从下方漫射上来的效果
+  */
+  background: linear-gradient(180deg, #000000 0%, rgba(56, 69, 92, 0.25) 100%) !important;
   
-  /* 2. 质感：高模糊 */
-  backdrop-filter: blur(30px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
+  /* B. 基础边框 (深色) */
+  border: 1px solid #37393D !important;
   
+  /* C. 左侧高光 (Left Highlight) 
+     使用内阴影模拟左侧被照亮的效果，颜色取自 #BFD4FA 的极低透明度
+  */
+  box-shadow: inset 1px 0 0 0 rgba(191, 212, 250, 0.08) !important;
+  
+  border-radius: 12px !important;
+  position: relative !important; /* 为伪元素定位做准备 */
+  overflow: visible !important;  /* 允许光效溢出一点点 */
+}
 
-  border: 1px solid rgba(167, 139, 250, 0.3) !important;
+/* 
+   D. 底部呼吸灯 (Bottom Glow) - 伪元素实现
+   实现“中间亮、两边暗”的效果
+*/
+div[class*="card"]::after,
+div[class*="dashboard-item"]::after,
+section::after {
+  content: "";
+  position: absolute;
+  bottom: -1px; /* 覆盖在下边框上 */
+  left: 15%;    /* 左边留空 */
+  right: 15%;   /* 右边留空 */
+  height: 1px;  /* 极细的光条 */
   
-  box-shadow: 
-    0 0 15px rgba(139, 92, 246, 0.15), /* 外部柔和紫光 */
-    inset 0 0 0 1px rgba(255, 255, 255, 0.1), /* 内部锐利高光 */
-    inset 0 0 20px rgba(139, 92, 246, 0.05) !important; /* 内部紫色雾气 */
-    
-  border-radius: 24px !important;
+  /* 径向渐变：中间是 #6D97C0 (亮蓝)，向两边变透明 */
+  background: radial-gradient(circle, rgba(109, 151, 192, 1) 0%, rgba(109, 151, 192, 0) 70%);
+  
+  z-index: 10;
+  pointer-events: none;
+  opacity: 0.8;
 }
 
 /* =========================================================
-   5. 顶部导航栏修复 (Header Fix)
-   让它也变成紫色玻璃，而不是黑色
-   ========================================================= */
-header, 
-.oui-scaffold-topNavbar,
-div[class*="navbar"] {
-  /* 背景设为极淡的紫色，让 Body 的极光能透上来 */
-  background: rgba(10, 8, 20, 0.3) !important; 
-  backdrop-filter: blur(20px) !important;
-  border-bottom: 1px solid rgba(139, 92, 246, 0.3) !important;
-  box-shadow: 0 4px 20px rgba(139, 92, 246, 0.15) !important;
-}
-
-/* =========================================================
-   6. 按钮：完美描边 & 强光
+   5. 按钮样式 (Deposit Button Style)
    ========================================================= */
 button[class*="primary"], 
 .oui-button-primary {
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.7), rgba(124, 58, 237, 0.9)) !important;
-  backdrop-filter: blur(10px) !important;
-  border: none !important;
+  /* 背景：纯黑 */
+  background: #000000 !important;
   
-  /* 强力荧光描边 */
-  box-shadow: 
-    0 0 0 1px rgba(255, 255, 255, 0.4), /* 亮白色描边 */
-    0 0 25px rgba(139, 92, 246, 0.6),   /* 外部强光 */
-    inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
-    
-  color: white !important;
+  /* 边框：图片色值 #596571 */
+  border: 1px solid #596571 !important;
+  
+  /* 文字：主色 #FFFFFF */
+  color: #FFFFFF !important;
+  
+  font-family: 'Manrope', sans-serif;
   font-weight: 600;
-  border-radius: 99px !important;
+  border-radius: 99px !important; /* 胶囊形 */
+  box-shadow: none !important;
+  transition: all 0.3s ease;
 }
 
 button[class*="primary"]:hover {
-  transform: scale(1.02);
-  box-shadow: 
-    0 0 0 1px rgba(255, 255, 255, 0.7), 
-    0 0 40px rgba(139, 92, 246, 0.8) !important;
+  /* Hover时：边框变亮为 #6D97C0，背景微微亮起 */
+  border-color: #6D97C0 !important;
+  background: rgba(109, 151, 192, 0.1) !important;
+  box-shadow: 0 0 15px rgba(109, 151, 192, 0.2) !important;
 }
 
 /* =========================================================
-   7. 修复 TradingView 容器边框
+   6. 顶部导航栏 (Header)
+   ========================================================= */
+header, 
+.oui-scaffold-topNavbar {
+  background-color: rgba(0, 0, 0, 0.8) !important;
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid #37393D !important;
+}
+
+/* =========================================================
+   7. TradingView 容器修正
    ========================================================= */
 div[id*="tradingview"], iframe {
-  background-color: rgba(10, 8, 15, 0.5) !important;
-  /* 给 K 线图也加上荧光边框 */
-  border: 1px solid rgba(167, 139, 250, 0.2) !important;
-  box-shadow: 0 0 20px rgba(139, 92, 246, 0.1) !important;
-  border-radius: 20px !important;
+  /* 容器也是纯黑 */
+  background-color: #000000 !important;
+  /* 加上同样的边框逻辑 */
+  border: 1px solid #37393D !important;
+  border-radius: 12px !important;
 }
 
 /* 输入框 */
 input, .oui-input {
-  background-color: rgba(0, 0, 0, 0.3) !important;
-  border: 1px solid rgba(167, 139, 250, 0.3) !important; /* 紫色边框 */
-  border-radius: 12px !important;
-  color: white !important;
+  background-color: #050505 !important;
+  border: 1px solid #37393D !important;
+  color: #fff !important;
+  border-radius: 8px !important;
 }
