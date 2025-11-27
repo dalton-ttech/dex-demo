@@ -34,24 +34,24 @@ export default function PerpPage() {
     [navigate, searchParams]
   );
 
-  // --- 关键修改 ---
+  // --- 自定义 TradingView 配置 (修复背景黑块) ---
   const customTradingViewConfig = useMemo(() => {
     const originalConfig = config.tradingPage.tradingViewConfig || {};
     
     return {
       ...originalConfig,
       overrides: {
-        // [修正]：尝试设为透明 (transparent)。
-        // 注意：TradingView 对 transparent 的支持取决于版本。
-        // 如果透明不生效，请将下方代码改为与 CSS 渐变底部一致的深色： "#1A1E26"
-        "paneProperties.background": "transparent", 
+        // [关键修改]：
+        // 因为 TradingView iframe 不支持透明背景，我们将其设为 #0A0A0A
+        // 这与 theme.css 中卡片内胆顶部的颜色一致，视觉上实现"伪透明"融合
+        "paneProperties.background": "#0A0A0A", 
         "paneProperties.backgroundType": "solid",
         
-        // 网格线极淡
+        // 网格线：极淡，融入背景
         "paneProperties.vertGridProperties.color": "rgba(55, 57, 61, 0.2)",
         "paneProperties.horzGridProperties.color": "rgba(55, 57, 61, 0.2)",
         
-        // 蜡烛图颜色 (保持不变)
+        // 蜡烛图颜色：Aitail 莫兰迪色系
         "mainSeriesProperties.candleStyle.upColor": "#89C9A0",
         "mainSeriesProperties.candleStyle.downColor": "#D87A7A",
         "mainSeriesProperties.candleStyle.borderUpColor": "#89C9A0",
@@ -59,9 +59,9 @@ export default function PerpPage() {
         "mainSeriesProperties.candleStyle.wickUpColor": "#89C9A0",
         "mainSeriesProperties.candleStyle.wickDownColor": "#D87A7A",
       },
-      // [修正]：工具栏背景设为透明或半透明
-      loading_screen: { backgroundColor: "transparent" },
-      toolbar_bg: "transparent",
+      // 工具栏背景也设为深色融合
+      loading_screen: { backgroundColor: "#0A0A0A" },
+      toolbar_bg: "#0A0A0A",
     };
   }, []);
 

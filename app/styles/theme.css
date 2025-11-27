@@ -41,28 +41,21 @@ main {
 }
 
 /* =========================================================
-   4. 核心：双层卡片 (高亮增强版)
+   4. 核心：双层卡片结构 (修复版)
    ========================================================= */
 
-/* A. 外框 (Cage) */
-.oui-bg-base-9,
-.oui-bg-base-8,
+/* A. 精准命中需要做成卡片的容器 */
+.orderly-dashboard-layout-item, 
 .oui-card,
 div[id*="tradingview"],
 aside,
 section {
-  /* 外框颜色 */
+  /* 外框 */
   border: 1px solid #38455C !important;
-  
-  /* 黑色间隙 (4px) */
+  /* 黑色间隙 */
   box-shadow: inset 0 0 0 4px #000000 !important;
-  
-  /* 
-     [关键调整]：内胆背景提亮 
-     从顶部的纯黑(#050505) 渐变到底部的 亮蓝灰(#252B3B)
-     这样"向上漫射"的效果会更明显
-  */
-  background: linear-gradient(180deg, #050505 10%, #252B3B 100%) !important;
+  /* 内胆渐变 */
+  background: linear-gradient(180deg, #0A0A0A 0%, #1A1E26 100%) !important;
   
   border-radius: 12px !important;
   position: relative !important;
@@ -71,8 +64,7 @@ section {
 }
 
 /* B. 底部呼吸光条 */
-.oui-bg-base-9::after,
-.oui-bg-base-8::after,
+.orderly-dashboard-layout-item::after,
 .oui-card::after,
 div[id*="tradingview"]::after,
 aside::after,
@@ -80,20 +72,31 @@ section::after {
   content: "";
   position: absolute;
   bottom: 4px; 
-  left: 15%; /* 稍微加宽光条范围 */
-  right: 15%;
+  left: 20%;
+  right: 20%;
   height: 1px;
-  
-  /* 颜色更亮 */
   background: radial-gradient(circle, rgba(130, 180, 255, 1) 0%, rgba(109, 151, 192, 0) 70%);
-  
   z-index: 10;
   pointer-events: none;
   box-shadow: 0 -2px 10px rgba(109, 151, 192, 0.8);
 }
 
 /* =========================================================
-   5. 保护区
+   5. 暴力去色 (修复导航栏消失 BUG)
+   ========================================================= */
+/* 
+   之前把 .oui-bg-base-9 设为透明时误伤了导航栏
+   现在排除掉导航栏 (:not)
+*/
+[class*="oui-bg-base"]:not(.oui-scaffold-topNavbar),
+.oui-bg-base-9:not(.oui-scaffold-topNavbar),
+.oui-bg-base-8 {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* =========================================================
+   6. 保护区 (输入框/按钮/下拉)
    ========================================================= */
 input, 
 .oui-input,
@@ -108,8 +111,6 @@ div[class*="menu"] {
 }
 input::after, .oui-input::after { display: none !important; }
 
-button, .oui-button { box-shadow: none !important; }
-
 /* 主按钮 */
 button[class*="primary"], 
 .oui-button-primary {
@@ -119,6 +120,7 @@ button[class*="primary"],
   color: #FFFFFF !important;
   border-radius: 99px !important;
   font-weight: 600;
+  box-shadow: none !important;
 }
 
 button[class*="primary"]:hover,
@@ -129,27 +131,43 @@ button[class*="primary"]:hover,
   box-shadow: 0 0 12px rgba(109, 151, 192, 0.3) !important;
 }
 
-/* =========================================================
-   6. [修复] 导航栏回归
-   ========================================================= */
-header, 
-.oui-scaffold-topNavbar,
-nav {
-  /* 强制加上半透明黑底，防止消失 */
-  background-color: rgba(0, 0, 0, 0.85) !important;
-  border-bottom: 1px solid #38455C !important;
-  backdrop-filter: blur(12px) !important;
-  
-  /* 确保它在最上层 */
-  position: sticky !important;
-  top: 0;
-  z-index: 1000 !important;
-  box-shadow: none !important;
+div[role="tab"], button[role="tab"] {
+  background-color: #000000 !important;
+  border: 1px solid #37393D !important;
+  color: #999 !important;
+  border-radius: 6px !important;
+}
+div[role="tab"][aria-selected="true"] {
+  border-color: #6D97C0 !important;
+  color: #fff !important;
+  background-color: rgba(109, 151, 192, 0.15) !important;
 }
 
-/* K线图 iframe 修复 */
+/* =========================================================
+   7. 导航栏回归 (The Return of Header)
+   ========================================================= */
+header, 
+.oui-scaffold-topNavbar {
+  /* 显式指定背景色，覆盖掉透明设置 */
+  background-color: #080808 !important; 
+  border-bottom: 1px solid #38455C !important;
+  
+  /* 确保它不被其他元素遮挡 */
+  position: fixed !important; /* 改为 fixed 确保吸顶 */
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999 !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5) !important;
+}
+
+/* 修正内容区域的顶部间距，防止被 fixed header 挡住 */
+.oui-scaffold-content {
+  margin-top: 60px !important; 
+}
+
+/* K线图修复 */
 iframe {
   border: none !important;
   box-shadow: none !important;
-  background: transparent !important;
 }
