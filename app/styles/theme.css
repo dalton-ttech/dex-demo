@@ -49,6 +49,7 @@ div[class*="layout"], main {
    这是解决"间隙消失"的终极方案
    ========================================================= */
 
+/* 选中所有大板块 */
 .orderly-dashboard-layout-item,
 .oui-card:not([role="dialog"]),
 div[id*="tradingview"],
