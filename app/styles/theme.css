@@ -35,15 +35,11 @@ div[class*="layout"], main {
 
 /* =========================================================
    3. 核心：物理双层卡片 (Physical Border Gap)
-   【关键回归】：直接将样式应用在 .oui-bg-base-9 上
    ========================================================= */
 
 /* 
    精准选择器：
-   1. 选中 .oui-bg-base-9 (卡片本体)
-   2. 选中 .oui-card
-   3. 选中 #tradingview
-   4. 严格排除：导航栏、所有类型的弹窗、所有弹窗内容
+   选中 .oui-bg-base-9 (卡片本体)，但严格排除导航栏和弹窗
 */
 .oui-bg-base-9:not(.oui-scaffold-topNavbar):not([role="dialog"]):not([class*="modal"]):not(.oui-dialog-content),
 .oui-bg-base-8:not([role="dialog"]),
@@ -51,7 +47,6 @@ div[class*="layout"], main {
 div[id*="tradingview"],
 aside,
 section,
-/* 包含钱包弹窗容器 */
 onboard-v2 .container {
   /* 1. 物理间隙 (4px 黑墙) */
   border: 4px solid #000000 !important;
@@ -94,17 +89,14 @@ onboard-v2 .container::after {
 /* =========================================================
    4. 内部去色 (Internal Clearing)
    ========================================================= */
-/* 
-   只清理卡片内部的背景色，露出渐变内胆。
-   不碰弹窗内部，防止弹窗变透明。
-*/
+/* 只清理卡片内部，不碰弹窗 */
 .oui-bg-base-9:not(.oui-scaffold-topNavbar):not([role="dialog"]) > *,
 .oui-card > * {
   background-color: transparent !important;
 }
 
 /* =========================================================
-   5. 导航栏修复
+   5. 导航栏修复 & 布局避让 (Layout Fix)
    ========================================================= */
 header, 
 .oui-scaffold-topNavbar {
@@ -114,25 +106,35 @@ header,
   background-clip: border-box !important;
   backdrop-filter: blur(10px);
   
+  /* 固定定位 */
   position: fixed !important; 
   top: 0; left: 0; right: 0;
-  height: 60px !important;
+  height: 64px !important; /* 明确高度 */
   z-index: 2000 !important;
   
   display: flex !important;
   align-items: center !important;
   padding: 0 20px !important;
 }
-/* 移除可能继承的伪元素 */
+/* 移除导航栏可能继承的伪元素 */
 header::before, header::after, .oui-scaffold-topNavbar::before { display: none !important; }
 
-/* 滚动条下推 */
+/* 
+   [关键修复]：内容下移
+   导航栏高 64px，我们给内容加 84px 的 padding，留出 20px 间隙
+   这样页面内容就不会被导航栏挡住了
+*/
+.oui-scaffold-content,
+main {
+  padding-top: 84px !important; 
+}
+
+/* 如果有滚动条，滚动条也需要下移 */
 div[class*="announcement"], div[class*="ticker"] {
-  margin-top: 60px !important; 
+  margin-top: 64px !important; 
   position: relative !important; z-index: 1000;
   background-color: #050505 !important;
 }
-.oui-scaffold-content { padding-top: 20px !important; }
 
 /* =========================================================
    6. 保护区 (Input / Button)
@@ -176,20 +178,19 @@ div[role="tab"][aria-selected="true"] {
 }
 
 /* =========================================================
-   7. 弹窗修复 (Deposit / General SDK Modals)
-   【关键】：只做定位和背景，不挤压 Padding
+   7. 弹窗修复 (Deposit Fix)
    ========================================================= */
 div[role="dialog"], 
 div[class*="modal"],
 .oui-dialog-content {
-  /* 1. 纯黑背景 (不透明) */
+  /* 1. 纯黑背景 */
   background-color: #080808 !important;
   background-image: none !important;
   
   /* 2. 边框 */
   border: 1px solid #38455C !important;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.9) !important;
-  border-radius: 12px !important;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.95) !important;
+  border-radius: 16px !important;
   
   /* 3. 居中定位 */
   position: fixed !important;
@@ -198,12 +199,18 @@ div[class*="modal"],
   transform: translate(-50%, -50%) !important;
   z-index: 10000 !important;
   
-  /* 4. 【修复挤压】不强制 padding 为 0，让 SDK 自己控制 */
-  /* padding: 0 !important;  <-- 删除这行 */
+  /* 4. [关键修复] 恢复内边距和最小宽度
+     - min-width: 防止弹窗过窄
+     - padding: 恢复内部呼吸感
+  */
+  padding: 24px !important;
+  min-width: 380px !important;
+  max-width: 90vw !important;
   
   /* 5. 确保可见 */
   opacity: 1 !important;
   visibility: visible !important;
+  overflow: visible !important;
 }
 
 /* 杀掉所有伪元素 (防止黑膜) */
@@ -220,7 +227,7 @@ div[role="dialog"]::before, div[role="dialog"]::after,
 }
 
 /* =========================================================
-   8. 钱包弹窗 (Connect Wallet)
+   8. 钱包弹窗 (Web3-Onboard)
    ========================================================= */
 onboard-v2 {
   --onboard-modal-background: transparent;
@@ -235,7 +242,9 @@ onboard-v2 {
 }
 /* 钱包弹窗容器：应用双层卡片样式 */
 onboard-v2 .container {
-  /* 继承第3部分的样式 */
+  /* 这里会继承第3部分的双层样式，但我们需要去掉 padding 限制 */
+  padding: 0 !important; 
+  /* 钱包弹窗自带布局，不需要额外padding，只需要外框 */
 }
 onboard-v2 .sidebar {
   border-right: 1px solid #38455C !important;
