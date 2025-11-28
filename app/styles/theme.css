@@ -28,7 +28,7 @@ body {
 }
 
 /* =========================================================
-   3. 布局层透明化 & 去色
+   3. 布局层透明化
    ========================================================= */
 #root, .orderly-app, .oui-scaffold-root, .oui-scaffold-container, 
 div[class*="layout"], main {
@@ -36,138 +36,123 @@ div[class*="layout"], main {
   background-color: transparent !important;
 }
 
-/* 强制清除 SDK 内部背景色 (排除弹窗和导航栏) */
-.oui-bg-base-9:not(.oui-scaffold-topNavbar):not([role="dialog"]):not([class*="modal"]),
+/* 清除 SDK 内部背景色 */
+.oui-bg-base-9:not(.oui-scaffold-topNavbar):not([role="dialog"]),
 .oui-bg-base-8,
-[class*="oui-bg-"]:not(.oui-scaffold-topNavbar):not([role="dialog"]):not([class*="modal"]) {
+[class*="oui-bg-"]:not(.oui-scaffold-topNavbar):not([role="dialog"]) {
   background-color: transparent !important;
   background-image: none !important;
 }
 
 /* =========================================================
-   4. 核心：双层卡片 (Aitail Style)
+   4. 核心：物理双层卡片 (Physical Padding Method)
+   这是解决"间隙消失"的终极方案
    ========================================================= */
+
 .orderly-dashboard-layout-item,
-.oui-card:not([role="dialog"]):not([class*="modal"]),
+.oui-card:not([role="dialog"]),
 div[id*="tradingview"],
 aside,
 section {
-  /* 外框 */
+  /* 1. 外框 (Cage) */
   border: 1px solid #38455C !important;
-  /* 黑色间隙 */
-  box-shadow: inset 0 0 0 4px #000000 !important;
-  /* 内胆渐变 */
-  background: linear-gradient(180deg, #0A0A0A 0%, #1E2330 100%) !important;
+  
+  /* 2. 背景设为纯黑 (作为间隙颜色) */
+  background-color: #000000 !important;
+  
+  /* 3. [关键修复] 物理内边距 
+     强制把内容往里挤 4px，留出的 4px 黑色区域就是间隙
+     没有任何子元素能覆盖这里！
+  */
+  padding: 4px !important;
   
   border-radius: 12px !important;
   position: relative !important;
   z-index: 0;
   overflow: hidden !important; 
+  
+  /* 清除之前的阴影方案，避免冲突 */
+  box-shadow: none !important;
 }
 
-/* 底部呼吸光条 */
+/* A. 渐变内胆 (使用 ::before 填满 padding 内部) */
+.orderly-dashboard-layout-item::before,
+.oui-card:not([role="dialog"])::before,
+div[id*="tradingview"]::before,
+aside::before,
+section::before {
+  content: "";
+  position: absolute;
+  
+  /* 填满除去 padding 的区域 (即内容区) */
+  top: 4px; left: 4px; right: 4px; bottom: 4px;
+  
+  /* Aitail 渐变 */
+  background: linear-gradient(180deg, #0A0A0A 0%, #1E2330 100%) !important;
+  
+  border-radius: 8px; /* 内圆角 */
+  z-index: -1; /* 放在内容后面 */
+}
+
+/* B. 底部呼吸光条 */
 .orderly-dashboard-layout-item::after,
-.oui-card:not([role="dialog"]):not([class*="modal"])::after,
+.oui-card:not([role="dialog"])::after,
 div[id*="tradingview"]::after,
 aside::after,
 section::after {
   content: "";
   position: absolute;
+  
+  /* 定位在 padding 边界上 */
   bottom: 4px; 
-  left: 15%; right: 15%;
+  left: 20%; right: 20%;
   height: 1px;
+  
+  /* 亮蓝光 */
   background: radial-gradient(circle, rgba(130, 180, 255, 1) 0%, rgba(109, 151, 192, 0) 70%);
+  
   z-index: 10;
   pointer-events: none;
   box-shadow: 0 -2px 10px rgba(109, 151, 192, 0.8);
 }
 
 /* =========================================================
-   5. 导航栏 & 滚动条布局修复 (Layout Fix)
-   目标：导航栏在最顶端，滚动条在导航栏下面
+   5. 导航栏 & 滚动条 (保持之前的修复)
    ========================================================= */
-
-/* A. 导航栏：强制吸顶 */
 header, 
 .oui-scaffold-topNavbar, 
 nav {
-  /* 1. 样式 */
   background-color: rgba(0, 0, 0, 0.95) !important;
   border-bottom: 1px solid #38455C !important;
   backdrop-filter: blur(10px);
   
-  /* 2. 定位：Fixed (固定在窗口最上方) */
   position: fixed !important; 
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 60px !important; /* 强制高度，方便下面计算偏移 */
-  z-index: 2000 !important; /* 层级最高，压住滚动条 */
+  top: 0; left: 0; right: 0;
+  height: 60px !important;
+  z-index: 2000 !important;
   
-  /* 3. 布局对齐 */
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
   box-shadow: none !important;
-  padding-left: 20px !important;
-  padding-right: 20px !important;
+  
+  /* 导航栏不需要 padding 挤压，重置 */
+  padding: 0 20px !important;
+  border-radius: 0 !important;
 }
+/* 移除导航栏伪元素 */
+header::before, header::after, .oui-scaffold-topNavbar::before { display: none !important; }
 
-/* B. 滚动条 (Ticker)：被导航栏挤下去 */
-/* 匹配常见的公告/滚动条类名 */
-div[class*="announcement"],
-div[class*="ticker"],
-div[class*="marquee"],
-div[class*="notice"] {
-  /* 关键：给它加一个上边距，高度等于导航栏高度 */
+/* 滚动条下推 */
+div[class*="announcement"], div[class*="ticker"] {
   margin-top: 60px !important; 
   position: relative !important;
   z-index: 1000 !important;
-  
-  /* 美化滚动条背景，保持风格统一 */
-  background-color: #050505 !important;
-  border-bottom: 1px solid #38455C !important;
 }
-
-/* C. 页面内容：防止被固定导航栏挡住 */
-.oui-scaffold-content {
-  /* 如果没有滚动条，这个 padding 保证内容不被导航栏遮挡 */
-  /* 如果有滚动条，滚动条会把这个内容再往下推 */
-  padding-top: 70px !important; 
-}
+.oui-scaffold-content { padding-top: 70px !important; }
 
 /* =========================================================
-   6. 弹窗修复 (Modal Fix)
-   ========================================================= */
-div[role="dialog"],
-div[class*="modal"],
-div[class*="dialog-content"] {
-  background-color: #080808 !important; 
-  border: 1px solid #38455C !important;
-  border-radius: 12px !important;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.8) !important;
-  overflow: visible !important;
-  
-  position: fixed !important;
-  top: 50% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) !important;
-  z-index: 99999 !important;
-}
-/* 杀掉遮挡的伪元素 */
-div[role="dialog"]::before, div[role="dialog"]::after,
-div[class*="modal"]::before, div[class*="modal"]::after {
-  display: none !important;
-}
-/* 弹窗蒙版 */
-div[data-state="open"][class*="overlay"] {
-  background-color: rgba(0, 0, 0, 0.7) !important;
-  backdrop-filter: blur(4px);
-  z-index: 99990 !important;
-}
-
-/* =========================================================
-   7. 元素保护 (Input/Button)
+   6. 保护区 (Protection)
    ========================================================= */
 input, .oui-input, div[class*="input"], div[class*="dropdown"], div[class*="menu"] {
   box-shadow: none !important; 
@@ -175,6 +160,8 @@ input, .oui-input, div[class*="input"], div[class*="dropdown"], div[class*="menu
   background: #050505 !important;
   border-radius: 8px !important;
   min-height: auto !important;
+  padding: 8px 12px !important; /* 恢复输入框 padding */
+  margin: 0 !important;
 }
 input::after, .oui-input::after { display: none !important; }
 
@@ -205,7 +192,16 @@ div[role="tab"][aria-selected="true"] {
   background-color: rgba(109, 151, 192, 0.15) !important;
 }
 
-/* 页脚修改 */
+/* 弹窗修复 */
+div[role="dialog"], div[class*="modal"] {
+  background-color: #080808 !important; 
+  border: 1px solid #38455C !important;
+  border-radius: 12px !important;
+  padding: 0 !important; /* 弹窗不需要那个 4px 间隙 */
+}
+div[role="dialog"]::before, div[role="dialog"]::after { display: none !important; }
+
+/* 页脚 */
 a[href*="orderly.network"], .orderly-powered-by {
   font-size: 0 !important; visibility: hidden !important;
 }
@@ -215,4 +211,5 @@ a[href*="orderly.network"]::after, .orderly-powered-by::after {
   color: #555; display: block;
 }
 
-iframe { border: none !important; box-shadow: none !important; background: transparent !important; }
+/* iframe 修复 */
+iframe { border: none !important; box-shadow: none !important; background: transparent !important; width: 100% !important; height: 100% !important; }
