@@ -28,74 +28,52 @@ body {
 }
 
 /* =========================================================
-   3. 布局层透明化
+   3. 核心前置：强力去色 (The Transparency Hack)
+   【V20 成功的关键】必须把 SDK 内部的背景色杀掉，
+   否则它们会挡住我们的双层效果。
    ========================================================= */
 #root, .orderly-app, .oui-scaffold-root, .oui-scaffold-container, 
 div[class*="layout"], main {
   background: transparent !important;
-  background-color: transparent !important;
 }
 
-/* 清除 SDK 内部背景色 */
-.oui-bg-base-9:not(.oui-scaffold-topNavbar):not([role="dialog"]),
+/* 
+   匹配所有带背景色的 SDK 类名，设为透明。
+   (严格排除导航栏、弹窗、下拉菜单，防止它们也消失)
+*/
+.oui-bg-base-9:not(.oui-scaffold-topNavbar):not([role="dialog"]):not([class*="menu"]),
 .oui-bg-base-8,
-[class*="oui-bg-"]:not(.oui-scaffold-topNavbar):not([role="dialog"]) {
+[class*="oui-bg-"]:not(.oui-scaffold-topNavbar):not([role="dialog"]):not([class*="menu"]) {
   background-color: transparent !important;
   background-image: none !important;
 }
 
 /* =========================================================
-   4. 核心：物理双层卡片 (Physical Padding Method)
-   这是解决"间隙消失"的终极方案
+   4. 核心：双层卡片 (Restored V20 Logic)
+   使用内阴影模拟间隙，已被证明有效
    ========================================================= */
 
-/* 选中所有大板块 */
 .orderly-dashboard-layout-item,
 .oui-card:not([role="dialog"]),
 div[id*="tradingview"],
 aside,
 section {
-  /* 1. 外框 (Cage) */
+  /* 1. 外框 */
   border: 1px solid #38455C !important;
   
-  /* 2. 背景设为纯黑 (作为间隙颜色) */
-  background-color: #000000 !important;
+  /* 2. 黑色间隙 (4px 纯黑内阴影) */
+  box-shadow: inset 0 0 0 4px #000000 !important;
   
-  /* 3. [关键修复] 物理内边距 
-     强制把内容往里挤 4px，留出的 4px 黑色区域就是间隙
-     没有任何子元素能覆盖这里！
-  */
-  padding: 4px !important;
+  /* 3. 内胆渐变 */
+  background: linear-gradient(180deg, #0A0A0A 0%, #1E2330 100%) !important;
   
   border-radius: 12px !important;
   position: relative !important;
   z-index: 0;
   overflow: hidden !important; 
-  
-  /* 清除之前的阴影方案，避免冲突 */
-  box-shadow: none !important;
 }
 
-/* A. 渐变内胆 (使用 ::before 填满 padding 内部) */
-.orderly-dashboard-layout-item::before,
-.oui-card:not([role="dialog"])::before,
-div[id*="tradingview"]::before,
-aside::before,
-section::before {
-  content: "";
-  position: absolute;
-  
-  /* 填满除去 padding 的区域 (即内容区) */
-  top: 4px; left: 4px; right: 4px; bottom: 4px;
-  
-  /* Aitail 渐变 */
-  background: linear-gradient(180deg, #0A0A0A 0%, #1E2330 100%) !important;
-  
-  border-radius: 8px; /* 内圆角 */
-  z-index: -1; /* 放在内容后面 */
-}
-
-/* B. 底部呼吸光条 */
+/* 底部呼吸光条 */
 .orderly-dashboard-layout-item::after,
 .oui-card:not([role="dialog"])::after,
 div[id*="tradingview"]::after,
@@ -103,57 +81,66 @@ aside::after,
 section::after {
   content: "";
   position: absolute;
-  
-  /* 定位在 padding 边界上 */
+  /* 定位在内阴影边缘 */
   bottom: 4px; 
-  left: 20%; right: 20%;
+  left: 15%; right: 15%;
   height: 1px;
-  
-  /* 亮蓝光 */
   background: radial-gradient(circle, rgba(130, 180, 255, 1) 0%, rgba(109, 151, 192, 0) 70%);
-  
   z-index: 10;
   pointer-events: none;
   box-shadow: 0 -2px 10px rgba(109, 151, 192, 0.8);
 }
 
 /* =========================================================
-   5. 导航栏 & 滚动条 (保持之前的修复)
+   5. 导航栏布局修复 (Layout Fix)
+   解决重叠问题：导航栏固定，滚动条下移
    ========================================================= */
+
+/* A. 导航栏 (Header) */
 header, 
 .oui-scaffold-topNavbar, 
 nav {
+  /* 必须显式给背景，因为第3步可能把它搞透明了 */
   background-color: rgba(0, 0, 0, 0.95) !important;
   border-bottom: 1px solid #38455C !important;
   backdrop-filter: blur(10px);
   
+  /* 固定在顶部 */
   position: fixed !important; 
   top: 0; left: 0; right: 0;
-  height: 60px !important;
+  height: 60px !important; /* 固定高度 */
   z-index: 2000 !important;
   
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
   box-shadow: none !important;
-  
-  /* 导航栏不需要 padding 挤压，重置 */
   padding: 0 20px !important;
+  
+  /* 移除可能存在的伪元素干扰 */
   border-radius: 0 !important;
 }
-/* 移除导航栏伪元素 */
 header::before, header::after, .oui-scaffold-topNavbar::before { display: none !important; }
 
-/* 滚动条下推 */
-div[class*="announcement"], div[class*="ticker"] {
+/* B. 滚动条 (Ticker) */
+div[class*="announcement"], 
+div[class*="ticker"],
+div[class*="marquee"] {
+  /* 关键：给它一个上边距，正好避开导航栏的高度 */
   margin-top: 60px !important; 
   position: relative !important;
   z-index: 1000 !important;
+  background-color: #050505 !important;
 }
-.oui-scaffold-content { padding-top: 70px !important; }
+
+/* C. 页面内容 */
+.oui-scaffold-content { 
+  /* 内容也要避让，防止被挡住 */
+  padding-top: 20px !important; 
+}
 
 /* =========================================================
-   6. 保护区 (Protection)
+   6. 保护区：恢复输入框和按钮
    ========================================================= */
 input, .oui-input, div[class*="input"], div[class*="dropdown"], div[class*="menu"] {
   box-shadow: none !important; 
@@ -161,11 +148,11 @@ input, .oui-input, div[class*="input"], div[class*="dropdown"], div[class*="menu
   background: #050505 !important;
   border-radius: 8px !important;
   min-height: auto !important;
-  padding: 8px 12px !important; /* 恢复输入框 padding */
-  margin: 0 !important;
+  padding: 8px 12px !important;
 }
 input::after, .oui-input::after { display: none !important; }
 
+/* 主按钮 */
 button[class*="primary"], .oui-button-primary {
   background-color: #000000 !important;
   background-image: none !important;
@@ -181,6 +168,7 @@ button[class*="primary"]:hover, .oui-button-primary:hover {
   box-shadow: 0 0 12px rgba(109, 151, 192, 0.3) !important;
 }
 
+/* Tabs */
 div[role="tab"], button[role="tab"] {
   background-color: #000000 !important;
   border: 1px solid #37393D !important;
@@ -193,12 +181,16 @@ div[role="tab"][aria-selected="true"] {
   background-color: rgba(109, 151, 192, 0.15) !important;
 }
 
-/* 弹窗修复 */
+/* =========================================================
+   7. 弹窗与杂项
+   ========================================================= */
 div[role="dialog"], div[class*="modal"] {
   background-color: #080808 !important; 
   border: 1px solid #38455C !important;
   border-radius: 12px !important;
-  padding: 0 !important; /* 弹窗不需要那个 4px 间隙 */
+  box-shadow: 0 10px 40px rgba(0,0,0,0.8) !important;
+  /* 弹窗不需要双层，重置 */
+  padding: 0 !important; 
 }
 div[role="dialog"]::before, div[role="dialog"]::after { display: none !important; }
 
