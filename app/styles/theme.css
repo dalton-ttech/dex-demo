@@ -17,7 +17,7 @@
 }
 
 /* =========================================================
-   2. 全局背景与布局清洗
+   2. 全局背景
    ========================================================= */
 body {
   background-color: #000000 !important;
@@ -27,64 +27,63 @@ body {
   margin: 0;
 }
 
-/* 强制 SDK 布局容器透明 */
+/* 布局透明化 */
 #root, .orderly-app, .oui-scaffold-root, .oui-scaffold-container, 
-div[class*="layout"], main, .oui-flex {
+div[class*="layout"], main {
+  background: transparent !important;
+}
+
+/* 
+   强力去色：清除 SDK 内部背景
+   (排除导航栏和弹窗，防止误伤)
+*/
+.oui-bg-base-9:not(.oui-scaffold-topNavbar):not([role="dialog"]),
+.oui-bg-base-8,
+[class*="oui-bg-"]:not(.oui-scaffold-topNavbar):not([role="dialog"]) {
   background-color: transparent !important;
+  background-image: none !important;
 }
 
 /* =========================================================
-   3. 核心：物理双层卡片 (Border Gap Method)
-   这是最稳健的方案，利用 border 占据物理空间，绝对不会被遮挡
+   3. 核心：物理双层卡片 (Physical Border Gap)
+   【这是你验证过的有效方案】
    ========================================================= */
 
-/* 
-   应用目标：
-   1. .orderly-dashboard-layout-item (SDK板块容器)
-   2. .oui-bg-base-9 (SDK内部黑块)
-   3. .oui-card (标准卡片)
-   4. #tradingview (K线图)
-*/
 .orderly-dashboard-layout-item,
-.oui-bg-base-9:not(.oui-scaffold-topNavbar),
-.oui-bg-base-8,
-.oui-card,
+.oui-card:not([role="dialog"]),
 div[id*="tradingview"],
 aside,
 section {
-  /* 1. 物理间隙 (The Gap) */
-  /* 用 4px 纯黑边框作为间隙，内容绝对无法覆盖这里 */
-  border: 4px solid #000000 !important;
-  
-  /* 2. 外框线 (The Cage) */
-  /* 用阴影在边框外侧画 1px 的灰蓝线 */
+  /* 1. 外框线 (Outer Cage) */
   box-shadow: 0 0 0 1px #38455C !important;
   
-  /* 3. 内胆背景 (The Gut) */
-  background: linear-gradient(180deg, #0A0A0A 0%, #1E2330 100%) !important;
+  /* 2. 物理间隙 (Physical Gap) */
+  /* 使用 4px 纯黑边框作为间隙，内容无法覆盖 */
+  border: 4px solid #000000 !important;
   
-  /* 关键：限制背景只在内容区绘制，不延伸到 border 上 */
+  /* 3. 内胆渐变 (Inner Gut) */
+  /* background-clip: padding-box 确保背景只画在边框以内 */
+  background: linear-gradient(180deg, #0A0A0A 0%, #1E2330 100%) !important;
   background-clip: padding-box !important;
   
   border-radius: 12px !important;
   position: relative !important;
   z-index: 0;
   
-  /* 确保圆角剪切 */
+  /* 必须裁剪，防止内容直角溢出 */
   overflow: hidden !important;
 }
 
 /* 4. 底部呼吸光条 */
 .orderly-dashboard-layout-item::after,
-.oui-bg-base-9:not(.oui-scaffold-topNavbar)::after,
-.oui-card::after,
+.oui-card:not([role="dialog"])::after,
 div[id*="tradingview"]::after,
 aside::after,
 section::after {
   content: "";
   position: absolute;
   
-  /* 定位：放在 padding-box 的底部 */
+  /* 定位：放在 padding-box 底部 */
   bottom: 0; 
   left: 15%; right: 15%;
   height: 1px;
@@ -98,58 +97,78 @@ section::after {
 }
 
 /* =========================================================
-   4. 内部去色 (Internal Clearing)
-   确保子元素不带背景色，透出我们的内胆
+   4. 导航栏布局修复 (Layout Fix)
    ========================================================= */
-.orderly-dashboard-layout-item > *,
-.oui-bg-base-9 > *,
-.oui-card > * {
-  background-color: transparent !important;
+
+/* A. 导航栏 (Header) */
+header, 
+.oui-scaffold-topNavbar, 
+nav {
+  /* 强制重置背景和边框，不需要 4px 黑框 */
+  background-color: rgba(0, 0, 0, 0.95) !important;
+  border: none !important;
+  border-bottom: 1px solid #38455C !important;
+  background-clip: border-box !important;
+  backdrop-filter: blur(10px);
+  
+  /* 固定在顶部 */
+  position: fixed !important; 
+  top: 0; left: 0; right: 0;
+  height: 60px !important;
+  z-index: 2000 !important;
+  
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  box-shadow: none !important;
+  padding: 0 20px !important;
+  border-radius: 0 !important;
+}
+/* 移除导航栏伪元素 */
+header::before, header::after, .oui-scaffold-topNavbar::before { display: none !important; }
+
+/* B. 滚动条 (Ticker) 下推 */
+div[class*="announcement"], 
+div[class*="ticker"],
+div[class*="marquee"] {
+  margin-top: 60px !important; 
+  position: relative !important;
+  z-index: 1000 !important;
+  background-color: #050505 !important;
+}
+
+/* C. 内容避让 */
+.oui-scaffold-content { 
+  padding-top: 20px !important; 
 }
 
 /* =========================================================
-   5. 保护区 (Protection)
+   5. 保护区：恢复输入框和按钮
    ========================================================= */
-
-/* 输入框 & 下拉菜单 - 重置为单层 */
-input, 
-.oui-input,
-div[class*="input"],
-div[class*="dropdown"],
-div[class*="menu"] {
-  /* 去掉继承的 4px 黑框 */
+input, .oui-input, div[class*="input"], div[class*="dropdown"], div[class*="menu"] {
+  /* 这里的 border 是真实的边框，不是间隙 */
   border: 1px solid #37393D !important;
-  box-shadow: none !important;
-  
   background: #050505 !important;
-  background-clip: border-box !important; /* 恢复默认 */
+  background-clip: border-box !important;
   
+  box-shadow: none !important; 
   border-radius: 8px !important;
   min-height: auto !important;
+  padding: 8px 12px !important;
 }
-/* 杀掉伪元素 */
 input::after, .oui-input::after { display: none !important; }
 
-/* 按钮 */
-button, .oui-button { 
-  box-shadow: none !important; 
-  border: 1px solid transparent; /* 基础重置 */
-}
-
 /* 主按钮 */
-button[class*="primary"], 
-.oui-button-primary {
+button[class*="primary"], .oui-button-primary {
   background-color: #000000 !important;
   background-image: none !important;
   border: 1px solid #596571 !important;
   color: #FFFFFF !important;
   border-radius: 99px !important;
   font-weight: 600;
+  box-shadow: none !important;
 }
-
-button[class*="primary"]:hover,
-.oui-button-primary:hover {
-  background-color: #000000 !important;
+button[class*="primary"]:hover, .oui-button-primary:hover {
   border-color: #6D97C0 !important;
   color: #BFD4FA !important;
   box-shadow: 0 0 12px rgba(109, 151, 192, 0.3) !important;
@@ -169,33 +188,26 @@ div[role="tab"][aria-selected="true"] {
 }
 
 /* =========================================================
-   6. 导航栏修复
+   6. 弹窗与杂项
    ========================================================= */
-header, 
-.oui-scaffold-topNavbar {
-  /* 导航栏不需要 4px 黑框，要重置 */
-  border: none !important; 
-  border-bottom: 1px solid #38455C !important;
-  box-shadow: none !important;
-  background-color: rgba(0, 0, 0, 0.9) !important;
-  background-clip: border-box !important;
-  
-  backdrop-filter: blur(10px);
-  position: fixed !important;
-  top: 0; left: 0; right: 0;
-  z-index: 9999 !important;
+div[role="dialog"], div[class*="modal"] {
+  background-color: #080808 !important; 
+  border: 1px solid #38455C !important;
+  border-radius: 12px !important;
+  padding: 0 !important; 
+  box-shadow: 0 10px 40px rgba(0,0,0,0.8) !important;
+}
+div[role="dialog"]::before, div[role="dialog"]::after { display: none !important; }
+
+/* 页脚 */
+a[href*="orderly.network"], .orderly-powered-by {
+  font-size: 0 !important; visibility: hidden !important;
+}
+a[href*="orderly.network"]::after, .orderly-powered-by::after {
+  content: "Powered by TuringTouch";
+  font-size: 12px !important; visibility: visible !important;
+  color: #555; display: block;
 }
 
-/* 修正内容顶距 */
-.oui-scaffold-content {
-  margin-top: 60px !important;
-}
-
-/* K线图 iframe 修复 */
-iframe {
-  border: none !important;
-  box-shadow: none !important;
-  background: transparent !important;
-  width: 100% !important;
-  height: 100% !important;
-}
+/* iframe 修复 */
+iframe { border: none !important; box-shadow: none !important; background: transparent !important; width: 100% !important; height: 100% !important; }
