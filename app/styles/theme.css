@@ -17,7 +17,7 @@
 }
 
 /* =========================================================
-   2. 全局背景
+   2. 全局背景 (纯黑)
    ========================================================= */
 body {
   background-color: #000000 !important;
@@ -27,63 +27,54 @@ body {
   margin: 0;
 }
 
-/* 布局透明化 */
+/* 布局容器透明化 */
 #root, .orderly-app, .oui-scaffold-root, .oui-scaffold-container, 
 div[class*="layout"], main {
   background: transparent !important;
 }
 
-/* 
-   强力去色：清除 SDK 内部背景
-   (排除导航栏和弹窗，防止误伤)
-*/
-.oui-bg-base-9:not(.oui-scaffold-topNavbar):not([role="dialog"]),
-.oui-bg-base-8,
-[class*="oui-bg-"]:not(.oui-scaffold-topNavbar):not([role="dialog"]) {
-  background-color: transparent !important;
-  background-image: none !important;
-}
-
 /* =========================================================
    3. 核心：物理双层卡片 (Physical Border Gap)
-   【这是你验证过的有效方案】
+   【关键修正】：使用 :not(.oui-scaffold-topNavbar) 排除导航栏
    ========================================================= */
 
+/* 
+   选中所有卡片容器，但绝不选中导航栏！
+*/
 .orderly-dashboard-layout-item,
+.oui-bg-base-9:not(.oui-scaffold-topNavbar):not([role="dialog"]),
+.oui-bg-base-8,
 .oui-card:not([role="dialog"]),
 div[id*="tradingview"],
 aside,
 section {
-  /* 1. 外框线 (Outer Cage) */
-  box-shadow: 0 0 0 1px #38455C !important;
-  
-  /* 2. 物理间隙 (Physical Gap) */
-  /* 使用 4px 纯黑边框作为间隙，内容无法覆盖 */
+  /* 1. 物理间隙 (4px 黑墙) */
   border: 4px solid #000000 !important;
   
-  /* 3. 内胆渐变 (Inner Gut) */
-  /* background-clip: padding-box 确保背景只画在边框以内 */
+  /* 2. 外框线 (1px 灰蓝阴影) */
+  box-shadow: 0 0 0 1px #38455C !important;
+  
+  /* 3. 内胆渐变 */
   background: linear-gradient(180deg, #0A0A0A 0%, #1E2330 100%) !important;
+  /* 确保背景只画在内容区，不染到 border 上 */
   background-clip: padding-box !important;
   
   border-radius: 12px !important;
   position: relative !important;
   z-index: 0;
-  
-  /* 必须裁剪，防止内容直角溢出 */
   overflow: hidden !important;
 }
 
 /* 4. 底部呼吸光条 */
 .orderly-dashboard-layout-item::after,
+.oui-bg-base-9:not(.oui-scaffold-topNavbar):not([role="dialog"])::after,
 .oui-card:not([role="dialog"])::after,
 div[id*="tradingview"]::after,
 aside::after,
 section::after {
   content: "";
   position: absolute;
-  
-  /* 定位：放在 padding-box 底部 */
+  /* 定位在 padding-box 底部 */
   bottom: 0; 
   left: 15%; right: 15%;
   height: 1px;
@@ -97,37 +88,44 @@ section::after {
 }
 
 /* =========================================================
-   4. 导航栏布局修复 (Layout Fix)
+   4. 导航栏专属样式 (Navbar Special)
+   强制覆盖掉 .oui-bg-base-9 的通用样式
    ========================================================= */
-
-/* A. 导航栏 (Header) */
 header, 
-.oui-scaffold-topNavbar, 
-nav {
-  /* 强制重置背景和边框，不需要 4px 黑框 */
-  background-color: rgba(0, 0, 0, 0.95) !important;
-  border: none !important;
+.oui-scaffold-topNavbar {
+  /* 1. 重置卡片样式 */
+  border: none !important; 
   border-bottom: 1px solid #38455C !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  
+  /* 2. 赋予导航栏自己的背景 (半透明黑) */
+  background-color: rgba(0, 0, 0, 0.95) !important;
   background-clip: border-box !important;
   backdrop-filter: blur(10px);
   
-  /* 固定在顶部 */
+  /* 3. 固定定位 */
   position: fixed !important; 
   top: 0; left: 0; right: 0;
   height: 60px !important;
   z-index: 2000 !important;
   
+  /* 4. 布局 */
   display: flex !important;
   align-items: center !important;
-  justify-content: space-between !important;
-  box-shadow: none !important;
   padding: 0 20px !important;
-  border-radius: 0 !important;
 }
-/* 移除导航栏伪元素 */
-header::before, header::after, .oui-scaffold-topNavbar::before { display: none !important; }
 
-/* B. 滚动条 (Ticker) 下推 */
+/* 移除导航栏可能继承的伪元素 */
+header::before, header::after, .oui-scaffold-topNavbar::before, .oui-scaffold-topNavbar::after {
+  display: none !important;
+}
+
+/* =========================================================
+   5. 布局避让 (Content Spacing)
+   ========================================================= */
+
+/* 滚动条下推 */
 div[class*="announcement"], 
 div[class*="ticker"],
 div[class*="marquee"] {
@@ -137,20 +135,18 @@ div[class*="marquee"] {
   background-color: #050505 !important;
 }
 
-/* C. 内容避让 */
+/* 页面内容避让 */
 .oui-scaffold-content { 
   padding-top: 20px !important; 
 }
 
 /* =========================================================
-   5. 保护区：恢复输入框和按钮
+   6. 保护区 (Input / Button)
    ========================================================= */
 input, .oui-input, div[class*="input"], div[class*="dropdown"], div[class*="menu"] {
-  /* 这里的 border 是真实的边框，不是间隙 */
   border: 1px solid #37393D !important;
   background: #050505 !important;
   background-clip: border-box !important;
-  
   box-shadow: none !important; 
   border-radius: 8px !important;
   min-height: auto !important;
@@ -188,7 +184,7 @@ div[role="tab"][aria-selected="true"] {
 }
 
 /* =========================================================
-   6. 弹窗与杂项
+   7. 弹窗与页脚
    ========================================================= */
 div[role="dialog"], div[class*="modal"] {
   background-color: #080808 !important; 
@@ -199,7 +195,6 @@ div[role="dialog"], div[class*="modal"] {
 }
 div[role="dialog"]::before, div[role="dialog"]::after { display: none !important; }
 
-/* 页脚 */
 a[href*="orderly.network"], .orderly-powered-by {
   font-size: 0 !important; visibility: hidden !important;
 }
@@ -209,5 +204,4 @@ a[href*="orderly.network"]::after, .orderly-powered-by::after {
   color: #555; display: block;
 }
 
-/* iframe 修复 */
 iframe { border: none !important; box-shadow: none !important; background: transparent !important; width: 100% !important; height: 100% !important; }
