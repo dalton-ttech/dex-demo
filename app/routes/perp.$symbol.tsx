@@ -49,40 +49,46 @@ export default function PerpPage() {
     [navigate, searchParams]
   );
 
-  // --- 极致去标配置 ---
   const customTradingViewConfig = useMemo(() => {
     const originalConfig = config.tradingPage.tradingViewConfig || {};
 
     return {
       ...originalConfig,
 
-      // [关键 1]：禁用特性列表
-      // 这里禁用了 context_menus (右键菜单) 和 symbol_info (商品详情弹窗)
-      // 这样用户就无法点开你截图里的那个框了
+      // 禁用特性列表 (保持不变，继续禁用缓存和弹窗)
       disabled_features: [
         "use_localstorage_for_settings",
+        "save_chart_properties_to_local_storage",
         "header_symbol_search",
-        "symbol_info",           // <--- 禁用商品详情弹窗
-        "display_market_status", // 隐藏市场状态
+        "symbol_info",
+        "display_market_status",
         "header_compare",
         "header_screenshot",
         "popup_hints",
-        "show_exchange_logos",   // 隐藏交易所Logo
+        "show_exchange_logos",
       ],
 
-      // 启用特性：隐藏左侧工具栏，让界面更像专业交易所
       enabled_features: [
         "hide_left_toolbar_by_default"
       ],
 
       overrides: {
-        // [关键 2]：强制左上角只显示 Ticker
-        // 效果：只显示 "PERP_BTC_USDC"，不显示 "Orderly"
+        // --- 核心显示配置 ---
+        // 1. 只显示代码 (Ticker)
         "mainSeriesProperties.statusViewStyle.symbolTextSource": "ticker",
+
+        // 2. 不显示交易所 (Hidden)
         "mainSeriesProperties.statusViewStyle.showExchange": false,
         "paneProperties.legendProperties.showExchange": false,
 
-        // [关键 3]：配色 (Aitail 莫兰迪色 & 深灰黑底)
+        // 3. [关键修改]：开启时间周期显示！
+        // true = 显示 "15", "1h" 等; false = 隐藏
+        "mainSeriesProperties.statusViewStyle.showResolutions": true,
+
+        // 4. 不显示描述
+        "mainSeriesProperties.statusViewStyle.showDescription": false,
+
+        // --- 配色配置 (Aitail 风格) ---
         "paneProperties.background": "#0A0A0A",
         "paneProperties.backgroundType": "solid",
         "paneProperties.vertGridProperties.color": "rgba(55, 57, 61, 0.2)",
@@ -95,7 +101,6 @@ export default function PerpPage() {
         "mainSeriesProperties.candleStyle.wickUpColor": "#89C9A0",
         "mainSeriesProperties.candleStyle.wickDownColor": "#D87A7A",
       },
-      // 工具栏背景
       loading_screen: { backgroundColor: "#0A0A0A" },
       toolbar_bg: "#0A0A0A",
     };
