@@ -1,0 +1,19 @@
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" id="qellfi-icon-padded"
+    width="24" height="24" viewBox="0 0 100 100"
+    xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="techPurpleIconPadded" x1="0%" y1="0%" x2="100%"
+            y2="100%">
+            <stop offset="0%" style="stop-color:#a855f7;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#6b21a8;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+    <!-- 增加 ViewBox 到 100x100，图形保持约 60x60 并居中 (translate 20,20) -->
+    <!-- 这样四周各有 20px 的留白 -->
+    <g transform="translate(20, 20)">
+        <path
+            d="M30 0C13.5 0 0 13.5 0 30C0 46.5 13.5 60 30 60C36.4 60 42.2 58 47.1 54.6L38.6 46.1C35.9 47.3 33.1 48 30 48C20.1 48 12 39.9 12 30C12 20.1 20.1 12 30 12C39.9 12 48 20.1 48 30C48 33.1 47.3 35.9 46.1 38.6L54.6 47.1C58 42.2 60 36.4 60 30C60 13.5 46.5 0 30 0ZM51 51L66 66"
+            fill="none" stroke="url(#techPurpleIconPadded)" stroke-width="8"
+            stroke-linecap="square" stroke-linejoin="miter" />
+    </g>
+</svg>
