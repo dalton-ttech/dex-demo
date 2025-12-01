@@ -30,7 +30,7 @@ export default function PerpPage() {
   useEffect(() => {
     if (ticker && ticker.mark_price) {
       const price = formatTitlePrice(ticker.mark_price);
-      document.title = `${price} | ${formatSymbol(symbol)} | Qell`;
+      document.title = `${price} · ${formatSymbol(symbol)} · Qell`;
     }
   }, [ticker, symbol]);
 
@@ -42,10 +42,8 @@ export default function PerpPage() {
     (data: API.Symbol) => {
       const symbol = data.symbol;
       setSymbol(symbol);
-
       const searchParamsString = searchParams.toString();
       const queryString = searchParamsString ? `?${searchParamsString}` : '';
-
       navigate(`/perp/${symbol}${queryString}`);
     },
     [navigate, searchParams]
@@ -56,19 +54,36 @@ export default function PerpPage() {
 
     return {
       ...originalConfig,
+
+      // [新增] 禁用一些不需要的特性，减少暴露原始数据的入口
+      disabled_features: [
+        "header_symbol_search", // 禁用头部的搜索（防止看到不需要的信息）
+        "symbol_info",          // 尝试禁用右键菜单里的'Symbol Info'
+        "display_market_status",// 隐藏市场开闭状态
+        "go_to_date",
+        "header_compare",       // 隐藏对比功能
+      ],
+
+      // [新增] 启用特性
+      enabled_features: [
+        "hide_left_toolbar_by_default" // 默认隐藏左侧绘图工具，界面更清爽
+      ],
+
       overrides: {
-        // --- 1. 背景与网格 (保持之前的 Aitail 风格) ---
+        // --- 1. 核心去名 (关键修改) ---
+        // 强制左上角只显示 Ticker (如 PERP_BTC_USDC)，不显示描述和交易所
+        "mainSeriesProperties.statusViewStyle.symbolTextSource": "ticker",
+
+        // 再次强制关闭交易所显示
+        "mainSeriesProperties.statusViewStyle.showExchange": false,
+        "paneProperties.legendProperties.showExchange": false,
+
+        // --- 2. 颜色配置 (莫兰迪色 & 深灰黑底) ---
         "paneProperties.background": "#0A0A0A",
         "paneProperties.backgroundType": "solid",
         "paneProperties.vertGridProperties.color": "rgba(55, 57, 61, 0.2)",
         "paneProperties.horzGridProperties.color": "rgba(55, 57, 61, 0.2)",
 
-        // --- 2. 隐藏 'Orderly' 文字 (关键修改) ---
-        // 这两行会隐藏图例上的交易所名称
-        "paneProperties.legendProperties.showExchange": false,
-        "mainSeriesProperties.statusViewStyle.showExchange": false,
-
-        // --- 3. 蜡烛图颜色 (莫兰迪红绿) ---
         "mainSeriesProperties.candleStyle.upColor": "#89C9A0",
         "mainSeriesProperties.candleStyle.downColor": "#D87A7A",
         "mainSeriesProperties.candleStyle.borderUpColor": "#89C9A0",
