@@ -30,7 +30,7 @@ export default function PerpPage() {
   useEffect(() => {
     if (ticker && ticker.mark_price) {
       const price = formatTitlePrice(ticker.mark_price);
-      document.title = `${price} | ${formatSymbol(symbol)} | Qell`;
+      document.title = `${price} · ${formatSymbol(symbol)} · Qell`;
     }
   }, [ticker, symbol]);
 
