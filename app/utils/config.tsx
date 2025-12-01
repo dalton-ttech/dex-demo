@@ -36,7 +36,7 @@ const config: OrderlyConfig = {
           {
             name: "Trading rewards",
             href: "https://app.orderly.network/tradingRewards",
-            description: "Trade with Orderly to earn ORDER",
+            description: "Trade with Qell to earn ORDER",
             icon: <OrderlyIcon size={14} />,
             activeIcon: <OrderlyActiveIcon size={14} />,
             target: "_blank",
@@ -62,19 +62,19 @@ const config: OrderlyConfig = {
       ],
     },
     footerProps: {
-      telegramUrl: "https://orderly.network",
-      discordUrl: "https://discord.com/invite/orderlynetwork",
-      twitterUrl: "https://twitter.com/OrderlyNetwork",
+      telegramUrl: "",
+      discordUrl: "",
+      twitterUrl: "",
       trailing: <span className="oui-text-2xs oui-text-base-contrast-54">Charts powered by <a href="https://tradingview.com" target="_blank" rel="noopener noreferrer">TradingView</a></span>
     },
   },
   orderlyAppProvider: {
     appIcons: {
       main: {
-        img: "/orderly-logo.svg",
+        img: "",
       },
       secondary: {
-        img: "/orderly-logo-secondary.svg",
+        img: "",
       },
     },
   },
