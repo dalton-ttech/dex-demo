@@ -267,3 +267,57 @@ a[href*="orderly.network"]::after, .orderly-powered-by::after {
 }
 
 iframe { border: none !important; box-shadow: none !important; background: transparent !important; width: 100% !important; height: 100% !important; }
+/* =========================================================
+   10. 修复右上角悬浮弹窗 (Radix Popper Fix)
+   ========================================================= */
+
+/* 
+   原理：选中所有由 Radix 生成、且定位在顶部的弹出层包装器
+   我们强制将其靠右对齐，覆盖掉 JS 计算出的错误位置
+*/
+div[data-radix-popper-content-wrapper][style*="top: 0px"] {
+  /* 1. 强制靠右，距离屏幕右边 20px */
+  left: auto !important;
+  right: 20px !important;
+  
+  /* 2. 强制垂直位移，正好位于导航栏(64px)下方 */
+  /* transform 的第二个参数是 Y 轴位移 */
+  transform: translateY(68px) !important;
+  
+  /* 3. 确保不超出屏幕宽度 */
+  max-width: 100vw !important;
+  
+  /* 4. 确保层级在导航栏之上 */
+  z-index: 2100 !important;
+}
+
+/* 
+   针对弹窗内部的内容容器，应用我们的双层卡片样式 
+   这样它就不是丑陋的默认样式，而是 Aitail 风格
+*/
+div[data-radix-popper-content-wrapper] > div {
+  /* 物理间隙 */
+  border: 4px solid #000000 !important;
+  /* 外框 */
+  box-shadow: 0 0 0 1px #38455C !important;
+  /* 渐变内胆 */
+  background: linear-gradient(180deg, #0A0A0A 0%, #1E2330 100%) !important;
+  background-clip: padding-box !important;
+  
+  border-radius: 12px !important;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 给它加上呼吸光条 */
+div[data-radix-popper-content-wrapper] > div::after {
+  content: "";
+  position: absolute;
+  bottom: 0; 
+  left: 15%; right: 15%;
+  height: 1px;
+  background: radial-gradient(circle, rgba(130, 180, 255, 1) 0%, rgba(109, 151, 192, 0) 70%);
+  z-index: 10;
+  pointer-events: none;
+  box-shadow: 0 -2px 10px rgba(109, 151, 192, 0.8);
+}
