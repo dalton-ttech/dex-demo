@@ -1,8 +1,7 @@
 /* =========================================================
-   1. 变量定义 (Aitail System)
+   1. 变量定义
    ========================================================= */
 :root, html {
-  /* 劫持 SDK 默认背景变量 */
   --w3o-background-color: transparent !important;
   --w3o-surface-color: #000000 !important;
   --oui-font-family: 'Manrope', system-ui, -apple-system, sans-serif;
@@ -34,28 +33,26 @@ div[class*="layout"], main {
   background: transparent !important;
 }
 
+/* =========================================================
+   3. 核心：物理双层卡片 (Restored Physical Border)
+   【绝对回滚】：使用 border: 4px solid #000 作为间隙
+   这是之前验证成功的方案，不再更改逻辑。
+   ========================================================= */
+
 /* 
-   强力去色：清除 SDK 内部背景 
-   (排除弹窗和导航栏，防止误伤)
+   精准选中所有卡片容器
+   严格排除：导航栏、弹窗、下拉菜单
 */
 .oui-bg-base-9:not(.oui-scaffold-topNavbar):not([role="dialog"]):not([class*="modal"]):not(.oui-dialog-content),
 .oui-bg-base-8:not([role="dialog"]),
-[class*="oui-bg-"]:not(.oui-scaffold-topNavbar):not([role="dialog"]):not([class*="modal"]):not(.oui-dialog-content) {
-  background-color: transparent !important;
-  background-image: none !important;
-}
-
-/* =========================================================
-   3. 核心：物理双层卡片 (Physical Border Gap)
-   应用对象：主界面板块、侧边栏、TradingView、钱包容器
-   ========================================================= */
-.orderly-dashboard-layout-item,
 .oui-card:not([role="dialog"]):not([class*="modal"]),
+.orderly-dashboard-layout-item,
 div[id*="tradingview"],
 aside,
 section,
+/* 包含钱包弹窗容器 */
 onboard-v2 .container {
-  /* 1. 物理间隙 (4px 黑墙) */
+  /* 1. 物理间隙 (4px 黑墙) - 核心 */
   border: 4px solid #000000 !important;
   
   /* 2. 外框线 (1px 灰蓝阴影) */
@@ -63,20 +60,23 @@ onboard-v2 .container {
   
   /* 3. 内胆渐变 */
   background: linear-gradient(180deg, #0A0A0A 0%, #1E2330 100%) !important;
-  /* 关键：确保背景只画在内容区，不染到 border 上 */
+  
+  /* 4. 关键：背景只画在内容区，不画在 Border 上 */
   background-clip: padding-box !important;
   
   border-radius: 12px !important;
   position: relative !important;
   z-index: 0;
   
-  /* 强制裁剪，防止圆角溢出 */
-  overflow: hidden !important; 
+  /* 必须裁剪 */
+  overflow: hidden !important;
 }
 
 /* 底部呼吸光条 */
-.orderly-dashboard-layout-item::after,
+.oui-bg-base-9:not(.oui-scaffold-topNavbar):not([role="dialog"]):not([class*="modal"]):not(.oui-dialog-content)::after,
+.oui-bg-base-8:not([role="dialog"])::after,
 .oui-card:not([role="dialog"]):not([class*="modal"])::after,
+.orderly-dashboard-layout-item::after,
 div[id*="tradingview"]::after,
 aside::after,
 section::after,
@@ -99,7 +99,8 @@ onboard-v2 .container::after {
    确保子元素不带背景色，透出我们的内胆
    ========================================================= */
 .oui-bg-base-9:not(.oui-scaffold-topNavbar):not([role="dialog"]) > *,
-.oui-card > * {
+.oui-card > *,
+.orderly-dashboard-layout-item > * {
   background-color: transparent !important;
 }
 
@@ -114,7 +115,6 @@ header,
   background-clip: border-box !important;
   backdrop-filter: blur(10px);
   
-  /* 固定定位吸顶 */
   position: fixed !important; 
   top: 0; left: 0; right: 0;
   height: 64px !important;
@@ -123,17 +123,12 @@ header,
   display: flex !important;
   align-items: center !important;
   padding: 0 20px !important;
-  
-  /* 允许下拉菜单溢出显示 */
   overflow: visible !important;
 }
 /* 移除导航栏可能继承的伪元素 */
 header::before, header::after, .oui-scaffold-topNavbar::before { display: none !important; }
 
-/* 
-   [关键修复]：导航栏按钮文字颜色
-   强制把按钮内的文字和图标设为白色，解决"全黑按钮"问题
-*/
+/* 导航栏按钮文字颜色修复 */
 header button span,
 .oui-scaffold-topNavbar button span,
 .oui-scaffold-topNavbar [class*="text-"] {
@@ -141,16 +136,7 @@ header button span,
   -webkit-text-fill-color: #ffffff !important;
 }
 
-/* 导航栏按钮背景特例 */
-.oui-scaffold-topNavbar button {
-  background-color: transparent !important;
-  border: 1px solid transparent !important;
-}
-.oui-scaffold-topNavbar button:hover {
-  background-color: rgba(255,255,255,0.1) !important;
-}
-
-/* 页面内容下移 (避让导航栏) */
+/* 页面内容下移 */
 .oui-scaffold-container, main { 
   padding-top: 64px !important; 
   margin-top: 0 !important;
@@ -164,7 +150,7 @@ div[class*="announcement"], div[class*="ticker"] {
 }
 
 /* =========================================================
-   6. 保护区 (Input / Button / Tabs)
+   6. 保护区 (Input / Button)
    ========================================================= */
 input, .oui-input, div[class*="input"], div[class*="dropdown"], div[class*="menu"] {
   border: 1px solid #37393D !important;
@@ -177,7 +163,6 @@ input, .oui-input, div[class*="input"], div[class*="dropdown"], div[class*="menu
 }
 input::after, .oui-input::after { display: none !important; }
 
-/* 主按钮 */
 button[class*="primary"], .oui-button-primary {
   background-color: #000000 !important;
   background-image: none !important;
@@ -193,7 +178,6 @@ button[class*="primary"]:hover, .oui-button-primary:hover {
   box-shadow: 0 0 12px rgba(109, 151, 192, 0.3) !important;
 }
 
-/* Tabs */
 div[role="tab"], button[role="tab"] {
   background-color: #000000 !important;
   border: 1px solid #37393D !important;
@@ -207,7 +191,7 @@ div[role="tab"][aria-selected="true"] {
 }
 
 /* =========================================================
-   7. 弹窗修复 (Deposit Fix)
+   7. 弹窗修复 (Deposit Fix) - 重构布局逻辑
    ========================================================= */
 div[role="dialog"], 
 div[class*="modal"],
@@ -217,22 +201,34 @@ div[class*="modal"],
   box-shadow: 0 20px 60px rgba(0,0,0,0.95) !important;
   border-radius: 16px !important;
   
-  /* 使用 absolute 让 SDK 控制布局，避免挤压 */
-  position: absolute !important; 
-  z-index: 10000 !important;
-  
-  /* 强制撑开宽度 */
-  min-width: 400px !important;
+  /* 
+     [修复错位和窄小]
+     1. width: 480px 强制撑宽，给内容留空间
+     2. height: auto 让内容自然撑开高度
+     3. padding: 24px 保证内部呼吸感
+  */
+  width: 480px !important;
+  max-width: 90vw !important;
+  height: auto !important;
   padding: 24px !important;
   
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  
+  z-index: 10000 !important;
   opacity: 1 !important;
   visibility: visible !important;
   overflow: visible !important;
 }
+
+/* 杀掉 Deposit 弹窗上的伪元素（双层结构残留） */
 div[role="dialog"]::before, div[role="dialog"]::after,
 .oui-dialog-content::before, .oui-dialog-content::after {
   display: none !important; content: none !important;
 }
+
 .oui-dialog-overlay, div[data-state="open"][class*="overlay"] {
   background-color: rgba(0, 0, 0, 0.8) !important;
   backdrop-filter: blur(4px);
@@ -240,7 +236,7 @@ div[role="dialog"]::before, div[role="dialog"]::after,
 }
 
 /* =========================================================
-   8. 钱包弹窗 (Web3-Onboard)
+   8. 钱包弹窗 (Web3-Onboard) - 修复透明问题
    ========================================================= */
 onboard-v2 {
   --onboard-modal-background: transparent;
@@ -253,19 +249,28 @@ onboard-v2 {
   --onboard-close-button-background: transparent;
   --onboard-close-button-color: #fff;
 }
-onboard-v2 .container { padding: 0 !important; }
-onboard-v2 .sidebar {
-  border-right: 1px solid #38455C !important;
-  background: transparent !important;
+
+/* 容器应用双层卡片样式 (继承第3部分) */
+onboard-v2 .container { 
+  padding: 0 !important; /* 钱包弹窗不需要内边距挤压 */
 }
-/* 给右侧内容加黑底，防止透视 */
-onboard-v2 .content {
+
+/* 
+   [关键修复]：右侧内容区填黑
+   根据你的截图，右侧类名是 .content
+*/
+onboard-v2 .content,
+div[class*="onboard"] div[class*="content"] {
   background-color: #080808 !important;
 }
 
-/* =========================================================
-   9. 页脚与杂项
-   ========================================================= */
+/* 左侧边栏 */
+onboard-v2 .sidebar {
+  border-right: 1px solid #38455C !important;
+  background: #050505 !important;
+}
+
+/* 页脚 */
 a[href*="orderly.network"], .orderly-powered-by {
   font-size: 0 !important; visibility: hidden !important;
 }
