@@ -97,18 +97,42 @@ div[class*="exchangeName-"] {
     width: 0 !important;
 }
 
-/* 2. Specific targeting for text following the resolution (e.g. "15 · Orderly") */
-/* Usually: Symbol . Resolution . Exchange . Open ... */
-/* We want to hide the Exchange part. */
-/* Since we can't easily select text nodes, we try to hide the 3rd item if flex/grid */
+/* 2. Target by data-name attributes (Robust Method) */
+/* Based on user screenshot analysis */
+div[data-name="legend-exchange-title"],
+div[data-name="legend-source-title"],
+div[data-name="legend-provider-title"] {
+    display: none !important;
+    visibility: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
 
-/* 3. Hide anything containing 'Orderly' title attribute (if applicable) */
+/* 3. Target by hashed class structure (Fallback) */
+/* We target the container wrapping the title items */
+/* Usually: Symbol(0) -> Status(1) -> Interval(2) -> Exchange(3) -> Source(4) */
+/* If "Orderly" is the 3rd or 4th item in the title wrapper flex container */
+
+/* CAUTION: This relies on the order of elements. 
+   In the screenshot, we see: 
+   Symbol -> (Status?) -> Interval -> "Orderly" 
+   So "Orderly" seems to be the 3rd or 4th child.
+*/
+div[class*="titleWrapper-"] > div:nth-child(4), 
+div[class*="titleWrapper-"] > div:nth-child(5) {
+    /* Only hide if it looks like text and not the main symbol */
+    /* This is risky so we rely more on data-name above, but we can try to target specific behaviors if needed */
+}
+
+/* 4. Hide anything containing 'Orderly' title/aria label */
 [title*="Orderly"],
 [aria-label*="Orderly"] {
     display: none !important;
 }
 
-/* 4. Hide logo specifically */
+/* 5. Hide logo specifically */
 .tv-circle-logo,
 .tv-circle-logo--large,
 img[src*="orderly"],
@@ -116,8 +140,7 @@ svg[class*="logo"] {
     display: none !important;
 }
 
-/* 5. Fallback: Hide description if it contains the exchange name */
-/* Note: .pane-legend-line__description might be needed for other info, but user requested removal */
+/* 6. Hide description if it contains the exchange name */
 .pane-legend-line__description {
     display: none !important;
 }
