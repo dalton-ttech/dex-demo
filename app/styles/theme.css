@@ -257,11 +257,21 @@ div[class*="onboard"] div[class*="scroll-container"] {
 }
 
 /* 页脚 */
-a[href*="orderly.network"], .orderly-powered-by {
+a[href*="orderly.network"], 
+.orderly-powered-by,
+.oui-scaffold-footer-powered-by,
+div[class*="footer-powered-by"],
+span:contains("Powered by"),
+.oui-text-base-contrast-54:has(+ svg),
+svg:has(path[d*="M6.98336"]) {
   display: none !important;
   visibility: hidden !important;
   opacity: 0 !important;
   pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  position: absolute !important;
+  bottom: -9999px !important;
 }
 
 iframe { border: none !important; box-shadow: none !important; background: transparent !important; width: 100% !important; height: 100% !important; }

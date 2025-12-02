@@ -78,17 +78,46 @@ div[data-section-name='extendLeftTradingLine'] {
     --tv-color-pane-background: #16141c;
 }
 
-/* Hide Exchange/Market label in legend to remove 'Orderly' text */
+/* ==========================================================================
+   Aggressively Hide Exchange Label / 'Orderly' Text in Legend
+   ========================================================================== */
+
+/* 1. Standard TradingView classes for Legend items */
 .pane-legend-line__title--exchange,
 .pane-legend-line__source,
 .pane-legend-line__exchange,
+.pane-legend-line__description,
 span[class*="exchange-"],
-span[class*="exchangeName-"] {
+span[class*="exchangeName-"],
+div[class*="exchange-"],
+div[class*="exchangeName-"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    width: 0 !important;
+}
+
+/* 2. Specific targeting for text following the resolution (e.g. "15 · Orderly") */
+/* Usually: Symbol . Resolution . Exchange . Open ... */
+/* We want to hide the Exchange part. */
+/* Since we can't easily select text nodes, we try to hide the 3rd item if flex/grid */
+
+/* 3. Hide anything containing 'Orderly' title attribute (if applicable) */
+[title*="Orderly"],
+[aria-label*="Orderly"] {
     display: none !important;
 }
 
-/* Hide any potential logo in chart */
+/* 4. Hide logo specifically */
 .tv-circle-logo,
-.tv-circle-logo--large {
+.tv-circle-logo--large,
+img[src*="orderly"],
+svg[class*="logo"] {
+    display: none !important;
+}
+
+/* 5. Fallback: Hide description if it contains the exchange name */
+/* Note: .pane-legend-line__description might be needed for other info, but user requested removal */
+.pane-legend-line__description {
     display: none !important;
 }
