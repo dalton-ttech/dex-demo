@@ -74,8 +74,6 @@ export default function PerpPage() {
 
       enabled_features: [
         "hide_left_toolbar_by_default",
-        // 在状态栏仅显示最新价和涨跌幅，隐藏 OHLC
-        "show_last_price_and_change_only_in_series_legend",
       ],
 
       overrides: {
@@ -95,10 +93,13 @@ export default function PerpPage() {
         // 4. 不显示描述
         "mainSeriesProperties.statusViewStyle.showDescription": false,
 
-        // 5. 仅显示最新价与涨跌，隐藏 OHLC
-        "paneProperties.legendProperties.showSeriesOHLC": false,
+        // 5. 显示系列标题(符号)，不显示 OHLC
         "paneProperties.legendProperties.showSeriesTitle": true,
-        "paneProperties.legendProperties.showBarChange": true,
+        "paneProperties.legendProperties.showSeriesOHLC": false,
+        // 隐藏涨跌的数值（如果仍显示会占位）
+        "paneProperties.legendProperties.showBarChange": false,
+        // 禁用符号 Logo
+        "mainSeriesProperties.statusViewStyle.showSymbolLogo": false,
 
         // --- 配色配置 (Aitail 风格) ---
         "paneProperties.background": "#0A0A0A",

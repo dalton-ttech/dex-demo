@@ -128,3 +128,12 @@ img[src*="orderly"],
 svg[class*="logo"] {
     display: none !important;
 }
+
+/* Ensure symbol title in status line is visible */
+.pane-legend-line__title,
+div[data-name="legend-series-title"],
+div[data-name="legend-title"] {
+    display: inline-flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
