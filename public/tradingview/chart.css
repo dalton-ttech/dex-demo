@@ -86,7 +86,7 @@ div[data-section-name='extendLeftTradingLine'] {
 .pane-legend-line__title--exchange,
 .pane-legend-line__source,
 .pane-legend-line__exchange,
-.pane-legend-line__description,
+/* .pane-legend-line__description, -- REMOVED to preserve symbol name */
 span[class*="exchange-"],
 span[class*="exchangeName-"],
 div[class*="exchange-"],
@@ -140,7 +140,7 @@ svg[class*="logo"] {
     display: none !important;
 }
 
-/* 6. Hide description if it contains the exchange name */
-.pane-legend-line__description {
+/* 6. Hide description if it contains the exchange name - DISABLED to preserve symbol name */
+/* .pane-legend-line__description {
     display: none !important;
-}
+} */
