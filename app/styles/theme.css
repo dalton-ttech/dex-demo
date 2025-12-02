@@ -258,12 +258,10 @@ div[class*="onboard"] div[class*="scroll-container"] {
 
 /* 页脚 */
 a[href*="orderly.network"], .orderly-powered-by {
-  font-size: 0 !important; visibility: hidden !important;
-}
-a[href*="orderly.network"]::after, .orderly-powered-by::after {
-  content: "Powered by TuringTouch";
-  font-size: 12px !important; visibility: visible !important;
-  color: #555; display: block;
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
 
 iframe { border: none !important; box-shadow: none !important; background: transparent !important; width: 100% !important; height: 100% !important; }

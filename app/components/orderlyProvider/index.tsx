@@ -9,9 +9,9 @@ import walletConnect from '@web3-onboard/walletconnect'
 import binance from "@binance/w3w-blocknative-connector";
 
 const OrderlyProvider: FC<{ children: ReactNode }> = (props) => {
-	const networkId = import.meta.env.VITE_NETWORK_ID as NetworkId;
+  const networkId = import.meta.env.VITE_NETWORK_ID as NetworkId;
   const onChainChanged = useCallback(
-		(_chainId: number, {isTestnet}: {isTestnet: boolean}) => {
+    (_chainId: number, { isTestnet }: { isTestnet: boolean }) => {
       if (isTestnet && networkId === 'mainnet' || !isTestnet && networkId === 'testnet') {
         setTimeout(() => {
           const href = isTestnet ? import.meta.env.VITE_TESTNET_URL : import.meta.env.VITE_MAINNET_URL;
@@ -20,14 +20,14 @@ const OrderlyProvider: FC<{ children: ReactNode }> = (props) => {
           }
         }, 100);
       }
-		},
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[],
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
   );
-  
+
   return (
     <WalletConnectorProvider
-      solanaInitial={{network: networkId === 'mainnet' ? WalletAdapterNetwork.Mainnet : WalletAdapterNetwork.Devnet}}
+      solanaInitial={{ network: networkId === 'mainnet' ? WalletAdapterNetwork.Mainnet : WalletAdapterNetwork.Devnet }}
       evmInitial={import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID && typeof window !== 'undefined' ? {
         options: {
           wallets: [
@@ -50,10 +50,10 @@ const OrderlyProvider: FC<{ children: ReactNode }> = (props) => {
         networkId={networkId}
         onChainChanged={onChainChanged}
         appIcons={config.orderlyAppProvider.appIcons}
-       footer={<div className="text-xs text-gray-500 py-2 text-center">Powered by TuringTouch</div>}
->
-  {props.children}
-</OrderlyAppProvider>
+        footer={null}
+      >
+        {props.children}
+      </OrderlyAppProvider>
     </WalletConnectorProvider>
   );
 };

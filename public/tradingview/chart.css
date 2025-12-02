@@ -77,3 +77,18 @@ div[data-section-name='extendLeftTradingLine'] {
     --tv-color-platform-background: #16141c;
     --tv-color-pane-background: #16141c;
 }
+
+/* Hide Exchange/Market label in legend to remove 'Orderly' text */
+.pane-legend-line__title--exchange,
+.pane-legend-line__source,
+.pane-legend-line__exchange,
+span[class*="exchange-"],
+span[class*="exchangeName-"] {
+    display: none !important;
+}
+
+/* Hide any potential logo in chart */
+.tv-circle-logo,
+.tv-circle-logo--large {
+    display: none !important;
+}
