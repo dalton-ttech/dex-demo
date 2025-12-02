@@ -110,6 +110,11 @@ div[data-name="legend-provider-title"] {
     pointer-events: none !important;
 }
 
+/* Hide interval value in status line (fallback to overrides) */
+div[data-name="legend-interval"] {
+    display: none !important;
+}
+
 /* 4. Hide anything containing 'Orderly' title/aria label */
 [title*="Orderly"],
 [aria-label*="Orderly"] {
