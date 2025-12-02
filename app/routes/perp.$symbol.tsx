@@ -67,10 +67,15 @@ export default function PerpPage() {
         "header_screenshot",
         "popup_hints",
         "show_exchange_logos",
+        // 额外禁用：隐藏数据源/价格来源标签以及分辨率按钮
+        "symbol_info_price_source",
+        "hide_resolution_in_legend",
       ],
 
       enabled_features: [
-        "hide_left_toolbar_by_default"
+        "hide_left_toolbar_by_default",
+        // 在状态栏仅显示最新价和涨跌幅，隐藏 OHLC
+        "show_last_price_and_change_only_in_series_legend",
       ],
 
       overrides: {
@@ -78,16 +83,22 @@ export default function PerpPage() {
         // 1. 只显示代码 (Ticker)
         "mainSeriesProperties.statusViewStyle.symbolTextSource": "ticker",
 
-        // 2. 不显示交易所 (Hidden)
+        // 2. 不显示交易所/数据源
         "mainSeriesProperties.statusViewStyle.showExchange": false,
         "paneProperties.legendProperties.showExchange": false,
 
-        // 3. [关键修改]：开启时间周期显示！
-        // true = 显示 "15", "1h" 等; false = 隐藏
+        // 3. 隐藏状态栏中的分辨率 "1" 等
+        "mainSeriesProperties.statusViewStyle.showInterval": false,
+        // 保持顶部时间周期按钮显示
         "mainSeriesProperties.statusViewStyle.showResolutions": true,
 
         // 4. 不显示描述
         "mainSeriesProperties.statusViewStyle.showDescription": false,
+
+        // 5. 仅显示最新价与涨跌，隐藏 OHLC
+        "paneProperties.legendProperties.showSeriesOHLC": false,
+        "paneProperties.legendProperties.showSeriesTitle": true,
+        "paneProperties.legendProperties.showBarChange": true,
 
         // --- 配色配置 (Aitail 风格) ---
         "paneProperties.background": "#0A0A0A",
