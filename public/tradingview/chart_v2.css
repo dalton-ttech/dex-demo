@@ -138,6 +138,14 @@ div[data-name="legend-title"] {
     opacity: 1 !important;
 }
 
+/* Ensure description text (long name) is visible */
+.pane-legend-line__description,
+div[class*="legendMainSourceWrapper-"] [class*="description-"] {
+    display: inline-flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
 /* Ensure series title block is visible even in minimized mode */
 div[class*="legendMainSourceWrapper-"] [class*="series-"] {
     display: inline-flex !important;

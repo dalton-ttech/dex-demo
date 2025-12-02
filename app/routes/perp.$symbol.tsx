@@ -79,7 +79,7 @@ export default function PerpPage() {
       overrides: {
         // --- 核心显示配置 ---
         // 1. 只显示代码 (Ticker)
-        "mainSeriesProperties.statusViewStyle.symbolTextSource": "ticker",
+        "mainSeriesProperties.statusViewStyle.symbolTextSource": "description",
 
         // 2. 不显示交易所/数据源
         "mainSeriesProperties.statusViewStyle.showExchange": "false",
@@ -91,7 +91,7 @@ export default function PerpPage() {
         "mainSeriesProperties.statusViewStyle.showResolutions": "true",
 
         // 4. 不显示描述
-        "mainSeriesProperties.statusViewStyle.showDescription": "false",
+        "mainSeriesProperties.statusViewStyle.showDescription": "true",
 
         // 5. 显示系列标题(符号)，不显示 OHLC
         "paneProperties.legendProperties.showSeriesTitle": "true",
