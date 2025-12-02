@@ -85,8 +85,8 @@ export default function PerpPage() {
         "mainSeriesProperties.statusViewStyle.showExchange": false,
         "paneProperties.legendProperties.showExchange": false,
 
-        // 3. 隐藏状态栏中的分辨率 "1" 等
-        "mainSeriesProperties.statusViewStyle.showInterval": false,
+        // 3. 显示状态栏中的分辨率 (例如 15)
+        "mainSeriesProperties.statusViewStyle.showInterval": true,
         // 保持顶部时间周期按钮显示
         "mainSeriesProperties.statusViewStyle.showResolutions": true,
 
