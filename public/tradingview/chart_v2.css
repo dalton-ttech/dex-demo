@@ -104,6 +104,14 @@ div[data-name="legend-provider-title"] {
     pointer-events: none !important;
 }
 
+/* 2b. Hide provider/exchange using hashed class names (stable substrings) */
+div[class*="legendMainSourceWrapper-"] [class*="exchangeTitle-"],
+div[class*="legendMainSourceWrapper-"] [class*="providerTitle-"],
+[class*="priceSourceTitle-"] {
+    display: none !important;
+    visibility: hidden !important;
+}
+
 /* Show interval value in status line */
 div[data-name="legend-interval"] {
     display: inline-flex !important;
@@ -125,6 +133,13 @@ svg[class*="logo"] {
 .pane-legend-line__title,
 div[data-name="legend-series-title"],
 div[data-name="legend-title"] {
+    display: inline-flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Ensure series title block is visible even in minimized mode */
+div[class*="legendMainSourceWrapper-"] [class*="series-"] {
     display: inline-flex !important;
     visibility: visible !important;
     opacity: 1 !important;

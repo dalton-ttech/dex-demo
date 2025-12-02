@@ -79,7 +79,7 @@ export default function PerpPage() {
       overrides: {
         // --- 核心显示配置 ---
         // 1. 只显示代码 (Ticker)
-        "mainSeriesProperties.statusViewStyle.symbolTextSource": "description",
+        "mainSeriesProperties.statusViewStyle.symbolTextSource": "ticker",
 
         // 2. 不显示交易所/数据源
         "mainSeriesProperties.statusViewStyle.showExchange": "false",
