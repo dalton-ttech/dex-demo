@@ -261,7 +261,7 @@ a[href*="orderly.network"],
 .orderly-powered-by,
 .oui-scaffold-footer-powered-by,
 div[class*="footer-powered-by"],
-span:contains("Powered by"),
+/* span:contains("Powered by") REMOVED - Invalid CSS */
 .oui-text-base-contrast-54:has(+ svg),
 svg:has(path[d*="M6.98336"]) {
   display: none !important;

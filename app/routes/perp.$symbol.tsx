@@ -54,6 +54,7 @@ export default function PerpPage() {
 
     return {
       ...originalConfig,
+      customCssUrl: '/tradingview/chart_v2.css',
 
       // 禁用特性列表 (保持不变，继续禁用缓存和弹窗)
       disabled_features: [
