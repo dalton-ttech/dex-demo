@@ -50,7 +50,6 @@ const OrderlyProvider: FC<{ children: ReactNode }> = (props) => {
         networkId={networkId}
         onChainChanged={onChainChanged}
         appIcons={config.orderlyAppProvider.appIcons}
-        footer={null}
       >
         {props.children}
       </OrderlyAppProvider>

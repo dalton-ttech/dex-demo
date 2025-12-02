@@ -79,27 +79,29 @@ export default function PerpPage() {
       overrides: {
         // --- 核心显示配置 ---
         // 1. 只显示代码 (Ticker)
-        "mainSeriesProperties.statusViewStyle.symbolTextSource": "ticker",
+        "mainSeriesProperties.statusViewStyle.symbolTextSource": "description",
 
         // 2. 不显示交易所/数据源
-        "mainSeriesProperties.statusViewStyle.showExchange": false,
-        "paneProperties.legendProperties.showExchange": false,
+        "mainSeriesProperties.statusViewStyle.showExchange": "false",
+        "paneProperties.legendProperties.showExchange": "false",
 
         // 3. 显示状态栏中的分辨率 (例如 15)
-        "mainSeriesProperties.statusViewStyle.showInterval": true,
+        "mainSeriesProperties.statusViewStyle.showInterval": "true",
         // 保持顶部时间周期按钮显示
-        "mainSeriesProperties.statusViewStyle.showResolutions": true,
+        "mainSeriesProperties.statusViewStyle.showResolutions": "true",
 
         // 4. 不显示描述
-        "mainSeriesProperties.statusViewStyle.showDescription": false,
+        "mainSeriesProperties.statusViewStyle.showDescription": "false",
 
         // 5. 显示系列标题(符号)，不显示 OHLC
-        "paneProperties.legendProperties.showSeriesTitle": true,
-        "paneProperties.legendProperties.showSeriesOHLC": false,
+        "paneProperties.legendProperties.showSeriesTitle": "true",
+        "paneProperties.legendProperties.showSeriesOHLC": "false",
         // 隐藏涨跌的数值（如果仍显示会占位）
-        "paneProperties.legendProperties.showBarChange": false,
+        "paneProperties.legendProperties.showBarChange": "false",
+        // 保证整个 Legend 可见
+        "paneProperties.legendProperties.showLegend": "true",
         // 禁用符号 Logo
-        "mainSeriesProperties.statusViewStyle.showSymbolLogo": false,
+        "mainSeriesProperties.statusViewStyle.showSymbolLogo": "false",
 
         // --- 配色配置 (Aitail 风格) ---
         "paneProperties.background": "#0A0A0A",

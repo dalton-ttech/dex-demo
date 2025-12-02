@@ -82,15 +82,9 @@ div[data-section-name='extendLeftTradingLine'] {
    Aggressively Hide Exchange Label / 'Orderly' Text in Legend
    ========================================================================== */
 
-/* 1. Standard TradingView classes for Legend items */
+/* 1. Hide exchange items by explicit data-name only (safer) */
 .pane-legend-line__title--exchange,
-.pane-legend-line__source,
-.pane-legend-line__exchange,
-/* .pane-legend-line__description, -- REMOVED to preserve symbol name */
-span[class*="exchange-"],
-span[class*="exchangeName-"],
-div[class*="exchange-"],
-div[class*="exchangeName-"] {
+.pane-legend-line__exchange {
     display: none !important;
     visibility: hidden !important;
     opacity: 0 !important;
@@ -117,11 +111,7 @@ div[data-name="legend-interval"] {
     opacity: 1 !important;
 }
 
-/* 4. Hide anything containing 'Orderly' title/aria label */
-[title*="Orderly"],
-[aria-label*="Orderly"] {
-    display: none !important;
-}
+/* 4. Remove generic title/aria filters to avoid hiding symbol container */
 
 /* 5. Hide logo specifically */
 .tv-circle-logo,
