@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from '@remix-run/react'
+import { useAppContext } from '@orderly.network/react-app'
+import { Box } from '@orderly.network/ui'
+import { TradingPage } from '@orderly.network/trading'
+import config from '@/utils/config'
 import { DEFAULT_SYMBOL } from '@/utils/storage'
 import {
   ChevronDown,
@@ -167,8 +171,8 @@ const MarketRow: React.FC<MarketRowProps> = ({ symbol, name, price, change, char
   )
 }
 
-const Navbar: React.FC = () => (
-  <nav className="h-20 flex items-center justify-between px-6 md:px-12 fixed top-0 w-full z-50 bg-[#000000]/80 backdrop-blur-xl border-b border-[#1A1A1A]">
+const Navbar: React.FC<{ onConnect: () => void }> = ({ onConnect }) => (
+  <nav className="h-20 flex items-center justify-between px-6 md:px-12 sticky top-0 w-full z-50 bg-[#000000]/80 backdrop-blur-xl border-b border-[#1A1A1A]">
     <div className="flex items-center gap-12">
       <div className="flex items-center gap-2 group cursor-pointer">
         <div className="w-6 h-6 rounded bg-gradient-to-br from-[#37393D] to-[#BFD4FA] flex items-center justify-center">
@@ -185,21 +189,51 @@ const Navbar: React.FC = () => (
       </div>
     </div>
     <div className="flex items-center gap-4">
-      <div className="hidden md:flex items-center gap-2 bg-[#0A0A0A] border border-[#222] rounded-full px-3 py-1.5">
-        <Search size={14} className="text-[#666]" />
-        <input type="text" placeholder="Search tokens..." className="bg-transparent text-sm text-white placeholder-[#444] outline-none w-32" />
-        <span className="text-[10px] text-[#444] border border-[#333] px-1 rounded">/</span>
-      </div>
-      <button className="px-6 py-2 rounded-full border border-[#333] hover:border-[#666] hover:bg白/5 text-sm text-white transition-all">Connect</button>
+      <button onClick={onConnect} className="px-6 py-2 rounded-full border border-[#333] hover:border-[#666] hover:bg-white/5 text-sm text-white transition-all">Connect</button>
     </div>
   </nav>
 )
 
 export default function FirstPage() {
   const navigate = useNavigate()
+  const { connectWallet } = useAppContext()
+  const [symbol, setSymbol] = useState<string>(DEFAULT_SYMBOL)
+  const tradingViewConfig = React.useMemo(() => {
+    const original = config.tradingPage.tradingViewConfig || {}
+    return {
+      ...original,
+      customCssUrl: '/tradingview/chart_v2.css',
+      disabled_features: [
+        'use_localstorage_for_settings',
+        'save_chart_properties_to_local_storage',
+        'header_symbol_search',
+        'symbol_info',
+        'display_market_status',
+        'header_compare',
+        'header_screenshot',
+        'popup_hints',
+        'show_exchange_logos',
+        'symbol_info_price_source',
+        'hide_resolution_in_legend',
+      ],
+      enabled_features: ['hide_left_toolbar_by_default'],
+      overrides: {
+        'mainSeriesProperties.statusViewStyle.symbolTextSource': 'description',
+        'mainSeriesProperties.statusViewStyle.showExchange': 'false',
+        'paneProperties.legendProperties.showExchange': 'false',
+        'mainSeriesProperties.statusViewStyle.showInterval': 'true',
+        'mainSeriesProperties.statusViewStyle.showDescription': 'true',
+        'paneProperties.legendProperties.showSeriesTitle': 'true',
+        'paneProperties.legendProperties.showLegend': 'true',
+        'mainSeriesProperties.statusViewStyle.showSymbolLogo': 'false',
+      },
+      loading_screen: { backgroundColor: '#0A0A0A' },
+      toolbar_bg: '#0A0A0A',
+    }
+  }, [])
   return (
-    <div className="min-h-screen bg-[#000000] text白 font-mono selection:bg-[#BFD4FA] selection:text黑 overflow-x-hidden">
-      <Navbar />
+    <div className="min-h-screen bg-[#000000] text-white font-mono selection:bg-[#BFD4FA] selection:text-black overflow-x-hidden">
+      <Navbar onConnect={() => connectWallet()} />
       <div className="fixed top-[-10%] left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-[#BFD4FA] rounded-full blur-[300px] opacity-[0.05] pointer-events-none" />
       <main className="pt-32 pb-20 px-6 md:px-12 max-w-[1400px] mx-auto">
         <div className="flex flex-col items-center justify-center text-center gap-8 mb-16 mt-8 relative z-10">
@@ -213,7 +247,7 @@ export default function FirstPage() {
           <h1 className="text-4xl md:text-7xl font-bold tracking-tighter leading-[1.1] max-w-5xl">
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#BFD4FA] to-white/70">Limitless Liquidity.</span>
             <br />
-            <span className="text白">Zero Latency.</span>
+            <span className="text-white">Zero Latency.</span>
           </h1>
           <p className="text-[#999999] text-base md:text-lg leading-relaxed max-w-lg font-light">CEX-level performance. Ethereum security.</p>
           <div className="flex flex-col sm:flex-row gap-4 pt-6 items-center">
@@ -221,90 +255,26 @@ export default function FirstPage() {
             <GlitchButton text="START TRADING" onClick={() => navigate(`/perp/${DEFAULT_SYMBOL}`)} />
           </div>
         </div>
-        <div className="mb-32 relative animate-in fade-in slide-in-from-bottom-8 duration-1000">
-          <div className="absolute inset-0 bg-[#BFD4FA] blur-[150px] opacity-[0.08] pointer-events-none" />
+        <div className="mb-32 relative">
           <DoubleLayerCard className="w-full mx-auto shadow-2xl shadow-indigo-500/10" glowIntensity="high">
-            <div className="flex flex-col h-[500px] md:h-[600px] bg-[#050505]">
-              <div className="h-14 border-b border-[#1A1A1A] flex items-center justify-between px-6">
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-2 cursor-pointer hover:bg-[#1A1A1A] px-2 py-1 rounded transition-colors">
-                    <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-purple-500 to-blue-500" />
-                    <span className="font-medium text白">SOL-USDC</span>
-                    <ChevronDown size={14} className="text-[#666]" />
-                  </div>
-                  <span className="text-green-400 text-sm">$145.20</span>
-                  <span className="text-[#666] text-xs">24h Vol: $42.5M</span>
-                </div>
-                <div className="flex gap-4 text-xs text-[#666]">
-                  <span className="text-[#BFD4FA]">Spot</span>
-                  <span className="hover:text白 cursor-pointer">Perp</span>
-                </div>
+            <Box p={6} pb={0} intensity={900} r="xl" width="100%" style={{ minHeight: 480 }}>
+              <div className="flex items-center gap-3 mb-4">
+                {[
+                  { label: 'BTC', val: 'PERP_BTC_USDC' },
+                  { label: 'ETH', val: 'PERP_ETH_USDC' },
+                  { label: 'SOL', val: 'PERP_SOL_USDC' },
+                ].map((opt) => (
+                  <button key={opt.val} onClick={() => setSymbol(opt.val)} className={`px-2 py-1 text-xs rounded border ${symbol === opt.val ? 'border-[#BFD4FA] text-white' : 'border-[#222] text-[#666] hover:text-white'}`}>{opt.label}</button>
+                ))}
+                <span className="text-xs text-[#666]">Current: {symbol}</span>
               </div>
-              <div className="flex-1 flex flex-col md:flex-row">
-                <div className="flex-1 border-r border-[#1A1A1A] p-6 relative flex flex-col">
-                  <div className="absolute top-6 left-6 flex gap-2">
-                    {['15m', '1H', '4H', '1D'].map((t) => (
-                      <span key={t} className="text-xs text-[#444] hover:text-[#BFD4FA] cursor-pointer bg-[#0A0A0A] px-2 py-1 rounded border border-[#222]">{t}</span>
-                    ))}
-                  </div>
-                  <div className="flex-1 mt-8 relative opacity-80">
-                    <svg className="w-full h-full" preserveAspectRatio="none">
-                      <defs>
-                        <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#BFD4FA" stopOpacity="0.1" />
-                          <stop offset="100%" stopColor="#BFD4FA" stopOpacity="0" />
-                        </linearGradient>
-                      </defs>
-                      <path d="M0 300 C 100 280, 200 320, 300 250 C 400 180, 500 220, 600 150 L 600 400 L 0 400 Z" fill="url(#chartGradient)" />
-                      <path d="M0 300 C 100 280, 200 320, 300 250 C 400 180, 500 220, 600 150" fill="none" stroke="#BFD4FA" strokeWidth="2" />
-                    </svg>
-                    <div className="absolute right-0 top-[37%] flex items-center gap-2 transform translate-x-1/2">
-                      <div className="bg-[#BFD4FA] text黑 text-[10px] font-bold px-2 py-0.5 rounded-l">145.20</div>
-                      <div className="w-full border-t border-dashed border-[#BFD4FA]/30 absolute right-full top-1/2 w-[600px]" />
-                    </div>
-                  </div>
-                </div>
-                <div className="w-full md:w-[320px] flex flex-col">
-                  <div className="flex-1 p-4 border-b border-[#1A1A1A] overflow-hidden">
-                    <div className="flex justify-between text-[10px] text-[#666] mb-2 uppercase">
-                      <span>Price (USDC)</span>
-                      <span>Size (SOL)</span>
-                    </div>
-                    <div className="space-y-1 text-xs">
-                      {[...Array(5)].map((_, i) => (
-                        <div key={`ask-${i}`} className="flex justify-between">
-                          <span className="text-red-400">145.{25 + i}</span>
-                          <span className="text-[#444]">{(Math.random() * 10).toFixed(2)}</span>
-                        </div>
-                      ))}
-                      <div className="py-2 flex justify-center items-center text白 font-medium text-sm">145.20</div>
-                      {[...Array(5)].map((_, i) => (
-                        <div key={`bid-${i}`} className="flex justify之间">
-                          <span className="text-green-400">145.{15 - i}</span>
-                          <span className="text-[#444]">{(Math.random() * 10).toFixed(2)}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="p-4 bg-[#080808]">
-                    <div className="flex gap-2 mb-4 bg-[#111] p-1 rounded-lg">
-                      <button className="flex-1 py-1 text-xs font-medium text黑 bg-[#BFD4FA] rounded">Buy</button>
-                      <button className="flex-1 py-1 text-xs font-medium text-[#666] hover:text白">Sell</button>
-                    </div>
-                    <div className="space-y-3">
-                      <div className="bg-[#111] border border-[#222] rounded-lg p-3 flex justify-between items-center">
-                        <span className="text-xs text-[#666]">Amount</span>
-                        <span className="text-sm text白">0.00</span>
-                      </div>
-                      <button className="w-full h-10 relative group overflow-hidden bg黑 border border-[#333] hover:border-[#BFD4FA] transition-colors">
-                        <div className="absolute inset-0 bg白/10 opacity-0 group-hover:opacity-100 transition-opacity" />
-                        <span className="text-sm font-medium text白 relative z-10">Place Order</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+              <TradingPage
+                symbol={symbol}
+                tradingViewConfig={tradingViewConfig}
+                sharePnLConfig={config.tradingPage.sharePnLConfig}
+                onSymbolChange={(s: any) => setSymbol(s.symbol)}
+              />
+            </Box>
           </DoubleLayerCard>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-5xl mx-auto mt-16 border-t border-[#1A1A1A] pt-8 text-center">
             {[
@@ -314,7 +284,7 @@ export default function FirstPage() {
               { label: 'Gas Cost', val: '$0.00' },
             ].map((stat, i) => (
               <div key={i} className="flex flex-col gap-1">
-                <span className="text-2xl font-bold text白 tracking-tight">{stat.val}</span>
+                <span className="text-2xl font-bold text-white tracking-tight">{stat.val}</span>
                 <span className="text-xs text-[#555] uppercase tracking-widest">{stat.label}</span>
               </div>
             ))}
@@ -322,16 +292,16 @@ export default function FirstPage() {
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-24">
           <div className="lg:col-span-8">
-            <DoubleLayerCard className="h-full">
-              <div className="p-8">
+            <Box p={8} intensity={900} r="xl" width="100%">
+              <div>
                 <div className="flex items-center justify-between mb-8">
-                  <h3 className="text-lg font-bold text白 flex items-center gap-2">
+                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
                     <BarChart3 size={20} className="text-[#BFD4FA]" />
                     Market Overview
                   </h3>
                   <div className="flex gap-2">
                     {['All', 'Gainers', 'Losers'].map((tab) => (
-                      <button key={tab} className="px-3 py-1 rounded text-xs transition-colors font-bold text-[#666] hover:text白">{tab}</button>
+                      <button key={tab} className="px-3 py-1 rounded text-xs transition-colors font-bold text-[#666] hover:text-white">{tab}</button>
                     ))}
                   </div>
                 </div>
@@ -343,27 +313,27 @@ export default function FirstPage() {
                   <MarketRow symbol="BONK" name="Bonk" price="0.000024" change="+12.4%" chartPath="M0 35 Q 10 35, 20 20 T 40 30 T 100 5" />
                 </div>
               </div>
-            </DoubleLayerCard>
+            </Box>
           </div>
           <div className="lg:col-span-4 flex flex-col gap-6">
-            <DoubleLayerCard className="flex-1">
-              <div className="p-6 flex flex-col h-full justify-center items-start gap-4">
+            <Box p={6} intensity={900} r="xl" width="100%" className="flex-1">
+              <div className="flex flex-col h-full justify-center items-start gap-4">
                 <div className="w-12 h-12 rounded-2xl bg-[#1A1A1A] border border-[#333] flex items-center justify-center text-[#BFD4FA]">
                   <Zap size={24} />
                 </div>
-                <h4 className="text-lg font-bold text白">Matching Engine</h4>
+                <h4 className="text-lg font-bold text-white">Matching Engine</h4>
                 <p className="text-[#999999] text-sm leading-relaxed">High-frequency matching engine capable of sustaining 100k TPS with deterministic latency.</p>
               </div>
-            </DoubleLayerCard>
-            <DoubleLayerCard className="flex-1">
-              <div className="p-6 flex flex-col h-full justify-center items-start gap-4">
+            </Box>
+            <Box p={6} intensity={900} r="xl" width="100%" className="flex-1">
+              <div className="flex flex-col h-full justify-center items-start gap-4">
                 <div className="w-12 h-12 rounded-2xl bg-[#1A1A1A] border border-[#333] flex items-center justify-center text-[#89C9A0]">
                   <Layers size={24} />
                 </div>
-                <h4 className="text-lg font-bold text白">Unified Liquidity</h4>
+                <h4 className="text-lg font-bold text-white">Unified Liquidity</h4>
                 <p className="text-[#999999] text-sm leading-relaxed">Access liquidity across multiple chains from a single, unified interface.</p>
               </div>
-            </DoubleLayerCard>
+            </Box>
           </div>
         </div>
       </main>
