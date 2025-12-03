@@ -158,11 +158,7 @@ const MarketRow: React.FC<MarketRowProps> = ({ symbol, name, price, change, char
           <div className="text-xs text-[#666]">{name}</div>
         </div>
       </div>
-      <div className="w-24 h-8 opacity-50 group-hover:opacity-100 transition-opacity">
-        <svg viewBox="0 0 100 40" className="w-full h-full overflow-visible">
-          <path d={chartPath} fill="none" stroke={isUp ? '#89C9A0' : '#D87A7A'} strokeWidth="2" strokeLinecap="round" />
-        </svg>
-      </div>
+
       <div className="text-right">
         <div className="text-sm font-medium text-white">${price}</div>
         <div className={`text-xs ${isUp ? 'text-[#89C9A0]' : 'text-[#D87A7A]'}`}>{change}</div>
@@ -273,6 +269,18 @@ export default function FirstPage() {
                 tradingViewConfig={tradingViewConfig}
                 sharePnLConfig={config.tradingPage.sharePnLConfig}
                 onSymbolChange={(s: any) => setSymbol(s.symbol)}
+                disableFeatures={[
+                  'sider',
+                  'topNavBar',
+                  'footer',
+                  'header',
+                  'tradeHistory',
+                  'positions',
+                  'orders',
+                  'asset_margin_info',
+                  'slippageSetting',
+                  'feesInfo',
+                ] as any}
               />
             </Box>
           </DoubleLayerCard>

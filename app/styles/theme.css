@@ -130,6 +130,19 @@ header::before, header::after, .oui-scaffold-topNavbar::before { display: none !
   margin-top: 64px !important; /* 仅保留导航栏的高度占位 */
 }
 
+/* 进一步保障：所有 Scaffold 页面内容整体下移，避免被导航遮挡 */
+.oui-scaffold-root,
+.oui-scaffold-container,
+.orderly-app {
+  padding-top: 64px !important;
+}
+
+/* Trading / Portfolio 页面中的分割布局容器也下移 */
+div[class*="split"],
+.orderly-dashboard-layout-item {
+  scroll-margin-top: 72px !important;
+}
+
 /* 滚动条下推 */
 div[class*="announcement"], div[class*="ticker"] {
   /* 如果有滚动条，让滚动条负责推开内容 */
