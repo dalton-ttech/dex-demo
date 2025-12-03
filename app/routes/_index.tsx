@@ -1,9 +1,5 @@
-import {
-  LoaderFunction,
-  type MetaFunction,
-} from "@remix-run/node";
-import { DEFAULT_SYMBOL } from "@/utils/storage";
-import { redirect } from "@remix-run/node";
+import { type MetaFunction } from "@remix-run/node";
+import FirstPage from "@/components/landing/FirstPage";
 
 export const meta: MetaFunction = () => {
   return [
@@ -12,14 +8,6 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export const loader: LoaderFunction = ({ request }) => {
-  // Extract search parameters from the request URL
-  const url = new URL(request.url);
-  const searchParamsString = url.search;
-  
-  // Construct the redirect URL with search parameters
-  const queryString = searchParamsString || "";
-  
-  return redirect(`/perp/${DEFAULT_SYMBOL}${queryString}`);
-};
-
+export default function Index() {
+  return <FirstPage />;
+}
