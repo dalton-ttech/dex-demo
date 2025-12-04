@@ -151,6 +151,11 @@ div[class*="announcement"], div[class*="ticker"] {
   background-color: #050505 !important;
 }
 
+.homepage-trading-preview div[class*="announcement"],
+.homepage-trading-preview div[class*="ticker"] {
+  margin-top: 0 !important;
+}
+
 /* 导航栏按钮文字颜色 (修复全黑按钮) */
 header button span,
 .oui-scaffold-topNavbar button span,

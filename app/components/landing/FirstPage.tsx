@@ -5,15 +5,8 @@ import { Box } from '@orderly.network/ui'
 import { TradingPage } from '@orderly.network/trading'
 import config from '@/utils/config'
 import { DEFAULT_SYMBOL } from '@/utils/storage'
-import {
-  ChevronDown,
-  ArrowRight,
-  Zap,
-  Shield,
-  BarChart3,
-  Search,
-  Layers,
-} from 'lucide-react'
+import { API } from '@orderly.network/types'
+import { Zap, BarChart3, Layers } from 'lucide-react'
 
 const COLORS = {
   bg: '#000000',
@@ -82,7 +75,6 @@ interface MarketRowProps {
   name: string
   price: string
   change: string
-  chartPath: string
 }
 
 const GlitchButton: React.FC<GlitchButtonProps> = ({ text, onClick }) => {
@@ -147,7 +139,7 @@ const DoubleLayerCard: React.FC<DoubleLayerCardProps> = ({ children, className =
   )
 }
 
-const MarketRow: React.FC<MarketRowProps> = ({ symbol, name, price, change, chartPath }) => {
+const MarketRow: React.FC<MarketRowProps> = ({ symbol, name, price, change }) => {
   const isUp = change.startsWith('+')
   return (
     <div className="flex items-center justify-between py-4 border-b border-white/5 last:border-0 hover:bg-white/5 px-4 rounded-lg transition-colors cursor-pointer group">
@@ -181,7 +173,7 @@ const Navbar: React.FC<{ onConnect: () => void }> = ({ onConnect }) => (
         <Link to="/leaderboard" className="text-sm font-medium text-[#666] hover:text-white">Leaderboard</Link>
         <Link to="/portfolio" className="text-sm font-medium text-[#666] hover:text-white">Portfolio</Link>
         <Link to="/portfolio/positions" className="text-sm font-medium text-[#666] hover:text-white">Positions</Link>
-        <a href="javascript:void(0)" className="text-sm font-medium text-[#666] cursor-not-allowed">Community</a>
+        <button type="button" className="text-sm font-medium text-[#666] cursor-not-allowed">Community</button>
       </div>
     </div>
     <div className="flex items-center gap-4">
@@ -227,6 +219,17 @@ export default function FirstPage() {
       toolbar_bg: '#0A0A0A',
     }
   }, [])
+  const homepageDisableFeatures: string[] = [
+    'sider',
+    'footer',
+    'header',
+    'tradeHistory',
+    'positions',
+    'orders',
+    'asset_margin_info',
+    'slippageSetting',
+    'feesInfo',
+  ]
   return (
     <div className="min-h-screen bg-[#000000] text-white font-mono selection:bg-[#BFD4FA] selection:text-black overflow-x-hidden">
       <Navbar onConnect={() => connectWallet()} />
@@ -253,7 +256,7 @@ export default function FirstPage() {
         </div>
         <div className="mb-32 relative">
           <DoubleLayerCard className="w-full mx-auto shadow-2xl shadow-indigo-500/10" glowIntensity="high">
-            <Box p={6} pb={0} intensity={900} r="xl" width="100%" style={{ minHeight: 480 }}>
+            <Box p={6} pb={0} intensity={900} r="xl" width="100%" style={{ minHeight: 480 }} className="homepage-trading-preview">
               <div className="flex items-center gap-3 mb-4">
                 {[
                   { label: 'BTC', val: 'PERP_BTC_USDC' },
@@ -268,19 +271,8 @@ export default function FirstPage() {
                 symbol={symbol}
                 tradingViewConfig={tradingViewConfig}
                 sharePnLConfig={config.tradingPage.sharePnLConfig}
-                onSymbolChange={(s: any) => setSymbol(s.symbol)}
-                disableFeatures={[
-                  'sider',
-                  'topNavBar',
-                  'footer',
-                  'header',
-                  'tradeHistory',
-                  'positions',
-                  'orders',
-                  'asset_margin_info',
-                  'slippageSetting',
-                  'feesInfo',
-                ] as any}
+                onSymbolChange={(s: API.Symbol) => setSymbol(s.symbol)}
+                disableFeatures={homepageDisableFeatures}
               />
             </Box>
           </DoubleLayerCard>
@@ -314,11 +306,11 @@ export default function FirstPage() {
                   </div>
                 </div>
                 <div className="space-y-1">
-                  <MarketRow symbol="BTC" name="Bitcoin" price="64,230.50" change="+2.4%" chartPath="M0 35 Q 25 35, 35 20 T 70 15 T 100 5" />
-                  <MarketRow symbol="ETH" name="Ethereum" price="3,450.12" change="+1.8%" chartPath="M0 30 Q 25 35, 50 20 T 100 10" />
-                  <MarketRow symbol="SOL" name="Solana" price="145.20" change="+5.2%" chartPath="M0 38 Q 20 30, 40 35 T 60 15 T 100 2" />
-                  <MarketRow symbol="JUP" name="Jupiter" price="1.24" change="-0.5%" chartPath="M0 10 Q 30 5, 50 20 T 100 35" />
-                  <MarketRow symbol="BONK" name="Bonk" price="0.000024" change="+12.4%" chartPath="M0 35 Q 10 35, 20 20 T 40 30 T 100 5" />
+                  <MarketRow symbol="BTC" name="Bitcoin" price="64,230.50" change="+2.4%" />
+                  <MarketRow symbol="ETH" name="Ethereum" price="3,450.12" change="+1.8%" />
+                  <MarketRow symbol="SOL" name="Solana" price="145.20" change="+5.2%" />
+                  <MarketRow symbol="JUP" name="Jupiter" price="1.24" change="-0.5%" />
+                  <MarketRow symbol="BONK" name="Bonk" price="0.000024" change="+12.4%" />
                 </div>
               </div>
             </Box>
