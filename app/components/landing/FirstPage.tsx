@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from '@remix-run/react'
 import { useAppContext } from '@orderly.network/react-app'
 import { Box } from '@orderly.network/ui'
-import type { TradingPageProps } from '@orderly.network/trading'
+import { TradingPage } from '@orderly.network/trading'
 import config from '@/utils/config'
 import { DEFAULT_SYMBOL } from '@/utils/storage'
 //
@@ -219,42 +219,19 @@ export default function FirstPage() {
       toolbar_bg: '#0A0A0A',
     }
   }, [])
-  useEffect(() => {
-    initTV('home-tv', symbol)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [symbol])
-  const initTV = (containerId: string, sym: string): void => {
-    if (typeof window === 'undefined') return
-    const ensureScript = (src: string): Promise<void> => {
-      return new Promise<void>((resolve) => {
-        const existed = document.querySelector(`script[src="${src}"]`) as HTMLScriptElement | null
-        if (existed) return resolve()
-        const s = document.createElement('script')
-        s.src = src
-        s.onload = () => resolve()
-        document.body.appendChild(s)
-      })
-    }
-    const cfg = tradingViewConfig as TradingPageProps['tradingViewConfig']
-    ensureScript((cfg as { scriptSRC?: string })?.scriptSRC || '/tradingview/charting_library/charting_library.js').then(() => {
-      const TV = (window as unknown as { TradingView?: unknown }).TradingView as { widget: (opts: Record<string, unknown>) => void } | undefined
-      if (!TV) return
-      new TV.widget({
-        symbol: sym,
-        interval: '15',
-        fullscreen: false,
-        autosize: true,
-        container_id: containerId,
-        library_path: cfg?.library_path || '/tradingview/charting_library/',
-        custom_css_url: cfg?.customCssUrl || '/tradingview/chart_v2.css',
-        disabled_features: tradingViewConfig.disabled_features,
-        enabled_features: tradingViewConfig.enabled_features,
-        overrides: tradingViewConfig.overrides,
-        toolbar_bg: tradingViewConfig.toolbar_bg,
-        loading_screen: tradingViewConfig.loading_screen,
-      })
-    })
-  }
+  const homepageDisableFeatures = [
+    'sider',
+    'topNavBar',
+    'footer',
+    'header',
+    'orderBook',
+    'tradeHistory',
+    'positions',
+    'orders',
+    'asset_margin_info',
+    'slippageSetting',
+    'feesInfo',
+  ]
   return (
     <div className="min-h-screen bg-[#000000] text-white font-mono selection:bg-[#BFD4FA] selection:text-black overflow-x-hidden">
       <Navbar onConnect={() => connectWallet()} />
@@ -292,7 +269,18 @@ export default function FirstPage() {
                 ))}
                 <span className="text-xs text-[#666]">Current: {symbol}</span>
               </div>
-              <div id="home-tv" className="w-full h-[420px]" />
+              <TradingPage
+                symbol={symbol}
+                tradingViewConfig={tradingViewConfig}
+                sharePnLConfig={config.tradingPage.sharePnLConfig}
+                onSymbolChange={(s: { symbol: string }) => setSymbol(s.symbol)}
+                disableFeatures={homepageDisableFeatures as unknown as import('@orderly.network/trading').TradingPageProps['disableFeatures']}
+                overrideFeatures={{
+                  orderBook: <></>,
+                  positions: <></>,
+                  orders: <></>,
+                } as unknown as import('@orderly.network/trading').TradingPageProps['overrideFeatures']}
+              />
             </Box>
           </DoubleLayerCard>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-5xl mx-auto mt-16 border-t border-[#1A1A1A] pt-8 text-center">
