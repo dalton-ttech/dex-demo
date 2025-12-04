@@ -33,6 +33,18 @@ const config: OrderlyConfig = {
         account: "aitail-account-menu",
         chains: "aitail-chain-menu",
       },
+      customRender: (c) => (
+        <div className="aitail-mainnav">
+          {c.title}
+          {c.mainNav}
+          <div className="aitail-mainnav-trailing">
+            {c.languageSwitcher}
+            {c.chainMenu}
+            {c.walletConnect}
+            {c.subAccount}
+          </div>
+        </div>
+      ),
       campaigns: {
         name: "Reward",
         href: "/rewards",

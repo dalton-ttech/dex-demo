@@ -334,6 +334,39 @@ div[data-radix-popper-content-wrapper] > div::after {
   border-radius: 12px !important;
 }
 
+/* 将导航右侧两个弹窗居中显示于屏幕（横向居中） */
+.aitail-chain-menu div[data-radix-popper-content-wrapper],
+.aitail-account-menu div[data-radix-popper-content-wrapper] {
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) translateY(8px) !important;
+  max-width: min(96vw, 860px) !important;
+}
+
+/* 导航自定义容器的尾部布局 */
+.aitail-mainnav {
+  display: flex; align-items: center; justify-content: space-between; width: 100%;
+}
+.aitail-mainnav-trailing { display: flex; align-items: center; gap: 12px; }
+
+/* 让公告/滚动条在交易页可见并居于导航下 */
+.oui-scaffold-topNavbar ~ div[class*="announcement"],
+.oui-scaffold-topNavbar ~ div[class*="Announcement"] {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  min-height: 36px; max-height: 64px;
+  background: rgba(10,10,12,0.9) !important;
+}
+
+/* 避免对话框内部的卡片被双层边框污染导致交叉线框 */
+div[role="dialog"] .oui-card,
+div[role="dialog"] .oui-bg-base-9 {
+  border: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
 /* 确保导航栏上的按钮和链接可交互，不被其他层覆盖 */
 .oui-scaffold-topNavbar button,
 .oui-scaffold-topNavbar a,
