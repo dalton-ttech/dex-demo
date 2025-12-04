@@ -406,7 +406,12 @@ div[role="dialog"] .oui-bg-base-9 {
 
 /* Deposit 内部输入区域不使用额外 outline，避免重叠错位 */
 div[role="dialog"] [class*="outline"],
-div[role="dialog"] [class*="oui-outline"] {
+div[role="dialog"] [class*="oui-outline"],
+div[role="dialog"] .oui-outline-0,
+div[role="dialog"] .oui-outline-1,
+div[role="dialog"] .oui-outline-offset-0,
+div[role="dialog"] .oui-outline,
+div[role="dialog"] .focus-visible\:oui-outline-none {
   outline: none !important;
   box-shadow: none !important;
 }
@@ -419,3 +424,5 @@ div[role="dialog"] [role="textbox"] {
   border: 1px solid #38455C !important;
   outline: none !important;
 }
+div[role="dialog"] [class*="oui-border-line"] { border-color: #38455C !important; }
+div[role="dialog"] [class*="oui-bg-base"] { background-color: #0A0A0A !important; }

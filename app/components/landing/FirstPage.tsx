@@ -223,6 +223,7 @@ export default function FirstPage() {
     'sider',
     'footer',
     'header',
+    'orderBook',
     'tradeHistory',
     'positions',
     'orders',
@@ -273,6 +274,7 @@ export default function FirstPage() {
                 sharePnLConfig={config.tradingPage.sharePnLConfig}
                 onSymbolChange={(s: API.Symbol) => setSymbol(s.symbol)}
                 disableFeatures={homepageDisableFeatures as TradingPageProps["disableFeatures"]}
+                overrideFeatures={{ orderBook: <></> } as unknown as TradingPageProps["overrideFeatures"]}
               />
             </Box>
           </DoubleLayerCard>
