@@ -66,6 +66,10 @@ onboard-v2 .container {
   
   /* 必须裁剪，但导航栏除外 */
   overflow: hidden !important;
+
+  /* 额外描边，确保顶部边线在深色背景下可见 */
+  outline: 1px solid #38455C !important;
+  outline-offset: -1px !important;
 }
 
 /* 底部呼吸光条 */
@@ -398,4 +402,20 @@ div[role="dialog"] .oui-bg-base-9 {
   border: 0 !important;
   box-shadow: none !important;
   overflow: visible !important;
+}
+
+/* Deposit 内部输入区域不使用额外 outline，避免重叠错位 */
+div[role="dialog"] [class*="outline"],
+div[role="dialog"] [class*="oui-outline"] {
+  outline: none !important;
+  box-shadow: none !important;
+}
+div[role="dialog"] input,
+div[role="dialog"] .oui-input,
+div[role="dialog"] [class*="input"],
+div[role="dialog"] [class*="textField"],
+div[role="dialog"] [role="textbox"] {
+  background: #000000 !important;
+  border: 1px solid #38455C !important;
+  outline: none !important;
 }

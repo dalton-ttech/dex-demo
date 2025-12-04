@@ -29,6 +29,10 @@ export default function PortfolioLayout() {
       }}
       leftSideProps={{
         current: currentPath,
+        minWidth: 240,
+        maxWidth: 320,
+        className: "aitail-portfolio-sidebar",
+        style: { minWidth: 240 },
       }}
       bottomNavProps={config.scaffold.bottomNavProps}
     >
