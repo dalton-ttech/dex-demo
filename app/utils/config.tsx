@@ -29,6 +29,10 @@ const config: OrderlyConfig = {
         { name: "Markets", href: "/markets" },
         { name: "Leaderboard", href: "/leaderboard" },
       ],
+      classNames: {
+        account: "aitail-account-menu",
+        chains: "aitail-chain-menu",
+      },
       campaigns: {
         name: "Reward",
         href: "/rewards",
