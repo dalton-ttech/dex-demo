@@ -34,9 +34,9 @@ div[class*="layout"], main {
 }
 
 /* 强力去色 (保持 V35 逻辑，排除弹窗和导航) */
-.oui-bg-base-9:not(.oui-scaffold-topNavbar):not([role="dialog"]):not([class*="modal"]):not(.oui-dialog-content),
-.oui-bg-base-8:not([role="dialog"]),
-[class*="oui-bg-"]:not(.oui-scaffold-topNavbar):not([role="dialog"]):not([class*="modal"]):not(.oui-dialog-content) {
+.oui-bg-base-9:not(.oui-scaffold-topNavbar):not([role="dialog"]):not([role="menu"]):not([class*="modal"]):not(.oui-dialog-content),
+.oui-bg-base-8:not([role="dialog"]):not([role="menu"]),
+[class*="oui-bg-"]:not(.oui-scaffold-topNavbar):not([role="dialog"]):not([role="menu"]):not([class*="modal"]):not(.oui-dialog-content) {
   background-color: transparent !important;
   background-image: none !important;
 }
@@ -48,8 +48,6 @@ div[class*="layout"], main {
 .oui-bg-base-9:not(.oui-scaffold-topNavbar):not([role="dialog"]):not([class*="modal"]):not(.oui-dialog-content),
 .oui-card:not([role="dialog"]):not([class*="modal"]),
 div[id*="tradingview"],
-aside,
-section,
 onboard-v2 .container {
   /* 1. 物理间隙 */
   border: 4px solid #000000 !important;
@@ -72,8 +70,6 @@ onboard-v2 .container {
 .oui-bg-base-9:not(.oui-scaffold-topNavbar):not([role="dialog"]):not([class*="modal"]):not(.oui-dialog-content)::after,
 .oui-card:not([role="dialog"]):not([class*="modal"])::after,
 div[id*="tradingview"]::after,
-aside::after,
-section::after,
 onboard-v2 .container::after {
   content: "";
   position: absolute;
@@ -105,36 +101,23 @@ header,
   border-bottom: 1px solid #38455C !important;
   background-clip: border-box !important;
   backdrop-filter: blur(10px);
-  
-  position: fixed !important; 
-  top: 0; left: 0; right: 0;
-  height: 64px !important;
-  z-index: 99999 !important;
-  
-  display: flex !important;
-  align-items: center !important;
-  padding: 0 20px !important;
-  
-  /* [关键修复]：允许子元素溢出，解决悬浮菜单被切掉 */
-  overflow: visible !important;
 }
-/* 移除干扰 */
-header::before, header::after, .oui-scaffold-topNavbar::before { display: none !important; }
+.oui-scaffold-topNavbar::before { display: none !important; }
 
 /* 
    [关键修复]：删除页面内容的强制 Padding
    只给滚动条加 margin。如果滚动条不存在，内容会自动顶上去，解决留白过大。
 */
 .oui-scaffold-content, main { 
-  padding-top: 0 !important; 
-  margin-top: 64px !important; /* 仅保留导航栏的高度占位 */
+  padding-top: initial !important; 
+  margin-top: 0 !important;
 }
 
 /* 进一步保障：所有 Scaffold 页面内容整体下移，避免被导航遮挡 */
 .oui-scaffold-root,
 .oui-scaffold-container,
 .orderly-app {
-  padding-top: 64px !important;
+  padding-top: 0 !important;
 }
 
 /* Trading / Portfolio 页面中的分割布局容器也下移 */
@@ -334,20 +317,22 @@ div[data-radix-popper-content-wrapper] > div::after {
   border-radius: 12px !important;
 }
 
-/* 将导航右侧两个弹窗居中显示于屏幕（横向居中） */
-.aitail-chain-menu div[data-radix-popper-content-wrapper],
-.aitail-account-menu div[data-radix-popper-content-wrapper] {
-  left: 50% !important;
-  right: auto !important;
-  transform: translateX(-50%) translateY(8px) !important;
-  max-width: min(96vw, 860px) !important;
+/* 右侧“更多”菜单溢出屏幕时，靠右停靠并向左收缩，避免越界 */
+div[data-radix-popper-content-wrapper] > div[role="dialog"] {
+  max-width: calc(100vw - 32px) !important;
+}
+@media (min-width: 768px) {
+  div[data-radix-popper-content-wrapper] > div[role="dialog"] {
+    right: 16px !important;
+    left: auto !important;
+  }
 }
 
+/* 将导航右侧两个弹窗居中显示于屏幕（横向居中） */
+/* 保持默认弹窗定位，让弹窗锚定触发按钮位置 */
+
 /* 导航自定义容器的尾部布局 */
-.aitail-mainnav {
-  display: flex; align-items: center; justify-content: space-between; width: 100%;
-}
-.aitail-mainnav-trailing { display: flex; align-items: center; gap: 12px; }
+/* 使用默认导航布局，不再覆盖主容器 */
 
 /* 让公告/滚动条在交易页可见并居于导航下 */
 .oui-scaffold-topNavbar ~ div[class*="announcement"],
@@ -377,4 +362,14 @@ div[role="dialog"] .oui-bg-base-9 {
   pointer-events: auto !important;
   position: relative;
   z-index: 200000 !important;
+}
+/* 对话框内部的结构采用简洁样式，避免双层卡片造成线框交叉 */
+div[role="dialog"] section,
+div[role="dialog"] aside,
+div[role="dialog"] .oui-card,
+div[role="dialog"] .oui-bg-base-9 {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  overflow: visible !important;
 }

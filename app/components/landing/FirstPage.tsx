@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from '@remix-run/react'
 import { useAppContext } from '@orderly.network/react-app'
 import { Box } from '@orderly.network/ui'
-import { TradingPage } from '@orderly.network/trading'
+import { TradingPage, type TradingPageProps } from '@orderly.network/trading'
 import config from '@/utils/config'
 import { DEFAULT_SYMBOL } from '@/utils/storage'
 import { API } from '@orderly.network/types'
@@ -219,7 +219,7 @@ export default function FirstPage() {
       toolbar_bg: '#0A0A0A',
     }
   }, [])
-  const homepageDisableFeatures: string[] = [
+  const homepageDisableFeatures = [
     'sider',
     'footer',
     'header',
@@ -272,7 +272,7 @@ export default function FirstPage() {
                 tradingViewConfig={tradingViewConfig}
                 sharePnLConfig={config.tradingPage.sharePnLConfig}
                 onSymbolChange={(s: API.Symbol) => setSymbol(s.symbol)}
-                disableFeatures={homepageDisableFeatures}
+                disableFeatures={homepageDisableFeatures as TradingPageProps["disableFeatures"]}
               />
             </Box>
           </DoubleLayerCard>
