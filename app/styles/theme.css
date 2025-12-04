@@ -47,7 +47,10 @@ div[class*="layout"], main {
 .orderly-dashboard-layout-item,
 .oui-bg-base-9:not(.oui-scaffold-topNavbar):not([role="dialog"]):not([class*="modal"]):not(.oui-dialog-content),
 .oui-card:not([role="dialog"]):not([class*="modal"]),
+aside:not([role="dialog"]),
+section:not([role="dialog"]),
 div[id*="tradingview"],
+div[class*="orderbook"],
 onboard-v2 .container {
   /* 1. 物理间隙 */
   border: 4px solid #000000 !important;
@@ -69,7 +72,10 @@ onboard-v2 .container {
 .orderly-dashboard-layout-item::after,
 .oui-bg-base-9:not(.oui-scaffold-topNavbar):not([role="dialog"]):not([class*="modal"]):not(.oui-dialog-content)::after,
 .oui-card:not([role="dialog"]):not([class*="modal"])::after,
+aside:not([role="dialog"] )::after,
+section:not([role="dialog"] )::after,
 div[id*="tradingview"]::after,
+div[class*="orderbook"]::after,
 onboard-v2 .container::after {
   content: "";
   position: absolute;
@@ -342,6 +348,26 @@ div[data-radix-popper-content-wrapper] > div[role="dialog"] {
   opacity: 1 !important;
   min-height: 36px; max-height: 64px;
   background: rgba(10,10,12,0.9) !important;
+}
+
+/* =========================================================
+   11. 左侧侧边栏（Portfolio/Markets）可读性与宽度修复
+   ========================================================= */
+/* 选中态的文字颜色保持可见 */
+.oui-scaffold-container aside a[aria-selected="true"],
+.oui-scaffold-container aside [aria-current="page"],
+.oui-scaffold-container aside [data-state="active"],
+.oui-scaffold-container aside [aria-selected="true"] span,
+.oui-scaffold-container aside [aria-current="page"] span,
+.oui-scaffold-container aside [data-state="active"] span {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+/* 桌面端侧栏宽度与文本不换行，避免断行 */
+@media (min-width: 1024px) {
+  .oui-scaffold-container aside { min-width: 220px !important; }
+  .oui-scaffold-container aside a, .oui-scaffold-container aside button { white-space: nowrap !important; }
 }
 
 /* 避免对话框内部的卡片被双层边框污染导致交叉线框 */
