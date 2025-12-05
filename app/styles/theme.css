@@ -156,20 +156,26 @@ header button span,
 }
 
 /* =========================================================
-   6. 保护区 (Input / Button)
+   6. 保护区 (Input / Button) - 仅作用于页面内容，排除弹窗
    ========================================================= */
-input, .oui-input, div[class*="input"], div[class*="dropdown"], div[class*="menu"] {
+.oui-scaffold-container input,
+.oui-scaffold-container .oui-input,
+.oui-scaffold-container div[class*="input"],
+.oui-scaffold-container div[class*="dropdown"],
+.oui-scaffold-container div[class*="menu"] {
   border: 1px solid #37393D !important;
   background: #050505 !important;
   background-clip: border-box !important;
-  box-shadow: none !important; 
+  box-shadow: none !important;
   border-radius: 8px !important;
   min-height: auto !important;
   padding: 8px 12px !important;
 }
-input::after, .oui-input::after { display: none !important; }
+.oui-scaffold-container input::after,
+.oui-scaffold-container .oui-input::after { display: none !important; }
 
-button[class*="primary"], .oui-button-primary {
+.oui-scaffold-container button[class*="primary"],
+.oui-scaffold-container .oui-button-primary {
   background-color: #000000 !important;
   background-image: none !important;
   border: 1px solid #596571 !important;
@@ -178,19 +184,20 @@ button[class*="primary"], .oui-button-primary {
   font-weight: 600;
   box-shadow: none !important;
 }
-button[class*="primary"]:hover, .oui-button-primary:hover {
+.oui-scaffold-container button[class*="primary"]:hover,
+.oui-scaffold-container .oui-button-primary:hover {
   border-color: #6D97C0 !important;
   color: #BFD4FA !important;
   box-shadow: 0 0 12px rgba(109, 151, 192, 0.3) !important;
 }
 
-div[role="tab"], button[role="tab"] {
+.oui-scaffold-container div[role="tab"], .oui-scaffold-container button[role="tab"] {
   background-color: #000000 !important;
   border: 1px solid #37393D !important;
   color: #999 !important;
   border-radius: 6px !important;
 }
-div[role="tab"][aria-selected="true"] {
+.oui-scaffold-container div[role="tab"][aria-selected="true"] {
   border-color: #6D97C0 !important;
   color: #fff !important;
   background-color: rgba(109, 151, 192, 0.15) !important;
@@ -374,13 +381,6 @@ div[data-radix-popper-content-wrapper] > div[role="dialog"] {
   .oui-scaffold-container aside a, .oui-scaffold-container aside button { white-space: nowrap !important; }
 }
 
-/* 避免对话框内部的卡片被双层边框污染导致交叉线框 */
-div[role="dialog"] .oui-card,
-div[role="dialog"] .oui-bg-base-9 {
-  border: 0 !important;
-  box-shadow: none !important;
-  background: transparent !important;
-}
 
 /* 确保导航栏上的按钮和链接可交互，不被其他层覆盖 */
 .oui-scaffold-topNavbar button,
@@ -393,36 +393,3 @@ div[role="dialog"] .oui-bg-base-9 {
   position: relative;
   z-index: 200000 !important;
 }
-/* 对话框内部的结构采用简洁样式，避免双层卡片造成线框交叉 */
-div[role="dialog"] section,
-div[role="dialog"] aside,
-div[role="dialog"] .oui-card,
-div[role="dialog"] .oui-bg-base-9 {
-  background: transparent !important;
-  border: 0 !important;
-  box-shadow: none !important;
-  overflow: visible !important;
-}
-
-/* Deposit 内部输入区域不使用额外 outline，避免重叠错位 */
-div[role="dialog"] [class*="outline"],
-div[role="dialog"] [class*="oui-outline"],
-div[role="dialog"] .oui-outline-0,
-div[role="dialog"] .oui-outline-1,
-div[role="dialog"] .oui-outline-offset-0,
-div[role="dialog"] .oui-outline,
-div[role="dialog"] .focus-visible\:oui-outline-none {
-  outline: none !important;
-  box-shadow: none !important;
-}
-div[role="dialog"] input,
-div[role="dialog"] .oui-input,
-div[role="dialog"] [class*="input"],
-div[role="dialog"] [class*="textField"],
-div[role="dialog"] [role="textbox"] {
-  background: #000000 !important;
-  border: 1px solid #38455C !important;
-  outline: none !important;
-}
-div[role="dialog"] [class*="oui-border-line"] { border-color: #38455C !important; }
-div[role="dialog"] [class*="oui-bg-base"] { background-color: #0A0A0A !important; }
