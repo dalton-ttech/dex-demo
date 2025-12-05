@@ -232,6 +232,20 @@ export default function FirstPage() {
     'slippageSetting',
     'feesInfo',
   ]
+
+  const klineOnlyOverrides = {
+    sider: <></>,
+    topNavBar: <></>,
+    footer: <></>,
+    header: <></>,
+    orderBook: <></>,
+    tradeHistory: <></>,
+    positions: <></>,
+    orders: <></>,
+    asset_margin_info: <></>,
+    slippageSetting: <></>,
+    feesInfo: <></>,
+  } as unknown as import('@orderly.network/trading').TradingPageProps['overrideFeatures']
   return (
     <div className="min-h-screen bg-[#000000] text-white font-mono selection:bg-[#BFD4FA] selection:text-black overflow-x-hidden">
       <Navbar onConnect={() => connectWallet()} />
@@ -259,27 +273,14 @@ export default function FirstPage() {
         <div className="mb-32 relative">
           <DoubleLayerCard className="w-full mx-auto shadow-2xl shadow-indigo-500/10" glowIntensity="high">
             <Box p={6} pb={0} intensity={900} r="xl" width="100%" style={{ minHeight: 480 }} className="homepage-trading-preview">
-              <div className="flex items-center gap-3 mb-4">
-                {[
-                  { label: 'BTC', val: 'PERP_BTC_USDC' },
-                  { label: 'ETH', val: 'PERP_ETH_USDC' },
-                  { label: 'SOL', val: 'PERP_SOL_USDC' },
-                ].map((opt) => (
-                  <button key={opt.val} onClick={() => setSymbol(opt.val)} className={`px-2 py-1 text-xs rounded border ${symbol === opt.val ? 'border-[#BFD4FA] text-white' : 'border-[#222] text-[#666] hover:text-white'}`}>{opt.label}</button>
-                ))}
-                <span className="text-xs text-[#666]">Current: {symbol}</span>
-              </div>
+              
               <TradingPage
                 symbol={symbol}
                 tradingViewConfig={tradingViewConfig}
                 sharePnLConfig={config.tradingPage.sharePnLConfig}
                 onSymbolChange={(s: { symbol: string }) => setSymbol(s.symbol)}
                 disableFeatures={homepageDisableFeatures as unknown as import('@orderly.network/trading').TradingPageProps['disableFeatures']}
-                overrideFeatures={{
-                  orderBook: <></>,
-                  positions: <></>,
-                  orders: <></>,
-                } as unknown as import('@orderly.network/trading').TradingPageProps['overrideFeatures']}
+                overrideFeatures={klineOnlyOverrides}
               />
             </Box>
           </DoubleLayerCard>

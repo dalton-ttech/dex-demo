@@ -213,13 +213,13 @@ div[class*="modal"],
   border: 1px solid #38455C !important;
   box-shadow: 0 20px 60px rgba(0,0,0,0.95) !important;
   border-radius: 16px !important;
-  position: absolute !important; 
+  position: revert !important; 
   z-index: 10000 !important;
-  min-width: 400px !important;
-  padding: 24px !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-  overflow: visible !important;
+  min-width: revert !important;
+  padding: revert !important;
+  opacity: revert !important;
+  visibility: revert !important;
+  overflow: revert !important;
 }
 div[role="dialog"]::before, div[role="dialog"]::after,
 .oui-dialog-content::before, .oui-dialog-content::after {
@@ -229,6 +229,31 @@ div[role="dialog"]::before, div[role="dialog"]::after,
   background-color: rgba(0, 0, 0, 0.8) !important;
   backdrop-filter: blur(4px);
   z-index: 9999 !important;
+}
+
+div[role="dialog"] *,
+.oui-dialog-content * {
+  background-color: revert !important;
+  box-shadow: revert !important;
+  outline: revert !important;
+  border: revert !important;
+}
+
+/* 禁止双层卡片样式作用于弹窗内部容器 */
+div[role="dialog"] .oui-card,
+div[role="dialog"] .oui-bg-base-9,
+div[role="dialog"] .orderly-dashboard-layout-item,
+.oui-dialog-content .oui-card,
+.oui-dialog-content .oui-bg-base-9,
+.oui-dialog-content .orderly-dashboard-layout-item {
+  background: revert !important;
+  background-image: revert !important;
+  background-clip: revert !important;
+  border: revert !important;
+  outline: revert !important;
+  box-shadow: revert !important;
+  border-radius: revert !important;
+  overflow: revert !important;
 }
 
 /* =========================================================
@@ -292,26 +317,23 @@ iframe { border: none !important; box-shadow: none !important; background: trans
 */
 /* 保持 Radix Popper 默认布局行为，避免误定位导致弹窗不可见 */
 
-/* 
-   针对弹窗内部的内容容器，应用我们的双层卡片样式 
-   这样它就不是丑陋的默认样式，而是 Aitail 风格
-*/
-div[data-radix-popper-content-wrapper] > div {
-  /* 物理间隙 */
+
+/* 仅在导航栏相关弹窗应用双层卡片样式 */
+.oui-scaffold-topNavbar div[data-radix-popper-content-wrapper] > div,
+.aitail-chain-menu div[data-radix-popper-content-wrapper] > div,
+.aitail-account-menu div[data-radix-popper-content-wrapper] > div {
   border: 4px solid #000000 !important;
-  /* 外框 */
   box-shadow: 0 0 0 1px #38455C !important;
-  /* 渐变内胆 */
   background: linear-gradient(180deg, #0A0A0A 0%, #1E2330 100%) !important;
   background-clip: padding-box !important;
-  
   border-radius: 12px !important;
   position: relative;
   overflow: hidden;
 }
 
-/* 给它加上呼吸光条 */
-div[data-radix-popper-content-wrapper] > div::after {
+.oui-scaffold-topNavbar div[data-radix-popper-content-wrapper] > div::after,
+.aitail-chain-menu div[data-radix-popper-content-wrapper] > div::after,
+.aitail-account-menu div[data-radix-popper-content-wrapper] > div::after {
   content: "";
   position: absolute;
   bottom: 0; 
