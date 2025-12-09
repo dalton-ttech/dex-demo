@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from '@remix-run/react'
 import { useAppContext } from '@orderly.network/react-app'
 import { Box } from '@orderly.network/ui'
-import { TradingPage } from '@orderly.network/trading'
+import { TradingviewWidget } from '@orderly.network/ui-tradingview'
 import config from '@/utils/config'
 import { DEFAULT_SYMBOL } from '@/utils/storage'
 //
@@ -185,26 +185,13 @@ const Navbar: React.FC<{ onConnect: () => void }> = ({ onConnect }) => (
 export default function FirstPage() {
   const navigate = useNavigate()
   const { connectWallet } = useAppContext()
-  const [symbol, setSymbol] = useState<string>(DEFAULT_SYMBOL)
+  const [symbol] = useState<string>(DEFAULT_SYMBOL)
   const tradingViewConfig = React.useMemo(() => {
     const original = config.tradingPage.tradingViewConfig || {}
     return {
-      ...original,
+      scriptSRC: original.scriptSRC,
+      library_path: original.library_path,
       customCssUrl: '/tradingview/chart_v2.css',
-      disabled_features: [
-        'use_localstorage_for_settings',
-        'save_chart_properties_to_local_storage',
-        'header_symbol_search',
-        'symbol_info',
-        'display_market_status',
-        'header_compare',
-        'header_screenshot',
-        'popup_hints',
-        'show_exchange_logos',
-        'symbol_info_price_source',
-        'hide_resolution_in_legend',
-      ],
-      enabled_features: ['hide_left_toolbar_by_default'],
       overrides: {
         'mainSeriesProperties.statusViewStyle.symbolTextSource': 'description',
         'mainSeriesProperties.statusViewStyle.showExchange': 'false',
@@ -215,37 +202,8 @@ export default function FirstPage() {
         'paneProperties.legendProperties.showLegend': 'true',
         'mainSeriesProperties.statusViewStyle.showSymbolLogo': 'false',
       },
-      loading_screen: { backgroundColor: '#0A0A0A' },
-      toolbar_bg: '#0A0A0A',
     }
   }, [])
-  const homepageDisableFeatures = [
-    'sider',
-    'topNavBar',
-    'footer',
-    'header',
-    'orderBook',
-    'tradeHistory',
-    'positions',
-    'orders',
-    'asset_margin_info',
-    'slippageSetting',
-    'feesInfo',
-  ]
-
-  const klineOnlyOverrides = {
-    sider: <></>,
-    topNavBar: <></>,
-    footer: <></>,
-    header: <></>,
-    orderBook: <></>,
-    tradeHistory: <></>,
-    positions: <></>,
-    orders: <></>,
-    asset_margin_info: <></>,
-    slippageSetting: <></>,
-    feesInfo: <></>,
-  } as unknown as import('@orderly.network/trading').TradingPageProps['overrideFeatures']
   return (
     <div className="min-h-screen bg-[#000000] text-white font-mono selection:bg-[#BFD4FA] selection:text-black overflow-x-hidden">
       <Navbar onConnect={() => connectWallet()} />
@@ -273,14 +231,14 @@ export default function FirstPage() {
         <div className="mb-32 relative">
           <DoubleLayerCard className="w-full mx-auto shadow-2xl shadow-indigo-500/10" glowIntensity="high">
             <Box p={6} pb={0} intensity={900} r="xl" width="100%" style={{ minHeight: 480 }} className="homepage-trading-preview">
-              
-              <TradingPage
+
+              <TradingviewWidget
                 symbol={symbol}
-                tradingViewConfig={tradingViewConfig}
-                sharePnLConfig={config.tradingPage.sharePnLConfig}
-                onSymbolChange={(s: { symbol: string }) => setSymbol(s.symbol)}
-                disableFeatures={homepageDisableFeatures as unknown as import('@orderly.network/trading').TradingPageProps['disableFeatures']}
-                overrideFeatures={klineOnlyOverrides}
+                mode={0}
+                scriptSRC={tradingViewConfig.scriptSRC}
+                library_path={tradingViewConfig.library_path}
+                overrides={tradingViewConfig.overrides}
+                customCssUrl={tradingViewConfig.customCssUrl}
               />
             </Box>
           </DoubleLayerCard>
