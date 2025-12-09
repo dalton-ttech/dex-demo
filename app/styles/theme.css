@@ -348,15 +348,9 @@ iframe { border: none !important; box-shadow: none !important; background: trans
 /* =========================================================
    10.1 首页 K 线预览：只显示图表
    ========================================================= */
-.homepage-trading-preview :is(.oui-bg-base-9, .orderly-dashboard-layout-item, .oui-card, section, aside, div[class*="split"]):not(:has(div[id*="tradingview"])) {
-  display: none !important;
-}
 .homepage-trading-preview div[id*="tradingview"] {
   display: block !important;
   min-height: 420px !important;
-}
-.homepage-trading-preview [class*="layout"] {
-  display: none !important;
 }
 
 /* 顶部导航栏内的弹出层，也应用双层卡片样式，确保区块链选择器弹窗有色底部 */
