@@ -191,7 +191,7 @@ export default function FirstPage() {
     return {
       scriptSRC: original.scriptSRC,
       library_path: original.library_path,
-      customCssUrl: '/tradingview/chart_v2.css',
+      customCssUrl: (typeof window !== 'undefined' ? window.location.origin : '') + '/tradingview/chart_v2.css?v=v74',
       overrides: {
         'mainSeriesProperties.statusViewStyle.symbolTextSource': 'description',
         'mainSeriesProperties.statusViewStyle.showExchange': 'false',
