@@ -2,23 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from '@remix-run/react'
 import { useAppContext } from '@orderly.network/react-app'
 import { Box } from '@orderly.network/ui'
-import { TradingviewWidget } from '@orderly.network/ui-tradingview'
+import { TradingPage } from '@orderly.network/trading'
 import config from '@/utils/config'
 import { DEFAULT_SYMBOL } from '@/utils/storage'
 //
 import { Zap, BarChart3, Layers } from 'lucide-react'
 
-const COLORS = {
-  bg: '#000000',
-  main: '#FFFFFF',
-  mainAccent: '#BFD4FA',
-  secondary: '#999999',
-  wireframeStart: '#37393D',
-  wireframeMid: '#38455C',
-  wireframeEnd: '#BFD4FA',
-  buttonBorderStart: '#596571',
-  buttonBorderEnd: '#6D97C0',
-}
+
 
 const useScrambleText = (text: string, active: boolean): string => {
   const [displayText, setDisplayText] = useState<string>(text)
@@ -64,11 +54,7 @@ interface GhostButtonProps {
   to?: string
 }
 
-interface DoubleLayerCardProps {
-  children: React.ReactNode
-  className?: string
-  glowIntensity?: 'normal' | 'high'
-}
+
 
 interface MarketRowProps {
   symbol: string
@@ -114,30 +100,7 @@ const GhostButton: React.FC<GhostButtonProps> = ({ text, to }) => {
   return to ? <Link to={to}>{content}</Link> : content
 }
 
-const DoubleLayerCard: React.FC<DoubleLayerCardProps> = ({ children, className = '', glowIntensity = 'normal' }) => {
-  return (
-    <div
-      className={`relative rounded-3xl p-[1px] transition-all duration-500 group ${className}`}
-      style={{
-        background: `linear-gradient(160deg, ${COLORS.wireframeStart} 0%, ${COLORS.wireframeMid} 60%, ${COLORS.wireframeEnd} 100%)`,
-      }}
-    >
-      <div className="h-full w-full bg-[#000000] rounded-[23px] p-[4px] relative">
-        <div className="h-full w-full rounded-[19px] relative overflow-hidden flex flex-col">
-          <div
-            className="absolute inset-0 z-0 pointer-events-none"
-            style={{ background: `linear-gradient(to top, ${COLORS.mainAccent} 0%, ${COLORS.wireframeMid} 15%, transparent 80%)`, opacity: 0.15 }}
-          />
-          <div
-            className={`absolute bottom-0 left-0 right-0 z-0 pointer-events-none blur-2xl transition-opacity duration-700 ${glowIntensity === 'high' ? 'opacity-30 h-[100px]' : 'opacity-15 h-[60px]'}`}
-            style={{ background: COLORS.mainAccent }}
-          />
-          <div className="relative z-10 h-full">{children}</div>
-        </div>
-      </div>
-    </div>
-  )
-}
+
 
 const MarketRow: React.FC<MarketRowProps> = ({ symbol, name, price, change }) => {
   const isUp = change.startsWith('+')
@@ -204,6 +167,32 @@ export default function FirstPage() {
       },
     }
   }, [])
+  const homepageDisableFeatures = [
+    'sider',
+    'topNavBar',
+    'footer',
+    'header',
+    'orderBook',
+    'tradeHistory',
+    'positions',
+    'orders',
+    'asset_margin_info',
+    'slippageSetting',
+    'feesInfo',
+  ]
+  const klineOnlyOverrides = {
+    sider: <></>,
+    topNavBar: <></>,
+    footer: <></>,
+    header: <></>,
+    orderBook: <></>,
+    tradeHistory: <></>,
+    positions: <></>,
+    orders: <></>,
+    asset_margin_info: <></>,
+    slippageSetting: <></>,
+    feesInfo: <></>,
+  } as unknown as import('@orderly.network/trading').TradingPageProps['overrideFeatures']
   return (
     <div className="min-h-screen bg-[#000000] text-white font-mono selection:bg-[#BFD4FA] selection:text-black overflow-x-hidden">
       <Navbar onConnect={() => connectWallet()} />
@@ -229,19 +218,25 @@ export default function FirstPage() {
           </div>
         </div>
         <div className="mb-32 relative">
-          <DoubleLayerCard className="w-full mx-auto shadow-2xl shadow-indigo-500/10" glowIntensity="high">
-            <Box p={6} pb={0} intensity={900} r="xl" width="100%" style={{ minHeight: 480 }} className="homepage-trading-preview">
+          <div className="w-full mx-auto">
+            <Box
+              p={0}
+              intensity={900}
+              r="xl"
+              width="auto"
+              style={{ height: 'var(--homepage-preview-height)', minHeight: 'var(--homepage-preview-height)', maxWidth: 'var(--homepage-preview-width)', overflow: 'hidden' }}
+              className="homepage-trading-preview"
+            >
 
-              <TradingviewWidget
+              <TradingPage
                 symbol={symbol}
-                mode={0}
-                scriptSRC={tradingViewConfig.scriptSRC}
-                library_path={tradingViewConfig.library_path}
-                overrides={tradingViewConfig.overrides}
-                customCssUrl={tradingViewConfig.customCssUrl}
+                tradingViewConfig={tradingViewConfig}
+                sharePnLConfig={config.tradingPage.sharePnLConfig}
+                disableFeatures={homepageDisableFeatures as unknown as import('@orderly.network/trading').TradingPageProps['disableFeatures']}
+                overrideFeatures={klineOnlyOverrides}
               />
             </Box>
-          </DoubleLayerCard>
+          </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-5xl mx-auto mt-16 border-t border-[#1A1A1A] pt-8 text-center">
             {[
               { label: 'Total Volume', val: '$42B+' },

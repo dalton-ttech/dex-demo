@@ -5,6 +5,9 @@
   --w3o-background-color: transparent !important;
   --w3o-surface-color: #000000 !important;
   --oui-font-family: 'Manrope', system-ui, -apple-system, sans-serif;
+  /* 首页预览尺寸（可调整） */
+  --homepage-preview-width: 860px;
+  --homepage-preview-height: 700px;
   
   /* Aitail 品牌色 */
   --oui-color-primary: 191 212 250; 
@@ -350,7 +353,41 @@ iframe { border: none !important; box-shadow: none !important; background: trans
    ========================================================= */
 .homepage-trading-preview div[id*="tradingview"] {
   display: block !important;
-  min-height: 420px !important;
+  min-height: var(--homepage-preview-height) !important;
+}
+
+/* 让容器宽度由变量控制，便于在 PC/移动端快速调节 */
+.homepage-trading-preview {
+  width: var(--homepage-preview-width) !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* 强制在首页容器下仅显示含 TradingView 的布局块，隐藏其它交易模块 */
+.homepage-trading-preview .orderly-dashboard-layout-item {
+  display: none !important;
+}
+.homepage-trading-preview .orderly-dashboard-layout-item:has(div[id*="tradingview"]) {
+  display: block !important;
+}
+
+/* 仅保留 TradingView 内部元素，隐藏该布局块下的所有其它子元素 */
+.homepage-trading-preview .orderly-dashboard-layout-item *:not(div[id*="tradingview"]):not(div[id*="tradingview"] *) {
+  display: none !important;
+}
+
+/* 额外保护：隐藏底部数据列表/仓位模块（防止 :has 选择器在部分浏览器不生效）*/
+.homepage-trading-preview [class*="positions"],
+.homepage-trading-preview [class*="Positions"],
+.homepage-trading-preview [class*="orders"],
+.homepage-trading-preview [class*="Orders"],
+.homepage-trading-preview [class*="dataList"],
+.homepage-trading-preview [class*="DataList"],
+.homepage-trading-preview [data-testid*="positions"],
+.homepage-trading-preview [data-testid*="orders"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
 }
 
 /* 顶部导航栏内的弹出层，也应用双层卡片样式，确保区块链选择器弹窗有色底部 */
