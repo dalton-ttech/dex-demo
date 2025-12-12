@@ -4,3 +4,8 @@ node_modules
 /build
 .npmrc
 .specstory
+
+# Environment variables (keep .env.example and .env.production for deployment)
+.env
+.env.local
+.env.*.local
