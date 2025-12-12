@@ -12,6 +12,10 @@ export default defineConfig(() => {
   }
 
   return {
+    server: {
+      host: true,
+      port: 5173,
+    },
     ssr: {
       noExternal,
     },
