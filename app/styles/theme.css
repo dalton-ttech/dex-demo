@@ -1,20 +1,21 @@
 /* =========================================================
    1. 变量定义
    ========================================================= */
-:root, html {
+:root,
+html {
   --w3o-background-color: transparent !important;
   --w3o-surface-color: #000000 !important;
   --oui-font-family: 'Manrope', system-ui, -apple-system, sans-serif;
   /* 首页预览尺寸（可调整） */
   --homepage-preview-width: 860px;
   --homepage-preview-height: 700px;
-  
+
   /* Aitail 品牌色 */
-  --oui-color-primary: 191 212 250; 
+  --oui-color-primary: 191 212 250;
   --oui-color-primary-light: 220 230 255;
-  --oui-color-success: 137 201 160; 
-  --oui-color-danger: 216 122 122; 
-  
+  --oui-color-success: 137 201 160;
+  --oui-color-danger: 216 122 122;
+
   --oui-rounded: 8px;
   --oui-rounded-lg: 12px;
 }
@@ -31,8 +32,12 @@ body {
 }
 
 /* 布局容器透明化 */
-#root, .orderly-app, .oui-scaffold-root, .oui-scaffold-container, 
-div[class*="layout"], main {
+#root,
+.orderly-app,
+.oui-scaffold-root,
+.oui-scaffold-container,
+div[class*="layout"],
+main {
   background: transparent !important;
 }
 
@@ -62,11 +67,11 @@ onboard-v2 .container {
   /* 3. 内胆渐变 */
   background: linear-gradient(180deg, #0A0A0A 0%, #1E2330 100%) !important;
   background-clip: padding-box !important;
-  
+
   border-radius: 12px !important;
   position: relative !important;
   z-index: 0;
-  
+
   /* 必须裁剪，但导航栏除外 */
   overflow: hidden !important;
 
@@ -79,15 +84,16 @@ onboard-v2 .container {
 .orderly-dashboard-layout-item::after,
 .oui-bg-base-9:not(.oui-scaffold-topNavbar):not([role="dialog"]):not([class*="modal"]):not(.oui-dialog-content)::after,
 .oui-card:not([role="dialog"]):not([class*="modal"])::after,
-aside:not([role="dialog"] )::after,
-section:not([role="dialog"] )::after,
+aside:not([role="dialog"])::after,
+section:not([role="dialog"])::after,
 div[id*="tradingview"]::after,
 div[class*="orderbook"]::after,
 onboard-v2 .container::after {
   content: "";
   position: absolute;
-  bottom: 0; 
-  left: 15%; right: 15%;
+  bottom: 0;
+  left: 15%;
+  right: 15%;
   height: 1px;
   background: radial-gradient(circle, rgba(130, 180, 255, 1) 0%, rgba(109, 151, 192, 0) 70%);
   z-index: 10;
@@ -98,16 +104,16 @@ onboard-v2 .container::after {
 /* =========================================================
    4. 内部去色 (Internal Clearing)
    ========================================================= */
-.oui-bg-base-9:not(.oui-scaffold-topNavbar):not([role="dialog"]) > *,
-.oui-card > *,
-.orderly-dashboard-layout-item > * {
+.oui-bg-base-9:not(.oui-scaffold-topNavbar):not([role="dialog"])>*,
+.oui-card>*,
+.orderly-dashboard-layout-item>* {
   background-color: transparent !important;
 }
 
 /* =========================================================
    5. 导航栏修复 (Layout Fix) - 解决间隙大和遮挡问题
    ========================================================= */
-header, 
+header,
 .oui-scaffold-topNavbar {
   background-color: rgba(0, 0, 0, 0.95) !important;
   border: none !important;
@@ -115,14 +121,18 @@ header,
   background-clip: border-box !important;
   backdrop-filter: blur(10px);
 }
-.oui-scaffold-topNavbar::before { display: none !important; }
+
+.oui-scaffold-topNavbar::before {
+  display: none !important;
+}
 
 /* 
    [关键修复]：删除页面内容的强制 Padding
    只给滚动条加 margin。如果滚动条不存在，内容会自动顶上去，解决留白过大。
 */
-.oui-scaffold-content, main { 
-  padding-top: initial !important; 
+.oui-scaffold-content,
+main {
+  padding-top: initial !important;
   margin-top: 0 !important;
 }
 
@@ -154,8 +164,9 @@ header button span,
   background-color: transparent !important;
   border: 1px solid transparent !important;
 }
+
 .oui-scaffold-topNavbar button:hover {
-  background-color: rgba(255,255,255,0.1) !important;
+  background-color: rgba(255, 255, 255, 0.1) !important;
 }
 
 /* =========================================================
@@ -174,8 +185,11 @@ header button span,
   min-height: auto !important;
   padding: 8px 12px !important;
 }
+
 .oui-scaffold-container input::after,
-.oui-scaffold-container .oui-input::after { display: none !important; }
+.oui-scaffold-container .oui-input::after {
+  display: none !important;
+}
 
 .oui-scaffold-container button[class*="primary"],
 .oui-scaffold-container .oui-button-primary {
@@ -187,6 +201,7 @@ header button span,
   font-weight: 600;
   box-shadow: none !important;
 }
+
 .oui-scaffold-container button[class*="primary"]:hover,
 .oui-scaffold-container .oui-button-primary:hover {
   border-color: #6D97C0 !important;
@@ -194,12 +209,14 @@ header button span,
   box-shadow: 0 0 12px rgba(109, 151, 192, 0.3) !important;
 }
 
-.oui-scaffold-container div[role="tab"], .oui-scaffold-container button[role="tab"] {
+.oui-scaffold-container div[role="tab"],
+.oui-scaffold-container button[role="tab"] {
   background-color: #000000 !important;
   border: 1px solid #37393D !important;
   color: #999 !important;
   border-radius: 6px !important;
 }
+
 .oui-scaffold-container div[role="tab"][aria-selected="true"] {
   border-color: #6D97C0 !important;
   color: #fff !important;
@@ -209,14 +226,14 @@ header button span,
 /* =========================================================
    7. 弹窗修复 (Deposit)
    ========================================================= */
-div[role="dialog"], 
+div[role="dialog"],
 div[class*="modal"],
 .oui-dialog-content {
   background-color: #080808 !important;
   border: 1px solid #38455C !important;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.95) !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.95) !important;
   border-radius: 16px !important;
-  position: revert !important; 
+  position: revert !important;
   z-index: 10000 !important;
   min-width: revert !important;
   padding: revert !important;
@@ -224,11 +241,17 @@ div[class*="modal"],
   visibility: revert !important;
   overflow: revert !important;
 }
-div[role="dialog"]::before, div[role="dialog"]::after,
-.oui-dialog-content::before, .oui-dialog-content::after {
-  display: none !important; content: none !important;
+
+div[role="dialog"]::before,
+div[role="dialog"]::after,
+.oui-dialog-content::before,
+.oui-dialog-content::after {
+  display: none !important;
+  content: none !important;
 }
-.oui-dialog-overlay, div[data-state="open"][class*="overlay"] {
+
+.oui-dialog-overlay,
+div[data-state="open"][class*="overlay"] {
   background-color: rgba(0, 0, 0, 0.8) !important;
   backdrop-filter: blur(4px);
   z-index: 9999 !important;
@@ -273,7 +296,11 @@ onboard-v2 {
   --onboard-close-button-background: transparent;
   --onboard-close-button-color: #fff;
 }
-onboard-v2 .container { padding: 0 !important; }
+
+onboard-v2 .container {
+  padding: 0 !important;
+}
+
 onboard-v2 .sidebar {
   border-right: 1px solid #38455C !important;
   background: transparent !important;
@@ -292,7 +319,7 @@ div[class*="onboard"] div[class*="scroll-container"] {
 }
 
 /* 页脚 */
-a[href*="orderly.network"], 
+a[href*="orderly.network"],
 .orderly-powered-by,
 .oui-scaffold-footer-powered-by,
 div[class*="footer-powered-by"],
@@ -309,7 +336,14 @@ svg:has(path[d*="M6.98336"]) {
   bottom: -9999px !important;
 }
 
-iframe { border: none !important; box-shadow: none !important; background: transparent !important; width: 100% !important; height: 100% !important; }
+iframe {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
 /* =========================================================
    10. 修复右上角悬浮弹窗 (Radix Popper Fix)
    ========================================================= */
@@ -322,9 +356,9 @@ iframe { border: none !important; box-shadow: none !important; background: trans
 
 
 /* 仅在导航栏相关弹窗应用双层卡片样式 */
-.oui-scaffold-topNavbar div[data-radix-popper-content-wrapper] > div,
-.aitail-chain-menu div[data-radix-popper-content-wrapper] > div,
-.aitail-account-menu div[data-radix-popper-content-wrapper] > div {
+.oui-scaffold-topNavbar div[data-radix-popper-content-wrapper]>div,
+.aitail-chain-menu div[data-radix-popper-content-wrapper]>div,
+.aitail-account-menu div[data-radix-popper-content-wrapper]>div {
   border: 4px solid #000000 !important;
   box-shadow: 0 0 0 1px #38455C !important;
   background: linear-gradient(180deg, #0A0A0A 0%, #1E2330 100%) !important;
@@ -334,13 +368,14 @@ iframe { border: none !important; box-shadow: none !important; background: trans
   overflow: hidden;
 }
 
-.oui-scaffold-topNavbar div[data-radix-popper-content-wrapper] > div::after,
-.aitail-chain-menu div[data-radix-popper-content-wrapper] > div::after,
-.aitail-account-menu div[data-radix-popper-content-wrapper] > div::after {
+.oui-scaffold-topNavbar div[data-radix-popper-content-wrapper]>div::after,
+.aitail-chain-menu div[data-radix-popper-content-wrapper]>div::after,
+.aitail-account-menu div[data-radix-popper-content-wrapper]>div::after {
   content: "";
   position: absolute;
-  bottom: 0; 
-  left: 15%; right: 15%;
+  bottom: 0;
+  left: 15%;
+  right: 15%;
   height: 1px;
   background: radial-gradient(circle, rgba(130, 180, 255, 1) 0%, rgba(109, 151, 192, 0) 70%);
   z-index: 100000;
@@ -367,6 +402,7 @@ iframe { border: none !important; box-shadow: none !important; background: trans
 .homepage-trading-preview .orderly-dashboard-layout-item {
   display: none !important;
 }
+
 .homepage-trading-preview .orderly-dashboard-layout-item:has(div[id*="tradingview"]) {
   display: block !important;
 }
@@ -391,9 +427,9 @@ iframe { border: none !important; box-shadow: none !important; background: trans
 }
 
 /* 顶部导航栏内的弹出层，也应用双层卡片样式，确保区块链选择器弹窗有色底部 */
-.oui-scaffold-topNavbar div[data-radix-popper-content-wrapper] > div,
-.aitail-chain-menu div[data-radix-popper-content-wrapper] > div,
-.aitail-account-menu div[data-radix-popper-content-wrapper] > div {
+.oui-scaffold-topNavbar div[data-radix-popper-content-wrapper]>div,
+.aitail-chain-menu div[data-radix-popper-content-wrapper]>div,
+.aitail-account-menu div[data-radix-popper-content-wrapper]>div {
   border: 4px solid #000000 !important;
   box-shadow: 0 0 0 1px #38455C !important;
   background: linear-gradient(180deg, #0A0A0A 0%, #1E2330 100%) !important;
@@ -402,11 +438,12 @@ iframe { border: none !important; box-shadow: none !important; background: trans
 }
 
 /* 右侧“更多”菜单溢出屏幕时，靠右停靠并向左收缩，避免越界 */
-div[data-radix-popper-content-wrapper] > div[role="dialog"] {
+div[data-radix-popper-content-wrapper]>div[role="dialog"] {
   max-width: calc(100vw - 32px) !important;
 }
+
 @media (min-width: 768px) {
-  div[data-radix-popper-content-wrapper] > div[role="dialog"] {
+  div[data-radix-popper-content-wrapper]>div[role="dialog"] {
     right: 16px !important;
     left: auto !important;
   }
@@ -419,13 +456,14 @@ div[data-radix-popper-content-wrapper] > div[role="dialog"] {
 /* 使用默认导航布局，不再覆盖主容器 */
 
 /* 让公告/滚动条在交易页可见并居于导航下 */
-.oui-scaffold-topNavbar ~ div[class*="announcement"],
-.oui-scaffold-topNavbar ~ div[class*="Announcement"] {
+.oui-scaffold-topNavbar~div[class*="announcement"],
+.oui-scaffold-topNavbar~div[class*="Announcement"] {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
-  min-height: 36px; max-height: 64px;
-  background: rgba(10,10,12,0.9) !important;
+  min-height: 36px;
+  max-height: 64px;
+  background: rgba(10, 10, 12, 0.9) !important;
 }
 
 /* =========================================================
@@ -444,8 +482,14 @@ div[data-radix-popper-content-wrapper] > div[role="dialog"] {
 
 /* 桌面端侧栏宽度与文本不换行，避免断行 */
 @media (min-width: 1024px) {
-  .oui-scaffold-container aside { min-width: 220px !important; }
-  .oui-scaffold-container aside a, .oui-scaffold-container aside button { white-space: nowrap !important; }
+  .oui-scaffold-container aside {
+    min-width: 220px !important;
+  }
+
+  .oui-scaffold-container aside a,
+  .oui-scaffold-container aside button {
+    white-space: nowrap !important;
+  }
 }
 
 
@@ -459,4 +503,32 @@ div[data-radix-popper-content-wrapper] > div[role="dialog"] {
   pointer-events: auto !important;
   position: relative;
   z-index: 200000 !important;
+}
+
+/* 修改第 212-226 行的规则，排除语言切换器 */
+div[role="dialog"]:not(:has([id="language-switcher-icon"])),
+div[class*="modal"]:not(:has([id="language-switcher-icon"])),
+.oui-dialog-content:not(:has([id="language-switcher-icon"])) {
+  background-color: #080808 !important;
+  border: 1px solid #38455C !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.95) !important;
+  border-radius: 16px !important;
+  position: revert !important;
+  z-index: 10000 !important;
+  min-width: revert !important;
+  padding: revert !important;
+  opacity: revert !important;
+  visibility: revert !important;
+  overflow: revert !important;
+}
+
+/* 然后添加语言切换器对话框的特定样式 */
+div[role="dialog"]:has([id="language-switcher-icon"]),
+.oui-dialog-content:has([id="language-switcher-icon"]) {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  right: auto !important;
+  bottom: auto !important;
 }

@@ -52,7 +52,7 @@ const OrderlyProvider: FC<{ children: ReactNode }> = (props) => {
         onChainChanged={onChainChanged}
         appIcons={config.orderlyAppProvider.appIcons}
       >
-        <LocaleProvider 
+        <LocaleProvider
           supportedLanguages={["en", "zh", "ko"]}
           popup={{ mode: "modal" }}
         >
