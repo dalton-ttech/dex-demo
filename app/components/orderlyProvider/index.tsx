@@ -33,6 +33,9 @@ const OrderlyProvider: FC<{ children: ReactNode }> = (props) => {
         mode: "modal",
         className: "language-switcher-dialog"
       }}
+      backend={{
+        loadPath: (lang) => `/locales/${lang}.json`
+      }}
     >
       <WalletConnectorProvider
         solanaInitial={{ network: networkId === 'mainnet' ? WalletAdapterNetwork.Mainnet : WalletAdapterNetwork.Devnet }}
