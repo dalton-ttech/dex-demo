@@ -27,7 +27,10 @@ const OrderlyProvider: FC<{ children: ReactNode }> = (props) => {
   );
 
   return (
-    <LocaleProvider supportedLanguages={["en", "zh", "ko"]}>
+    <LocaleProvider 
+      supportedLanguages={["en", "zh", "ko"]}
+      popup={{ mode: "modal" }}
+    >
       <WalletConnectorProvider
         solanaInitial={{ network: networkId === 'mainnet' ? WalletAdapterNetwork.Mainnet : WalletAdapterNetwork.Devnet }}
         evmInitial={import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID && typeof window !== 'undefined' ? {
