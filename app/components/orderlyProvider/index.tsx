@@ -27,39 +27,42 @@ const OrderlyProvider: FC<{ children: ReactNode }> = (props) => {
   );
 
   return (
-    <WalletConnectorProvider
-      solanaInitial={{ network: networkId === 'mainnet' ? WalletAdapterNetwork.Mainnet : WalletAdapterNetwork.Devnet }}
-      evmInitial={import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID && typeof window !== 'undefined' ? {
-        options: {
-          wallets: [
-            injected(),
-            binance({ options: { lng: "en" } }),
-            walletConnect({
-              projectId: import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID,
-              qrModalOptions: {
-                themeMode: "dark",
-              },
-              dappUrl: window.location.origin,
-            }),
-          ],
-        }
-      } : undefined}
+    <LocaleProvider
+      supportedLanguages={["en", "zh", "ko"]}
+      popup={{
+        mode: "modal",
+        className: "language-switcher-dialog"
+      }}
     >
-      <OrderlyAppProvider
-        brokerId={import.meta.env.VITE_ORDERLY_BROKER_ID}
-        brokerName={import.meta.env.VITE_ORDERLY_BROKER_NAME}
-        networkId={networkId}
-        onChainChanged={onChainChanged}
-        appIcons={config.orderlyAppProvider.appIcons}
+      <WalletConnectorProvider
+        solanaInitial={{ network: networkId === 'mainnet' ? WalletAdapterNetwork.Mainnet : WalletAdapterNetwork.Devnet }}
+        evmInitial={import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID && typeof window !== 'undefined' ? {
+          options: {
+            wallets: [
+              injected(),
+              binance({ options: { lng: "en" } }),
+              walletConnect({
+                projectId: import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID,
+                qrModalOptions: {
+                  themeMode: "dark",
+                },
+                dappUrl: window.location.origin,
+              }),
+            ],
+          }
+        } : undefined}
       >
-        <LocaleProvider
-          supportedLanguages={["en", "zh", "ko"]}
-          popup={{ mode: "modal" }}
+        <OrderlyAppProvider
+          brokerId={import.meta.env.VITE_ORDERLY_BROKER_ID}
+          brokerName={import.meta.env.VITE_ORDERLY_BROKER_NAME}
+          networkId={networkId}
+          onChainChanged={onChainChanged}
+          appIcons={config.orderlyAppProvider.appIcons}
         >
           {props.children}
-        </LocaleProvider>
-      </OrderlyAppProvider>
-    </WalletConnectorProvider>
+        </OrderlyAppProvider>
+      </WalletConnectorProvider>
+    </LocaleProvider>
   );
 };
 

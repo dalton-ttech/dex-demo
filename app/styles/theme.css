@@ -226,7 +226,7 @@ header button span,
 /* =========================================================
    7. 弹窗修复 (Deposit)
    ========================================================= */
-/* 对话框外观样式（不覆盖定位，让 SDK 默认居中生效） */
+/* 对话框外观样式 */
 div[role="dialog"],
 div[class*="modal"],
 .oui-dialog-content {
@@ -237,28 +237,27 @@ div[class*="modal"],
   z-index: 10000 !important;
 }
 
+/* 模态框强制居中（排除 Popper 下拉菜单） */
+div[role="dialog"]:not([data-radix-popper-content-wrapper] *),
+.oui-dialog-content:not([data-radix-popper-content-wrapper] *) {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  right: auto !important;
+  bottom: auto !important;
+}
+
 /* =========================================================
    7.1 语言切换弹窗：应用双层卡片样式
    ========================================================= */
-/* 通过检测弹窗内是否包含语言切换图标来精确定位 */
-div[role="dialog"]:has([id="language-switcher-icon"]),
-.oui-dialog-content:has([id="language-switcher-icon"]) {
-  /* 覆盖通用弹窗样式，应用双层卡片 */
-  /* 1. 物理间隙 */
-  border: 4px solid #000000 !important;
-  /* 2. 外框 */
-  box-shadow: 0 0 0 1px #38455C !important;
-  /* 3. 内胆渐变 */
-  background: linear-gradient(180deg, #0A0A0A 0%, #1E2330 100%) !important;
-  background-clip: padding-box !important;
-  border-radius: 12px !important;
-  position: relative !important;
-  overflow: hidden !important;
-  /* 额外描边，确保顶部边线在深色背景下可见 */
-  outline: 1px solid #38455C !important;
-  outline-offset: -1px !important;
-}
+/* 
+   注意：id="language-switcher-icon" 在触发按钮上，不在弹窗内。
+   使用 .oui-language-switcher-dialog 类来标识（如果 SDK 支持）
+   或者使用通用弹窗样式，后续可以通过 JS 添加标识类
+*/
 
+/* 通用弹窗禁用伪元素 */
 div[role="dialog"]::before,
 div[role="dialog"]::after,
 .oui-dialog-content::before,
@@ -267,27 +266,25 @@ div[role="dialog"]::after,
   content: none !important;
 }
 
-/* 语言切换弹窗的底部呼吸光条（必须在禁用规则之后，使用更高优先级覆盖） */
-div[role="dialog"]:has([id="language-switcher-icon"])::after,
-.oui-dialog-content:has([id="language-switcher-icon"])::after {
-  content: "" !important;
-  display: block !important;
-  position: absolute !important;
-  bottom: 0 !important;
-  left: 15% !important;
-  right: 15% !important;
-  height: 1px !important;
-  background: radial-gradient(circle, rgba(130, 180, 255, 1) 0%, rgba(109, 151, 192, 0) 70%) !important;
-  z-index: 10 !important;
-  pointer-events: none !important;
-  box-shadow: 0 -2px 10px rgba(109, 151, 192, 0.8) !important;
+/* 语言切换弹窗专用样式类（需要通过自定义组件或 SDK 配置添加） */
+.language-switcher-dialog,
+div[role="dialog"].language-switcher-dialog {
+  /* 双层卡片效果 */
+  border: 4px solid #000000 !important;
+  box-shadow: 0 0 0 1px #38455C !important;
+  background: linear-gradient(180deg, #0A0A0A 0%, #1E2330 100%) !important;
+  background-clip: padding-box !important;
+  border-radius: 12px !important;
+  /* 不要覆盖 position，保持 SDK 的 fixed 定位 */
+  /* position: relative !important; */
+  overflow: visible !important;
+  outline: 1px solid #38455C !important;
+  outline-offset: -1px !important;
 }
 
-/* 语言切换弹窗的关闭按钮优化 */
-div[role="dialog"]:has([id="language-switcher-icon"]) .oui-dialog-close-btn,
-.oui-dialog-content:has([id="language-switcher-icon"]) .oui-dialog-close-btn,
-div[role="dialog"]:has([id="language-switcher-icon"]) button[data-testid="oui-testid-dialog-content-close-btn"],
-.oui-dialog-content:has([id="language-switcher-icon"]) button[data-testid="oui-testid-dialog-content-close-btn"] {
+/* 语言切换弹窗关闭按钮 */
+.language-switcher-dialog .oui-dialog-close-btn,
+.language-switcher-dialog button[data-testid="oui-testid-dialog-content-close-btn"] {
   background-color: rgba(56, 69, 92, 0.3) !important;
   border: 1px solid #38455C !important;
   border-radius: 8px !important;
@@ -300,14 +297,28 @@ div[role="dialog"]:has([id="language-switcher-icon"]) button[data-testid="oui-te
   opacity: 0.8 !important;
 }
 
-div[role="dialog"]:has([id="language-switcher-icon"]) .oui-dialog-close-btn:hover,
-.oui-dialog-content:has([id="language-switcher-icon"]) .oui-dialog-close-btn:hover,
-div[role="dialog"]:has([id="language-switcher-icon"]) button[data-testid="oui-testid-dialog-content-close-btn"]:hover,
-.oui-dialog-content:has([id="language-switcher-icon"]) button[data-testid="oui-testid-dialog-content-close-btn"]:hover {
+.language-switcher-dialog .oui-dialog-close-btn:hover,
+.language-switcher-dialog button[data-testid="oui-testid-dialog-content-close-btn"]:hover {
   background-color: rgba(56, 69, 92, 0.5) !important;
   border-color: #6D97C0 !important;
   opacity: 1 !important;
   box-shadow: 0 0 8px rgba(109, 151, 192, 0.3) !important;
+}
+
+/* 语言切换弹窗的底部呼吸光条（使用高优先级选择器覆盖禁用规则） */
+div[role="dialog"].language-switcher-dialog::after,
+.oui-dialog-content.language-switcher-dialog::after {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 15% !important;
+  right: 15% !important;
+  height: 1px !important;
+  background: radial-gradient(circle, rgba(130, 180, 255, 1) 0%, rgba(109, 151, 192, 0) 70%) !important;
+  z-index: 10 !important;
+  pointer-events: none !important;
+  box-shadow: 0 -2px 10px rgba(109, 151, 192, 0.8) !important;
 }
 
 .oui-dialog-overlay,
