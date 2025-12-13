@@ -1,5 +1,5 @@
 import { TradingPageProps } from "@orderly.network/trading";
-import { BottomNavProps, FooterProps, MainNavWidgetProps, LanguageSwitcherWidget } from "@orderly.network/ui-scaffold";
+import { BottomNavProps, FooterProps, MainNavWidgetProps } from "@orderly.network/ui-scaffold";
 import { AppLogos } from "@orderly.network/react-app";
 import { OrderlyActiveIcon, OrderlyIcon } from "../components/icons/orderly";
 import { LeaderboardActiveIcon, LeaderboardInactiveIcon, MarketsActiveIcon, MarketsInactiveIcon, PortfolioActiveIcon, PortfolioInactiveIcon, TradingActiveIcon, TradingInactiveIcon } from "@orderly.network/ui";
@@ -29,8 +29,6 @@ const config: OrderlyConfig = {
         { name: "Markets", href: "/markets" },
         { name: "Leaderboard", href: "/leaderboard" },
       ],
-      // 保持默认导航结构，使用 trailing 追加语言切换按钮（不影响布局）
-      trailing: <LanguageSwitcherWidget />,
       campaigns: {
         name: "Reward",
         href: "/rewards",
