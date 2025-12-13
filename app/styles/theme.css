@@ -226,6 +226,7 @@ header button span,
 /* =========================================================
    7. 弹窗修复 (Deposit)
    ========================================================= */
+/* 所有对话框默认样式：模态对话框居中显示 */
 div[role="dialog"],
 div[class*="modal"],
 .oui-dialog-content {
@@ -233,13 +234,30 @@ div[class*="modal"],
   border: 1px solid #38455C !important;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.95) !important;
   border-radius: 16px !important;
-  position: revert !important;
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  right: auto !important;
+  bottom: auto !important;
   z-index: 10000 !important;
   min-width: revert !important;
   padding: revert !important;
   opacity: revert !important;
   visibility: revert !important;
   overflow: revert !important;
+}
+
+/* Popper 容器中的对话框（下拉菜单等）恢复原有定位 */
+div[data-radix-popper-content-wrapper] div[role="dialog"],
+div[data-radix-popper-content-wrapper] div[class*="modal"],
+div[data-radix-popper-content-wrapper] .oui-dialog-content {
+  position: revert !important;
+  top: revert !important;
+  left: revert !important;
+  transform: revert !important;
+  right: revert !important;
+  bottom: revert !important;
 }
 
 div[role="dialog"]::before,
