@@ -27,39 +27,39 @@ const OrderlyProvider: FC<{ children: ReactNode }> = (props) => {
   );
 
   return (
-    <LocaleProvider 
-      supportedLanguages={["en", "zh", "ko"]}
-      popup={{ mode: "modal" }}
+    <WalletConnectorProvider
+      solanaInitial={{ network: networkId === 'mainnet' ? WalletAdapterNetwork.Mainnet : WalletAdapterNetwork.Devnet }}
+      evmInitial={import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID && typeof window !== 'undefined' ? {
+        options: {
+          wallets: [
+            injected(),
+            binance({ options: { lng: "en" } }),
+            walletConnect({
+              projectId: import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID,
+              qrModalOptions: {
+                themeMode: "dark",
+              },
+              dappUrl: window.location.origin,
+            }),
+          ],
+        }
+      } : undefined}
     >
-      <WalletConnectorProvider
-        solanaInitial={{ network: networkId === 'mainnet' ? WalletAdapterNetwork.Mainnet : WalletAdapterNetwork.Devnet }}
-        evmInitial={import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID && typeof window !== 'undefined' ? {
-          options: {
-            wallets: [
-              injected(),
-              binance({ options: { lng: "en" } }),
-              walletConnect({
-                projectId: import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID,
-                qrModalOptions: {
-                  themeMode: "dark",
-                },
-                dappUrl: window.location.origin,
-              }),
-            ],
-          }
-        } : undefined}
+      <OrderlyAppProvider
+        brokerId={import.meta.env.VITE_ORDERLY_BROKER_ID}
+        brokerName={import.meta.env.VITE_ORDERLY_BROKER_NAME}
+        networkId={networkId}
+        onChainChanged={onChainChanged}
+        appIcons={config.orderlyAppProvider.appIcons}
       >
-        <OrderlyAppProvider
-          brokerId={import.meta.env.VITE_ORDERLY_BROKER_ID}
-          brokerName={import.meta.env.VITE_ORDERLY_BROKER_NAME}
-          networkId={networkId}
-          onChainChanged={onChainChanged}
-          appIcons={config.orderlyAppProvider.appIcons}
+        <LocaleProvider 
+          supportedLanguages={["en", "zh", "ko"]}
+          popup={{ mode: "modal" }}
         >
           {props.children}
-        </OrderlyAppProvider>
-      </WalletConnectorProvider>
-    </LocaleProvider>
+        </LocaleProvider>
+      </OrderlyAppProvider>
+    </WalletConnectorProvider>
   );
 };
 
