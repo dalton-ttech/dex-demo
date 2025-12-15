@@ -426,7 +426,8 @@ iframe {
 /* 保持 Radix Popper 默认布局行为，避免误定位导致弹窗不可见 */
 
 
-/* 仅在导航栏相关弹窗应用双层卡片样式 */
+/* 仅在导航栏相关弹窗应用双层卡片样式（暂时关闭，恢复 SDK 默认链选择器布局） */
+/*
 .oui-scaffold-topNavbar div[data-radix-popper-content-wrapper]>div,
 .aitail-chain-menu div[data-radix-popper-content-wrapper]>div,
 .aitail-account-menu div[data-radix-popper-content-wrapper]>div {
@@ -436,9 +437,7 @@ iframe {
   background-clip: padding-box !important;
   border-radius: 12px !important;
   position: relative !important;
-  /* keep ::after anchored while avoiding clipping */
   overflow: visible !important;
-  /* allow full chain list */
   padding: 12px !important;
 }
 
@@ -456,6 +455,7 @@ iframe {
   pointer-events: none;
   box-shadow: 0 -2px 10px rgba(109, 151, 192, 0.8);
 }
+*/
 
 /* =========================================================
    10.1 首页 K 线预览：只显示图表
@@ -500,7 +500,7 @@ iframe {
   opacity: 0 !important;
 }
 
-/* 顶部导航栏内的弹出层，也应用双层卡片样式，确保区块链选择器弹窗有色底部 */
+/* 顶部导航栏内的弹出层双层卡片样式（暂时关闭，避免影响链选择器布局）
 .oui-scaffold-topNavbar div[data-radix-popper-content-wrapper]>div,
 .aitail-chain-menu div[data-radix-popper-content-wrapper]>div,
 .aitail-account-menu div[data-radix-popper-content-wrapper]>div {
@@ -510,6 +510,7 @@ iframe {
   background-clip: padding-box !important;
   border-radius: 12px !important;
 }
+*/
 
 /* 右侧“更多”菜单溢出屏幕时，靠右停靠并向左收缩，避免越界 */
 div[data-radix-popper-content-wrapper]>div[role="dialog"] {
