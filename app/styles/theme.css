@@ -430,13 +430,16 @@ iframe {
 .oui-scaffold-topNavbar div[data-radix-popper-content-wrapper]>div,
 .aitail-chain-menu div[data-radix-popper-content-wrapper]>div,
 .aitail-account-menu div[data-radix-popper-content-wrapper]>div {
-  border: 4px solid #000000 !important;
-  box-shadow: 0 0 0 1px #38455C !important;
+  border: 1px solid #38455C !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45) !important;
   background: linear-gradient(180deg, #0A0A0A 0%, #1E2330 100%) !important;
   background-clip: padding-box !important;
   border-radius: 12px !important;
-  position: relative;
-  overflow: hidden;
+  position: relative !important;
+  /* keep ::after anchored while avoiding clipping */
+  overflow: visible !important;
+  /* allow full chain list */
+  padding: 12px !important;
 }
 
 .oui-scaffold-topNavbar div[data-radix-popper-content-wrapper]>div::after,
