@@ -1,581 +1,94 @@
-/* =========================================================
-   1. 变量定义
-   ========================================================= */
-:root,
-html {
-  --w3o-background-color: transparent !important;
-  --w3o-surface-color: #000000 !important;
-  --oui-font-family: 'Manrope', system-ui, -apple-system, sans-serif;
-  /* 首页预览尺寸（可调整） */
-  --homepage-preview-width: 860px;
-  --homepage-preview-height: 700px;
-
-  /* Aitail 品牌色 */
-  --oui-color-primary: 191 212 250;
-  --oui-color-primary-light: 220 230 255;
-  --oui-color-success: 137 201 160;
-  --oui-color-danger: 216 122 122;
-
-  --oui-rounded: 8px;
-  --oui-rounded-lg: 12px;
-}
-
-/* =========================================================
-   2. 全局背景
-   ========================================================= */
-body {
-  background-color: #000000 !important;
-  background-image: none !important;
-  color: #ffffff;
-  min-height: 100vh;
-  margin: 0;
-}
-
-/* 布局容器透明化 */
-#root,
-.orderly-app,
-.oui-scaffold-root,
-.oui-scaffold-container,
-div[class*="layout"],
-main {
-  background: transparent !important;
-}
-
-/* 强力去色 (保持 V35 逻辑，排除弹窗和导航) */
-.oui-bg-base-9:not(.oui-scaffold-topNavbar):not([role="dialog"]):not([role="menu"]):not([class*="modal"]):not(.oui-dialog-content),
-.oui-bg-base-8:not([role="dialog"]):not([role="menu"]),
-[class*="oui-bg-"]:not(.oui-scaffold-topNavbar):not([role="dialog"]):not([role="menu"]):not([class*="modal"]):not(.oui-dialog-content) {
-  background-color: transparent !important;
-  background-image: none !important;
-}
-
-/* =========================================================
-   3. 核心：物理双层卡片 (保留 V35 成功逻辑)
-   ========================================================= */
-.orderly-dashboard-layout-item,
-.oui-bg-base-9:not(.oui-scaffold-topNavbar):not([role="dialog"]):not([class*="modal"]):not(.oui-dialog-content),
-.oui-card:not([role="dialog"]):not([class*="modal"]),
-aside:not([role="dialog"]),
-section:not([role="dialog"]),
-div[id*="tradingview"],
-div[class*="orderbook"],
-onboard-v2 .container {
-  /* 1. 物理间隙 */
-  border: 4px solid #000000 !important;
-  /* 2. 外框 */
-  box-shadow: 0 0 0 1px #38455C !important;
-  /* 3. 内胆渐变 */
-  background: linear-gradient(180deg, #0A0A0A 0%, #1E2330 100%) !important;
-  background-clip: padding-box !important;
-
-  border-radius: 12px !important;
-  position: relative !important;
-  z-index: 0;
-
-  /* 必须裁剪，但导航栏除外 */
-  overflow: hidden !important;
-
-  /* 额外描边，确保顶部边线在深色背景下可见 */
-  outline: 1px solid #38455C !important;
-  outline-offset: -1px !important;
-}
-
-/* 底部呼吸光条 */
-.orderly-dashboard-layout-item::after,
-.oui-bg-base-9:not(.oui-scaffold-topNavbar):not([role="dialog"]):not([class*="modal"]):not(.oui-dialog-content)::after,
-.oui-card:not([role="dialog"]):not([class*="modal"])::after,
-aside:not([role="dialog"])::after,
-section:not([role="dialog"])::after,
-div[id*="tradingview"]::after,
-div[class*="orderbook"]::after,
-onboard-v2 .container::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 15%;
-  right: 15%;
-  height: 1px;
-  background: radial-gradient(circle, rgba(130, 180, 255, 1) 0%, rgba(109, 151, 192, 0) 70%);
-  z-index: 10;
-  pointer-events: none;
-  box-shadow: 0 -2px 10px rgba(109, 151, 192, 0.8);
-}
-
-/* =========================================================
-   4. 内部去色 (Internal Clearing)
-   ========================================================= */
-.oui-bg-base-9:not(.oui-scaffold-topNavbar):not([role="dialog"])>*,
-.oui-card>*,
-.orderly-dashboard-layout-item>* {
-  background-color: transparent !important;
-}
-
-/* =========================================================
-   5. 导航栏修复 (Layout Fix) - 解决间隙大和遮挡问题
-   ========================================================= */
-header,
-.oui-scaffold-topNavbar {
-  background-color: rgba(0, 0, 0, 0.95) !important;
-  border: none !important;
-  border-bottom: 1px solid #38455C !important;
-  background-clip: border-box !important;
-  backdrop-filter: blur(10px);
-}
-
-.oui-scaffold-topNavbar::before {
-  display: none !important;
-}
-
-/* 
-   [关键修复]：删除页面内容的强制 Padding
-   只给滚动条加 margin。如果滚动条不存在，内容会自动顶上去，解决留白过大。
-*/
-.oui-scaffold-content,
-main {
-  padding-top: initial !important;
-  margin-top: 0 !important;
-}
-
-/* 进一步保障：所有 Scaffold 页面内容整体下移，避免被导航遮挡 */
-.oui-scaffold-root,
-.oui-scaffold-container,
-.orderly-app {
-  padding-top: 0 !important;
-}
-
-/* Trading / Portfolio 页面中的分割布局容器也下移 */
-div[class*="split"],
-.orderly-dashboard-layout-item {
-  scroll-margin-top: 72px !important;
-}
-
-/* 保持公告/行情条的默认定位与样式，避免额外下推影响显示 */
-
-/* 导航栏按钮文字颜色 (修复全黑按钮) */
-header button span,
-.oui-scaffold-topNavbar button span,
-.oui-scaffold-topNavbar [class*="text-"] {
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
-}
-
-/* 导航栏按钮背景特例 */
-.oui-scaffold-topNavbar button {
-  background-color: transparent !important;
-  border: 1px solid transparent !important;
-}
-
-.oui-scaffold-topNavbar button:hover {
-  background-color: rgba(255, 255, 255, 0.1) !important;
-}
-
-/* =========================================================
-   6. 保护区 (Input / Button) - 仅作用于页面内容，排除弹窗
-   ========================================================= */
-.oui-scaffold-container input,
-.oui-scaffold-container .oui-input,
-.oui-scaffold-container div[class*="input"],
-.oui-scaffold-container div[class*="dropdown"],
-.oui-scaffold-container div[class*="menu"] {
-  border: 1px solid #37393D !important;
-  background: #050505 !important;
-  background-clip: border-box !important;
-  box-shadow: none !important;
-  border-radius: 8px !important;
-  min-height: auto !important;
-  padding: 8px 12px !important;
-}
-
-.oui-scaffold-container input::after,
-.oui-scaffold-container .oui-input::after {
-  display: none !important;
-}
-
-.oui-scaffold-container button[class*="primary"],
-.oui-scaffold-container .oui-button-primary {
-  background-color: #000000 !important;
-  background-image: none !important;
-  border: 1px solid #596571 !important;
-  color: #FFFFFF !important;
-  border-radius: 99px !important;
-  font-weight: 600;
-  box-shadow: none !important;
-}
-
-.oui-scaffold-container button[class*="primary"]:hover,
-.oui-scaffold-container .oui-button-primary:hover {
-  border-color: #6D97C0 !important;
-  color: #BFD4FA !important;
-  box-shadow: 0 0 12px rgba(109, 151, 192, 0.3) !important;
-}
-
-.oui-scaffold-container div[role="tab"],
-.oui-scaffold-container button[role="tab"] {
-  background-color: #000000 !important;
-  border: 1px solid #37393D !important;
-  color: #999 !important;
-  border-radius: 6px !important;
-}
-
-.oui-scaffold-container div[role="tab"][aria-selected="true"] {
-  border-color: #6D97C0 !important;
-  color: #fff !important;
-  background-color: rgba(109, 151, 192, 0.15) !important;
-}
-
-/* =========================================================
-   7. 弹窗修复 (Deposit)
-   ========================================================= */
-/* 对话框外观样式 */
-div[role="dialog"],
-div[class*="modal"],
-.oui-dialog-content {
-  background-color: #080808 !important;
-  border: 1px solid #38455C !important;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.95) !important;
-  border-radius: 16px !important;
-  z-index: 10000 !important;
-}
-
-/* 模态框强制居中（排除 Popper 下拉菜单） */
-div[role="dialog"]:not([data-radix-popper-content-wrapper] *),
-.oui-dialog-content:not([data-radix-popper-content-wrapper] *) {
-  position: fixed !important;
-  top: 50% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) !important;
-  right: auto !important;
-  bottom: auto !important;
-}
-
-/* =========================================================
-   7.1 语言切换弹窗：应用双层卡片样式
-   ========================================================= */
-/* 
-   注意：id="language-switcher-icon" 在触发按钮上，不在弹窗内。
-   使用 .oui-language-switcher-dialog 类来标识（如果 SDK 支持）
-   或者使用通用弹窗样式，后续可以通过 JS 添加标识类
-*/
-
-/* 通用弹窗禁用伪元素 */
-div[role="dialog"]::before,
-div[role="dialog"]::after,
-.oui-dialog-content::before,
-.oui-dialog-content::after {
-  display: none !important;
-  content: none !important;
-}
-
-/* 语言切换弹窗专用样式类（需要通过自定义组件或 SDK 配置添加） */
-.language-switcher-dialog,
-div[role="dialog"].language-switcher-dialog {
-  /* 双层卡片效果 */
-  border: 4px solid #000000 !important;
-  box-shadow: 0 0 0 1px #38455C !important;
-  background: linear-gradient(180deg, #0A0A0A 0%, #1E2330 100%) !important;
-  background-clip: padding-box !important;
-  border-radius: 12px !important;
-  /* 不要覆盖 position，保持 SDK 的 fixed 定位 */
-  /* position: relative !important; */
-  overflow: visible !important;
-  outline: 1px solid #38455C !important;
-  outline-offset: -1px !important;
-}
-
-/* 语言切换弹窗关闭按钮 */
-.language-switcher-dialog .oui-dialog-close-btn,
-.language-switcher-dialog button[data-testid="oui-testid-dialog-content-close-btn"] {
-  background-color: rgba(56, 69, 92, 0.3) !important;
-  border: 1px solid #38455C !important;
-  border-radius: 8px !important;
-  width: 32px !important;
-  height: 32px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  transition: all 0.2s ease !important;
-  opacity: 0.8 !important;
-}
-
-.language-switcher-dialog .oui-dialog-close-btn:hover,
-.language-switcher-dialog button[data-testid="oui-testid-dialog-content-close-btn"]:hover {
-  background-color: rgba(56, 69, 92, 0.5) !important;
-  border-color: #6D97C0 !important;
-  opacity: 1 !important;
-  box-shadow: 0 0 8px rgba(109, 151, 192, 0.3) !important;
-}
-
-/* 语言切换弹窗的底部呼吸光条（使用高优先级选择器覆盖禁用规则） */
-div[role="dialog"].language-switcher-dialog::after,
-.oui-dialog-content.language-switcher-dialog::after {
-  content: "" !important;
-  display: block !important;
-  position: absolute !important;
-  bottom: 0 !important;
-  left: 15% !important;
-  right: 15% !important;
-  height: 1px !important;
-  background: radial-gradient(circle, rgba(130, 180, 255, 1) 0%, rgba(109, 151, 192, 0) 70%) !important;
-  z-index: 10 !important;
-  pointer-events: none !important;
-  box-shadow: 0 -2px 10px rgba(109, 151, 192, 0.8) !important;
-}
-
-.oui-dialog-overlay,
-div[data-state="open"][class*="overlay"] {
-  background-color: rgba(0, 0, 0, 0.8) !important;
-  backdrop-filter: blur(4px);
-  z-index: 9999 !important;
-}
-
-div[role="dialog"] *,
-.oui-dialog-content * {
-  background-color: revert !important;
-  box-shadow: revert !important;
-  outline: revert !important;
-  border: revert !important;
-}
-
-/* 禁止双层卡片样式作用于弹窗内部容器 */
-div[role="dialog"] .oui-card,
-div[role="dialog"] .oui-bg-base-9,
-div[role="dialog"] .orderly-dashboard-layout-item,
-.oui-dialog-content .oui-card,
-.oui-dialog-content .oui-bg-base-9,
-.oui-dialog-content .orderly-dashboard-layout-item {
-  background: revert !important;
-  background-image: revert !important;
-  background-clip: revert !important;
-  border: revert !important;
-  outline: revert !important;
-  box-shadow: revert !important;
-  border-radius: revert !important;
-  overflow: revert !important;
-}
-
-/* =========================================================
-   8. 钱包弹窗修复 (Web3-Onboard) - 彻底填黑
-   ========================================================= */
-onboard-v2 {
-  --onboard-modal-background: transparent;
-  --onboard-main-scroll-container-background: transparent;
-  --onboard-sidebar-background: transparent;
-  --onboard-wallet-button-background: #000;
-  --onboard-wallet-button-border-color: #37393D;
-  --onboard-wallet-button-color: #fff;
-  --onboard-modal-color: #fff;
-  --onboard-close-button-background: transparent;
-  --onboard-close-button-color: #fff;
-}
-
-onboard-v2 .container {
-  padding: 0 !important;
-}
-
-onboard-v2 .sidebar {
-  border-right: 1px solid #38455C !important;
-  background: transparent !important;
-}
-
-/* 
-   [关键修复]：用更强的选择器选中所有内部内容块 
-   强制设为黑色，防止透视
-*/
-onboard-v2 .content,
-onboard-v2 div[class*="content"],
-div[class*="onboard"] div[class*="content"],
-div[class*="onboard"] div[class*="scroll-container"] {
-  background-color: #080808 !important;
-  background: #080808 !important;
-}
-
-/* 页脚 */
-a[href*="orderly.network"],
-.orderly-powered-by,
-.oui-scaffold-footer-powered-by,
-div[class*="footer-powered-by"],
-/* span:contains("Powered by") REMOVED - Invalid CSS */
-.oui-text-base-contrast-54:has(+ svg),
-svg:has(path[d*="M6.98336"]) {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-  width: 0 !important;
-  height: 0 !important;
-  position: absolute !important;
-  bottom: -9999px !important;
-}
-
-iframe {
-  border: none !important;
-  box-shadow: none !important;
-  background: transparent !important;
-  width: 100% !important;
-  height: 100% !important;
-}
-
-/* =========================================================
-   10. 修复右上角悬浮弹窗 (Radix Popper Fix)
-   ========================================================= */
-
-/* 
-   原理：选中所有由 Radix 生成、且定位在顶部的弹出层包装器
-   我们强制将其靠右对齐，覆盖掉 JS 计算出的错误位置
-*/
-/* 保持 Radix Popper 默认布局行为，避免误定位导致弹窗不可见 */
-
-
-/* 仅在导航栏相关弹窗应用双层卡片样式（暂时关闭，恢复 SDK 默认链选择器布局） */
-/*
-.oui-scaffold-topNavbar div[data-radix-popper-content-wrapper]>div,
-.aitail-chain-menu div[data-radix-popper-content-wrapper]>div,
-.aitail-account-menu div[data-radix-popper-content-wrapper]>div {
-  border: 1px solid #38455C !important;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45) !important;
-  background: linear-gradient(180deg, #0A0A0A 0%, #1E2330 100%) !important;
-  background-clip: padding-box !important;
-  border-radius: 12px !important;
-  position: relative !important;
-  overflow: visible !important;
-  padding: 12px !important;
-}
-
-.oui-scaffold-topNavbar div[data-radix-popper-content-wrapper]>div::after,
-.aitail-chain-menu div[data-radix-popper-content-wrapper]>div::after,
-.aitail-account-menu div[data-radix-popper-content-wrapper]>div::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 15%;
-  right: 15%;
-  height: 1px;
-  background: radial-gradient(circle, rgba(130, 180, 255, 1) 0%, rgba(109, 151, 192, 0) 70%);
-  z-index: 100000;
-  pointer-events: none;
-  box-shadow: 0 -2px 10px rgba(109, 151, 192, 0.8);
-}
-*/
-
-/* =========================================================
-   10.1 首页 K 线预览：只显示图表
-   ========================================================= */
-.homepage-trading-preview div[id*="tradingview"] {
-  display: block !important;
-  min-height: var(--homepage-preview-height) !important;
-}
-
-/* 让容器宽度由变量控制，便于在 PC/移动端快速调节 */
-.homepage-trading-preview {
-  width: var(--homepage-preview-width) !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
-}
-
-/* 强制在首页容器下仅显示含 TradingView 的布局块，隐藏其它交易模块 */
-.homepage-trading-preview .orderly-dashboard-layout-item {
-  display: none !important;
-}
-
-.homepage-trading-preview .orderly-dashboard-layout-item:has(div[id*="tradingview"]) {
-  display: block !important;
-}
-
-/* 仅保留 TradingView 内部元素，隐藏该布局块下的所有其它子元素 */
-.homepage-trading-preview .orderly-dashboard-layout-item *:not(div[id*="tradingview"]):not(div[id*="tradingview"] *) {
-  display: none !important;
-}
-
-/* 额外保护：隐藏底部数据列表/仓位模块（防止 :has 选择器在部分浏览器不生效）*/
-.homepage-trading-preview [class*="positions"],
-.homepage-trading-preview [class*="Positions"],
-.homepage-trading-preview [class*="orders"],
-.homepage-trading-preview [class*="Orders"],
-.homepage-trading-preview [class*="dataList"],
-.homepage-trading-preview [class*="DataList"],
-.homepage-trading-preview [data-testid*="positions"],
-.homepage-trading-preview [data-testid*="orders"] {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-}
-
-/* 顶部导航栏内的弹出层双层卡片样式（暂时关闭，避免影响链选择器布局）
-.oui-scaffold-topNavbar div[data-radix-popper-content-wrapper]>div,
-.aitail-chain-menu div[data-radix-popper-content-wrapper]>div,
-.aitail-account-menu div[data-radix-popper-content-wrapper]>div {
-  border: 4px solid #000000 !important;
-  box-shadow: 0 0 0 1px #38455C !important;
-  background: linear-gradient(180deg, #0A0A0A 0%, #1E2330 100%) !important;
-  background-clip: padding-box !important;
-  border-radius: 12px !important;
-}
-*/
-
-/* 右侧“更多”菜单溢出屏幕时，靠右停靠并向左收缩，避免越界 */
-div[data-radix-popper-content-wrapper]>div[role="dialog"] {
-  max-width: calc(100vw - 32px) !important;
-}
-
-@media (min-width: 768px) {
-  div[data-radix-popper-content-wrapper]>div[role="dialog"] {
-    right: 16px !important;
-    left: auto !important;
-  }
-}
-
-/* 将导航右侧两个弹窗居中显示于屏幕（横向居中） */
-/* 保持默认弹窗定位，让弹窗锚定触发按钮位置 */
-
-/* 导航自定义容器的尾部布局 */
-/* 使用默认导航布局，不再覆盖主容器 */
-
-/* 让公告/滚动条在交易页可见并居于导航下 */
-.oui-scaffold-topNavbar~div[class*="announcement"],
-.oui-scaffold-topNavbar~div[class*="Announcement"] {
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  min-height: 36px;
-  max-height: 64px;
-  background: rgba(10, 10, 12, 0.9) !important;
-}
-
-/* =========================================================
-   11. 左侧侧边栏（Portfolio/Markets）可读性与宽度修复
-   ========================================================= */
-/* 选中态的文字颜色保持可见 */
-.oui-scaffold-container aside a[aria-selected="true"],
-.oui-scaffold-container aside [aria-current="page"],
-.oui-scaffold-container aside [data-state="active"],
-.oui-scaffold-container aside [aria-selected="true"] span,
-.oui-scaffold-container aside [aria-current="page"] span,
-.oui-scaffold-container aside [data-state="active"] span {
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
-}
-
-/* 桌面端侧栏宽度与文本不换行，避免断行 */
-@media (min-width: 1024px) {
-  .oui-scaffold-container aside {
-    min-width: 220px !important;
-  }
-
-  .oui-scaffold-container aside a,
-  .oui-scaffold-container aside button {
-    white-space: nowrap !important;
-  }
-}
-
-
-/* 确保导航栏上的按钮和链接可交互，不被其他层覆盖 */
-.oui-scaffold-topNavbar button,
-.oui-scaffold-topNavbar a,
-.oui-scaffold-topNavbar [role="button"],
-.oui-scaffold-topNavbar [role="menu"],
-.oui-scaffold-topNavbar [class*="menu"],
-.oui-scaffold-topNavbar [class*="popover"] {
-  pointer-events: auto !important;
-  position: relative;
-  z-index: 200000 !important;
+:root {
+  --oui-font-family: 'Manrope', sans-serif;
+
+  /* colors */
+  --oui-color-primary: 176 132 233;
+  --oui-color-primary-light: 213 190 244;
+  --oui-color-primary-darken: 137 76 209;
+  --oui-color-primary-contrast: 255 255 255;
+
+  --oui-color-link: 189 107 237;
+  --oui-color-link-light: 217 152 250;
+
+  --oui-color-secondary: 255 255 255;
+  --oui-color-tertiary: 218 218 218;
+  --oui-color-quaternary: 218 218 218;
+
+  --oui-color-danger: 245 97 139;
+  --oui-color-danger-light: 250 167 188;
+  --oui-color-danger-darken: 237 72 122;
+  --oui-color-danger-contrast: 255 255 255;
+
+  --oui-color-success: 41 233 169;
+  --oui-color-success-light: 101 240 194;
+  --oui-color-success-darken: 0 161 120;
+  --oui-color-success-contrast: 255 255 255;
+
+  --oui-color-warning: 255 209 70;
+  --oui-color-warning-light: 255 229 133;
+  --oui-color-warning-darken: 255 152 0;
+  --oui-color-warning-contrast: 255 255 255;
+
+  --oui-color-fill: 36 32 47;
+  --oui-color-fill-active: 40 46 58;
+
+  --oui-color-base-1: 93 83 123;
+  --oui-color-base-2: 81 72 107;
+  --oui-color-base-3: 68 61 69;
+  --oui-color-base-4: 57 52 74;
+  --oui-color-base-5: 51 46 66;
+  --oui-color-base-6: 43 38 56;
+  --oui-color-base-7: 36 32 47;
+  --oui-color-base-8: 29 26 38;
+  --oui-color-base-9: 22 20 28;
+  --oui-color-base-10: 14 13 18;
+
+  --oui-color-base-foreground: 255 255 255;
+  --oui-color-line: 255 255 255;
+
+  --oui-color-trading-loss: 245 97 139;
+  --oui-color-trading-loss-contrast: 255 255 255;
+  --oui-color-trading-profit: 41 233 169;
+  --oui-color-trading-profit-contrast: 255 255 255;
+
+  /* gradients */
+  --oui-gradient-primary-start: 40 0 97;
+  --oui-gradient-primary-end: 189 107 237;
+
+  --oui-gradient-secondary-start: 81 42 121;
+  --oui-gradient-secondary-end: 176 132 233;
+
+  --oui-gradient-success-start: 1 83 68;
+  --oui-gradient-success-end: 41 223 169;
+
+  --oui-gradient-danger-start: 153 24 76;
+  --oui-gradient-danger-end: 245 97 139;
+
+  --oui-gradient-brand-start: 231 219 249;
+  --oui-gradient-brand-end: 159 107 225;
+  --oui-gradient-brand-stop-start: 6.62%;
+  --oui-gradient-brand-stop-end: 86.5%;
+  --oui-gradient-brand-angle: 17.44deg;
+
+  --oui-gradient-warning-start: 152 58 8;
+  --oui-gradient-warning-end: 255 209 70;
+
+  --oui-gradient-neutral-start: 27 29 24;
+  --oui-gradient-neutral-end: 38 41 46;
+
+  /* rounded */
+  --oui-rounded-sm: 2px;
+  --oui-rounded: 4px;
+  --oui-rounded-md: 6px;
+  --oui-rounded-lg: 8px;
+  --oui-rounded-xl: 12px;
+  --oui-rounded-2xl: 16px;
+  --oui-rounded-full: 9999px;
+
+  /* spacing */
+  --oui-spacing-xs: 20rem;
+  --oui-spacing-sm: 22.5rem;
+  --oui-spacing-md: 26.25rem;
+  --oui-spacing-lg: 30rem;
+  --oui-spacing-xl: 33.75rem;
 }
