@@ -41,10 +41,12 @@ main {
   background: transparent !important;
 }
 
-/* 强力去色 (保持 V35 逻辑，排除弹窗和导航) */
+/* 强力去色 (保持 V35 逻辑，排除弹窗和导航)
+ * 注意：保留渐变条（例如风险率进度条）的背景，不对渐变背景做强制清空
+ */
 .oui-bg-base-9:not(.oui-scaffold-topNavbar):not([role="dialog"]):not([role="menu"]):not([class*="modal"]):not(.oui-dialog-content),
 .oui-bg-base-8:not([role="dialog"]):not([role="menu"]),
-[class*="oui-bg-"]:not(.oui-scaffold-topNavbar):not([role="dialog"]):not([role="menu"]):not([class*="modal"]):not(.oui-dialog-content) {
+[class*="oui-bg-"]:not(.oui-scaffold-topNavbar):not([role="dialog"]):not([role="menu"]):not([class*="modal"]):not(.oui-dialog-content):not([class*="oui-bg-gradient-to-"]) {
   background-color: transparent !important;
   background-image: none !important;
 }
@@ -389,14 +391,13 @@ div[class*="onboard"] div[class*="scroll-container"] {
   background: #080808 !important;
 }
 
-/* 页脚 */
+/* 页脚：隐藏 “Powered by Orderly” 相关元素 */
 a[href*="orderly.network"],
 .orderly-powered-by,
 .oui-scaffold-footer-powered-by,
 div[class*="footer-powered-by"],
 /* span:contains("Powered by") REMOVED - Invalid CSS */
-.oui-text-base-contrast-54:has(+ svg),
-svg:has(path[d*="M6.98336"]) {
+.oui-text-base-contrast-54:has(+ svg) {
   display: none !important;
   visibility: hidden !important;
   opacity: 0 !important;
@@ -413,6 +414,27 @@ iframe {
   background: transparent !important;
   width: 100% !important;
   height: 100% !important;
+}
+
+/* =========================================================
+   9. Tooltip / 指标卡片右上角图标行为
+   ========================================================= */
+
+/* 默认隐藏右上角的小方块背景，仅在悬浮时显示 */
+.oui-group rect.oui-fill-primary-darken {
+  opacity: 0 !important;
+  transition: opacity 0.15s ease-in-out;
+}
+
+.oui-group:hover rect.oui-fill-primary-darken {
+  opacity: 1 !important;
+}
+
+/* 统一：组内的小按钮本身保持透明背景，避免遮挡图钉 SVG */
+.oui-group button {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 /* =========================================================
